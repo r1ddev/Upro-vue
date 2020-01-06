@@ -360,7 +360,7 @@ body {
 </style>
 
 <script>
-import HomeForm from '../views/HomeForm.vue'
+import HomeForm from '../components/HomeForm.vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 // @ is an alias to /src
