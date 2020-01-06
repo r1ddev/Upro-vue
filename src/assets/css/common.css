@@ -1,0 +1,38 @@
+.p-6 {
+    padding: 5rem!important;
+}
+.flex-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.yp-inp {
+	border: 2px solid #e9378d;
+	padding: 10px 25px;
+	border-radius: 6px;
+	height: auto;
+}
+.yp-btn {
+	border: 2px solid #e9378d;
+	padding: 10px 25px;
+	border-radius: 6px;
+	background: #fff;
+	outline: none;
+	text-decoration: none;
+}
+.yp-btn:disabled {
+    opacity: .45;
+}
+.yp-btn-fill {
+	background-color: #f9f2f7;
+	border: none;
+	color: #c60c92;
+}
+.yp-btn-large {
+	padding: 21px 74px;
+    font-size: 19px;
+}
+.yp-btn-larger {
+	padding: 17px 40px;
+    font-size: 19px;
+}
