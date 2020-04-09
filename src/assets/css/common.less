@@ -1,0 +1,103 @@
+@font-face {
+	font-family: 'Century Gothic';
+	src: url('../fonts/CenturyGothic.eot');
+	src: url('../fonts/CenturyGothic.eot?#iefix') format('embedded-opentype'),
+	url('../fonts/CenturyGothic.woff') format('woff'),
+	url('../fonts/CenturyGothic.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+	
+body {
+	font-family: "Century Gothic",AppleGothic,sans-serif!important;
+}
+
+.p-6 {
+    padding: 5rem!important;
+}
+.flex-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.yp-inp {
+	border: 2px solid #e9378d;
+	padding: 10px 25px;
+	border-radius: 6px;
+	height: auto;
+}
+.yp-btn {
+	// border: 2px solid #e9378d;
+	color: #000;
+	padding: 10px 25px;
+	border-radius: 6px;
+	background: #fff;
+	outline: none;
+	text-decoration: none;
+	cursor: pointer;
+	// display: inline-block;
+	font-size: 1rem;
+	transition: .2s;
+
+	&.yp-btn-larger {
+		padding: 17px 40px;
+		font-size: 19px;
+	}
+
+	&.yp-btn-large {
+		padding: 21px 74px;
+		font-size: 19px;
+	}
+
+	&.yp-btn-fill {
+		background-color: #f9f2f7;
+		border: none;
+		color: #c60c92;
+
+		padding: 0.375rem 1.5rem;
+		border: solid 1px #f3a9cd;
+		background: #f3a9cd;
+		box-shadow: 0px 1px 4px -1px rgba(100, 100, 100, 0.5);
+		color: #fff;
+
+		&:hover {
+			color: #fff;
+		}
+	}
+
+	&.outline {
+		border: 2px solid #e9378d;
+		background: #fff;
+		color:#000;
+	}
+
+	&:disabled {
+		opacity: .45;
+	}
+
+	&:hover {
+		opacity: 0.8;
+	}
+
+	&:active {
+		filter: brightness(0.8);
+	}
+}
+
+.full-height {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+
+.container-rs {
+	box-shadow: 0px 2px4px rgba(100,100,100,0.5);
+	border-radius: 24px;
+}
+
+@media screen and (max-width: 767px) {
+	.m-text-center {
+		text-align: center;
+	}
+}

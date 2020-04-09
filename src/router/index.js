@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 import store from '../store'
 
 Vue.use(VueRouter)
@@ -9,28 +8,37 @@ const routes = [
 	{
 		path: '/',
 		name: 'home',
-		component: Home
+		component: () => import('../views/Home.vue')
 	}, {
 		path: store.state.routesLinks.about,
 		name: 'about',
-		// route level code-splitting
-		// this generates a separate chunk (about.[hash].js) for this route
-		// which is lazy-loaded when the route is visited.
-		component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+		component: () => import('../views/About.vue')
 	}, {
 		path: store.state.routesLinks.bids,
 		name: 'bids',
-		// route level code-splitting
-		// this generates a separate chunk (about.[hash].js) for this route
-		// which is lazy-loaded when the route is visited.
-		component: () => import(/* webpackChunkName: "about" */ '../views/Bids.vue')
+		component: () => import('../views/Bids.vue')
+	}, {
+		path: store.state.routesLinks.masterRegistration,
+		name: 'masterRegistration',
+		component: () => import('../views/MasterRegistration.vue')
+	}, {
+		path: store.state.routesLinks.master,
+		name: 'master',
+		component: () => import('../views/Master.vue')
+	}, {
+		path: store.state.routesLinks.masterProfile,
+		name: 'masterProfile',
+		component: () => import('../views/Profile.vue')
 	}
 ]
 
 const router = new VueRouter({
 	mode: 'history',
 	base: process.env.BASE_URL,
-	routes
+	routes,
+	scrollBehavior (to, from, savedPosition) {
+		return { x: 0, y: 0 }
+	}
 })
 
 export default router

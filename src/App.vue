@@ -1,10 +1,20 @@
 <template>
 	<div id="app">
-		<router-view/>
+		<vue-page-transition name="fade-in-right">
+		<!-- <transition name="fade"> -->
+			<router-view/>
+		<!-- </transition> -->
+		</vue-page-transition>
 	</div>
 </template>
 
 <script>
+
+import Vue from 'vue'
+import VuePageTransition from 'vue-page-transition'
+
+Vue.use(VuePageTransition)
+
 export default {
 	name: 'app',
 	data: function () {

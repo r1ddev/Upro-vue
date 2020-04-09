@@ -5,12 +5,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
 	state: {
-		server: "http://addax.pythonanywhere.com",
+		server: "https://addax.pythonanywhere.com",
 		userToken: null,
 		routesLinks: {
 			home: "/",
 			about: "/about",
-			bids: "/bids"
+			bids: "/bids",
+			master: "/master",
+			masterRegistration: "/masterRegistration",
+			masterProfile: "/master/profile"
 		}
 	},
 	mutations: {
