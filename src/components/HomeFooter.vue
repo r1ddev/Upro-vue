@@ -6,13 +6,13 @@
 					<div class="col-md-auto">
 						<div>
 							<router-link
-								:to="this.$store.state.routesLinks.masterRegistration"
+								to="/masterRegistration"
 								class="footer-link">
 								Вы мастер?</router-link>
 						</div>
 						<div>
 							<router-link
-								:to="this.$store.state.routesLinks.about"
+								to="/about"
 								class="footer-link-under">
 								Часто задаваемые вопросы</router-link>
 						</div>
@@ -39,8 +39,12 @@
 }
 
 @media screen and (max-width: 767px) {
+	.footer-link {
+		display: inline-block;
+		margin-top: 10px;
+	}
 	.footer-link-under {
-		margin-top: 0;
+		margin-top: 10px;
 		display: inline-block;
 	}
 }

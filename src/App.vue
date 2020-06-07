@@ -1,6 +1,6 @@
 <template>
-	<div id="app">
-		<vue-page-transition name="fade-in-right">
+	<div id="app" v-loading="$store.getters.isLoading">
+		<vue-page-transition name="zoom">
 		<!-- <transition name="fade"> -->
 			<router-view/>
 		<!-- </transition> -->
@@ -23,11 +23,17 @@ export default {
 		}
 	},
 	created() {
+		// console.log("$store.getters.master/isLoading", this.$store.getters['master/isLoading']);
+		// console.log("$store.getters.isLoading", this.$store.getters['isLoading']);
+		console.log("$store.getters.isLoading", this.$store.getters.isLoading);
+		
 		let userToken = localStorage.token || null
 
 		if (userToken != null) {
-			this.$store.dispatch('setToken', userToken)
-			if (this.$store.getters.isLogin) {
+			this.$store.dispatch('general/setToken', userToken)
+			console.log("this.$store", this.$store);
+			
+			if (this.$store.getters['general/isLogin']) {
 				console.log("login");
 			}
 		}

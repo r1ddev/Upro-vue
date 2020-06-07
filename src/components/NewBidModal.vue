@@ -1,6 +1,7 @@
 <template>
 	<div class="root">
 		<a-modal
+			top="20vh"
 			centered
 			title="Создать заявку"
 			:visible="visible"
@@ -34,6 +35,7 @@
 						v-if="isMobile"
 						@change="dateChange"
 						:min="dateMin"
+						:max="dateMax"
 					/>
 					<el-date-picker
 						v-else
@@ -104,7 +106,10 @@
 
 				<el-form-item label="Прикрепите фото">
 					<el-upload
+						ref="upload"
+						multiple
 						drag
+						:on-exceed="handleExceed"
 						:class="hideUploadClass"
 						action="#"
 						accept="image/*"
@@ -177,13 +182,11 @@ export default {
 
 			fileList: [],
 
-			//locale: ru_RU,
-
 			dialogImageUrl: String,
 			dialogVisible: false,
 			pickerOptions: {
 				disabledDate(time) {
-					return time.getTime() < Date.now();
+					return time.getTime() < Date.now() || time.getTime() > (Date.now() + 86400000*180);
 				}
 			},
 			isLoading: false
@@ -191,6 +194,8 @@ export default {
 	},
 	methods: {
 		submit() {
+			console.log("this.date.toLocaleString()", this.date.toLocaleString());
+			
 			let mDateFrom = moment.utc(
 				this.date.toLocaleString(),
 				"DD.MM.YYYY, HH:mm:ss"
@@ -212,7 +217,7 @@ export default {
 			
 			mDateFrom.add(timeFrom[0], "hour").add(timeFrom[1], "minute");
 			mDateTo.add(timeTo[0], "hour").add(timeTo[1], "minute");
-
+			console.log("this.date.toLocaleString()", this.date.toLocaleString());
 			console.log("mDateFrom2", mDateFrom);
 			console.log("mDateTo2", mDateTo);
 
@@ -249,13 +254,10 @@ export default {
 			this.description = "";
 
 			this.fileList = [];
+			this.$refs.upload.clearFiles()
 
 			(this.dialogImageUrl = ""), (this.dialogVisible = false);
 			this.isLoading = false;
-		},
-		disabledDate(d) {
-			console.log(d);
-			return d.isBefore(moment().subtract(1, "days"));
 		},
 		handleRemove(file, fileList) {
 			this.fileList = fileList;
@@ -271,7 +273,10 @@ export default {
 		dateChange(e) {
 			console.log(e.target.value);
 			this.date = new Date(e.target.value + " 00:00")
-		}
+		},
+		handleExceed(files, fileList) {
+			this.$message.warning(`The limit is 5, you selected ${files.length} files this time, add up to ${files.length + fileList.length} totally`);
+		},
 	},
 	computed: {
 		hideUploadClass: function() {
@@ -280,6 +285,10 @@ export default {
 		isFormCorrect() {
 			let error = "";
 			let status = true;
+			if (this.timeFrom >= this.timeTo) {
+				error = "Время начала не может быть позже времени завершения";
+				status = false;
+			}
 			if (this.city === undefined) {
 				error = "Выберите город";
 				status = false;
@@ -304,7 +313,12 @@ export default {
 		},
 		dateMin() {
 			return moment().format("YYYY-MM-DD");
-		}
+		},
+		dateMax() {
+			return moment()
+				.add(180, "day")
+				.format("YYYY-MM-DD");
+		},
 	}
 };
 </script>
@@ -346,6 +360,10 @@ export default {
 ::v-deep .el-upload-dragger.is-dragover {
 	background-color: rgba(32, 159, 255, 0.06);
 	border: 2px dashed #409eff;
+}
+
+::v-deep .el-upload-list__item-thumbnail {
+	object-fit: contain;
 }
 </style>
 

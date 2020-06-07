@@ -8,6 +8,8 @@ import Antd from 'ant-design-vue';
 import ElementUI from 'element-ui';
 import ruLocale from 'element-ui/lib/locale/lang/ru-RU'
 
+import Vue2TouchEvents from 'vue2-touch-events'
+
 Vue.config.productionTip = false;
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -21,6 +23,8 @@ import './assets/css/element-theme.scss'
 import './assets/css/common.less'
 import './assets/css/animations.less'
 
+
+Vue.use(Vue2TouchEvents)
 Vue.use(BootstrapVue)
 Vue.use(Antd)
 Vue.use(ElementUI, { locale: ruLocale })
@@ -31,3 +35,13 @@ new Vue({
 	store,
 	render: h => h(App)
 }).$mount('#app')
+
+
+// let vh = window.innerHeight * 0.01;
+// document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+// window.addEventListener('resize', () => {
+// 	// We execute the same script as before
+// 	let vh = window.innerHeight * 0.01;
+// 	document.documentElement.style.setProperty('--vh', `${vh}px`);
+// });

@@ -2,7 +2,6 @@
 	<section class="account row m-0">
 		<section class="menu col-auto p-0">
 			<router-link v-for="(sideLink, index) in sideLinks" :key="index" :to="sideLink.href" :class="sideLink.active ? 'active' : ''">{{sideLink.label}}</router-link>
-
 		</section>
 		<div class="col p-0">
 			<section class="account-menu pb-3">
@@ -19,7 +18,10 @@
 <script>
 export default {
 	props: {
-		sideLinks: Array
+		sideLinks: {
+			default: [],
+			type: Array
+		},
 	}
 };
 </script>

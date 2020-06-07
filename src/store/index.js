@@ -1,43 +1,32 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+
+import general from './modules/general';
+import master from './modules/master';
+
 Vue.use(Vuex)
 
+
 export default new Vuex.Store({
-	state: {
-		server: "https://addax.pythonanywhere.com",
-		userToken: null,
-		routesLinks: {
-			home: "/",
-			about: "/about",
-			bids: "/bids",
-			master: "/master",
-			masterRegistration: "/masterRegistration",
-			masterProfile: "/master/profile"
-		}
+	modules: {
+		general: general,
+		master: master
 	},
-	mutations: {
-		setToken (state, token) {
-			state.userToken = token
-		}
-	},
-	actions: {
-		removeToken (state) {			
-			localStorage.removeItem("token")
+	getters: {
+		isLoading: (state, getters, rootState, rootGetters) => {
+			// rootGetters.isLoading = null
+			// console.log("general/isLoading", getters['general/isLoading']);
+			// console.log("master/isLoading", getters['master/isLoading']);
+			// console.log("getters", getters);
+			// console.log("rootGetters.general/isLoading", rootGetters.general/isLoading);
+			// console.log("rootGetters.master/isLoading", rootGetters.master/isLoading);
+			
+			return (
+				getters['general/isLoading'] ||
+				getters['master/isLoading'])
 
-			this.dispatch('setToken', null)
-		},
-		saveToken (state, token) {			
-			localStorage.token = token
-
-			this.dispatch('setToken', token)
-		},
-		setToken (state, token) {
-			state.commit('setToken', token)
+			// return false
 		}
-	},
-	modules: {},
-	getters : {
-		isLogin: state => !!state.userToken
 	}
 })

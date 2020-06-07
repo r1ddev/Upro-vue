@@ -10,21 +10,12 @@
 				<div class="form-title mb-1">Оставьте заявку - мы подберём мастеров</div>
 				<div class="row py-4">
 					<div class="col-lg-4 text-center">
-						<el-select filterable placeholder="Город" v-model="city">
+						<el-select filterable placeholder="Город" v-model="city" class="w-75 mb-3 mb-lg-0">
 							<el-option value="1" label="Воронеж" />
 						</el-select>
-						<!-- <a-select
-							showSearch
-							placeholder="Город"
-							optionFilterProp="children"
-							v-model="city"
-							class="w-50 select"
-						>
-							<a-select-option value="0">Воронеж</a-select-option>
-						</a-select>-->
 					</div>
 					<div class="col-lg-5 text-center">
-						<el-select filterable placeholder="Вид мастера" v-model="master">
+						<el-select filterable placeholder="Вид мастера" v-model="master" class="w-75">
 							<el-option value="1" label="Визажист" />
 							<el-option value="2" label="Косметолог" />
 							<el-option value="3" label="Массажист" />
@@ -33,20 +24,6 @@
 							<el-option value="6" label="Мастер эпиляции" />
 							<el-option value="7" label="Парикмахер" />
 						</el-select>
-
-						<!-- <a-select
-							showSearch
-							placeholder="Вид мастера"
-							optionFilterProp="children"
-							v-model="master"
-							class="w-75 select"
-						>
-							<a-select-option
-								v-for="(master, index) in masters"
-								v-bind:key="index"
-								:value="index"
-							>{{master}}</a-select-option>
-						</a-select>-->
 					</div>
 					<div class="col-lg-3 text-center">
 						<input
@@ -72,14 +49,17 @@
 				<div class="form-title mb-1">Выберите удобное время (промежуток) и дату визита</div>
 				<div class="row py-4 px-2">
 					<div class="col-lg-4 text-center">
-						<input
-							type="date"
-							placeholder="Дата визита"
-							class="el-input__inner flex-center"
-							v-if="isMobile"
-							@change="dateChange"
-							:min="dateMin"
-						/>
+						<div class="select el-input" v-if="isMobile">
+							<input
+								type="date"
+								placeholder="Дата визита"
+								class="el-input__inner"
+								@change="dateChange"
+								:min="dateMin"
+								:max="dateMax"
+							/>
+						</div>
+
 						<el-date-picker
 							v-else
 							v-model="date"
@@ -87,29 +67,12 @@
 							placeholder="Дата визита"
 							format="dd.MM.yyyy"
 							:picker-options="pickerOptions"
+							class="w-75"
 						/>
-
-						<!-- <a-locale-provider :locale="locale" class="select">
-							<a-date-picker
-								class
-								v-model="date"
-								format="DD.MM.YYYY"
-								placeholder="Дата визита"
-								:disabledDate="disabledDate"
-							/>
-						</a-locale-provider>-->
 					</div>
 					<div class="col-lg-3 text-center">
-						<!-- <a-time-picker
-							inputReadOnly
-							:minuteStep="15"
-							class
-							v-model="timeFrom"
-							format="HH:mm"
-							placeholder="С"
-						/>-->
-
 						<el-time-select
+							:editable="false"
 							v-model="timeFrom"
 							:picker-options="{
 								start: '00:00',
@@ -121,16 +84,8 @@
 						></el-time-select>
 					</div>
 					<div class="col-lg-3 text-center">
-						<!-- <a-time-picker
-							inputReadOnly
-							:minuteStep="15"
-							class
-							v-model="timeTo"
-							format="HH:mm"
-							placeholder="По"
-						/>-->
-
 						<el-time-select
+							:editable="false"
 							v-model="timeTo"
 							:picker-options="{
 								start: '00:00',
@@ -147,7 +102,7 @@
 							value="Далее"
 							class="btn yp-btn outline select"
 							@click="thirdSlide()"
-							:disabled="!(timeFrom && timeTo && date)"
+							:disabled="isStep2Disabled"
 						/>
 					</div>
 				</div>
@@ -165,30 +120,29 @@
 				<div class="form-title mb-1">Опишите задачу/желаемый результат</div>
 				<div class="py-4">
 					<div class="text-center">
-						<textarea
-							placeholder
-							v-model="text"
-							class="d-inline-block w-75 form-control yp-inp"
+						<el-input
+							type="textarea"
+							placeholder="Опишите задачу мастера"
+							:autosize="{ minRows: 6, maxRows: 6}"
 							maxlength="1000"
-						></textarea>
+							class="d-inline-block w-75"
+							v-model="text"
+						/>
 					</div>
 				</div>
 
 				<div class="w-75 mx-auto">
 					<div class="row flex-center">
-						<div class="col-md-6 text-center">
+						<div class="col-lg-6 text-center">
 							<label
 								for="file"
 								class="imageLabel"
 							>Прикрепите фото. Например, текущий и желаемый дизайн ногтей (необязательно)</label>
 						</div>
-						<!-- <div class="col-md-3 text-center">
-							<label for="file" class="btn yp-btn outline">Загрузить фото</label>
-							<input type="file" class="btn yp-btn" id="file" style="display:none;" />
-						</div>-->
 
-						<div class="col-md-3 text-center">
+						<div class="col-lg-3 text-center">
 							<el-upload
+								multiple
 								action="#"
 								accept="image/*"
 								class="upload-demo"
@@ -196,19 +150,14 @@
 								:on-change="handleChange"
 								:before-remove="handleRemove"
 								:auto-upload="false"
+								:limit="5"
+								:on-exceed="handleExceed"
 							>
 								<el-button size="small" type="primary" class="btn yp-btn outline">Загрузить</el-button>
 							</el-upload>
 						</div>
 
-						<div class="col-md-3 text-right applyButton">
-							<!-- <input
-								type="button"
-								value="Готово"
-								class="btn yp-btn outline"
-								@click="applyBid()"
-								:disabled="!(text)"
-							/>-->
+						<div class="col-lg-3 text-right applyButton">
 							<el-button
 								class="btn yp-btn outline"
 								type="primary"
@@ -262,12 +211,23 @@ export default {
 			translate: "translate-slide",
 			pickerOptions: {
 				disabledDate(time) {
-					return time.getTime() < Date.now();
+					return (
+						time.getTime() < Date.now() ||
+						time.getTime() > Date.now() + 86400000 * 180
+					);
 				}
 			}
 		};
 	},
 	methods: {
+		handleExceed(files, fileList) {
+			this.$message.warning(
+				`The limit is 5, you selected ${
+					files.length
+				} files this time, add up to ${files.length +
+					fileList.length} totally`
+			);
+		},
 		submit() {
 			let mDateFrom = moment.utc(
 				this.date.toLocaleString(),
@@ -314,11 +274,11 @@ export default {
 					this.$emit("orderComlete", res);
 					// this.resetFields();
 					this.$message.success("Заявка создана");
-					this.$router.push(this.$store.state.routesLinks.bids);
+					this.$router.push("/bids");
 				})
 				.catch(e => {
 					// this.resetFields();
-					this.isLoading = false
+					this.isLoading = false;
 				});
 		},
 		handleRemove(file, fileList) {
@@ -332,12 +292,6 @@ export default {
 			//this.fileList = [...this.fileList, file]
 			this.fileList = fileList;
 		},
-		disabledDate(d) {
-			return (
-				d.isBefore(moment().subtract(1, "days")) ||
-				d.isAfter(moment().add(180, "days"))
-			);
-		},
 		secondSlide() {
 			this.translate = "translate-slide";
 			this.bidStep = 2;
@@ -347,8 +301,8 @@ export default {
 			this.bidStep = 3;
 		},
 		applyBid() {
-			this.isLoading = true
-			if (!this.$store.getters.isLogin) {
+			this.isLoading = true;
+			if (!this.$store.getters['general/isLogin']) {
 				this.$message.warning(
 					"Для продолжения необходимо зарегистрироваться"
 				);
@@ -363,7 +317,24 @@ export default {
 			this.date = new Date(e.target.value + " 00:00");
 		}
 	},
-	computed: {},
+	computed: {
+		dateMin() {
+			return moment().format("YYYY-MM-DD");
+		},
+		dateMax() {
+			return moment()
+				.add(180, "day")
+				.format("YYYY-MM-DD");
+		},
+		isStep2Disabled() {
+			return !(
+				this.timeTo > this.timeFrom &&
+				this.timeFrom &&
+				this.timeTo &&
+				this.date
+			);
+		}
+	},
 	watch: {}
 };
 </script>
@@ -474,5 +445,17 @@ export default {
 ::v-deep .slick-track {
 	display: flex;
 	align-items: center;
+}
+
+::v-deep .upload-demo {
+	.el-upload {
+		width: 100%;
+	}
+}
+
+::v-deep .el-textarea__inner,
+.el-input__inner {
+	border-radius: 6px;
+	border: 2px solid #e9378d;
 }
 </style>

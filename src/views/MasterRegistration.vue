@@ -4,40 +4,80 @@
 
 		<div class="page p-4">
 			<div class="container container-rs py-5">
-				<div class="form p-4 px-5">
+				<div class="form p-2">
 					<div class="title">Вход для мастера</div>
 
-					<a-form class="enterPhone" @submit.prevent="sendPhone">
+					<a-form @submit.prevent="sendPhone" key="enterPhone" class="enterPhone">
 						<label for>Введите номер телефона для получения кода доступа в личный кабинет</label>
 						<a-form-item>
-							<a-input
-								@keypress="isNumber($event)"
-								v-model="registerPhone"
-								maxlength="10"
-								v-decorator="[
-									'phone',
-									{
-										rules: [
-											{
-												required: true,
-												message: 'Введите ваш номер'
-											}
-										]
-									}
-								]"
-								style="width: 100%"
-								placeholder="9991234567"
-							>
-								<a-select
-									v-model="registerPhonePrefix"
-									slot="addonBefore"
-									v-decorator="['prefix']"
-									style="width: 70px"
-								>
-									<a-select-option value="7">+7</a-select-option>
-								</a-select>
-							</a-input>
+							<el-input placeholder="Введите ваш номер" v-model="registerPhone" type="number" @input="validatePhone">
+								<template slot="prepend">+7</template>
+							</el-input>
 						</a-form-item>
+						<a-form-item>
+							<div v-if="!(isRegisterPhoneCorrect.status)">{{ isRegisterPhoneCorrect.error }}</div>
+							<a-button
+								html-type="submit"
+								type="primary"
+								size="large"
+								:disabled="!(isRegisterPhoneCorrect.status)"
+								:loading="isLoading"
+							>
+								{{ sendCodeText.text }}
+								<a-icon type="right" v-if="sendCodeText.isIcon" />
+							</a-button>
+						</a-form-item>
+					</a-form>
+					<transition name="translate-slide" mode="out-in">
+						<a-form
+							@submit.prevent="sendConfirmCode"
+							v-if="registerStep === 2"
+							key="comfirmPhone"
+							class="comfirmPhone"
+						>
+							<a-form-item label="Введите код из смс">
+
+								<v-otp-input
+									ref="otpInput"
+									input-classes="otp-input-3"
+									separator
+									:num-inputs="6"
+									:should-auto-focus="true"
+									:is-input-num="true"
+									@on-change="handleOnChange"
+									@on-complete="handleOnComplete"
+								/>
+
+							</a-form-item>
+							<a-form-item>
+								<a-button
+									html-type="submit"
+									type="primary"
+									size="large"
+									:disabled="!((confirmCode || '').length == 6)"
+									:loading="confirmStep.isLoading"
+								>Зарегистрироваться</a-button>
+							</a-form-item>
+						</a-form>
+					</transition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+					<!-- <a-form class="enterPhone" @submit.prevent="sendPhone">
+						<label for>Введите номер телефона для получения кода доступа в личный кабинет</label>
+						<el-input placeholder="Введите ваш номер" v-model="registerPhone" type="number" @input="validatePhone">
+							<template slot="prepend">+7</template>
+						</el-input>
 
 						<transition name="translate-slide" mode="out-in">
 							<a-form
@@ -70,7 +110,7 @@
 								:loading="isLoading"
 							>{{ sendCodeText }}</a-button>
 						</a-form-item>
-					</a-form>
+					</a-form> -->
 				</div>
 			</div>
 		</div>
@@ -83,18 +123,18 @@
 import HomeHeader from "../components/HomeHeader";
 import HomeFooter from "../components/HomeFooter";
 import api from "../classes/api";
-import OTPInput8 from "@8bu/vue-otp-input";
+import OtpInput from "@bachdgvn/vue-otp-input";
 
 export default {
 	components: {
 		HomeHeader,
 		HomeFooter,
-		"otp-input": OTPInput8
+		"v-otp-input": OtpInput
 	},
 	data() {
 		return {
 			registerPhonePrefix: "+7",
-			registerPhone: undefined,
+			registerPhone: "",
 			isLoading: false,
 			registerStep: 1,
 			confirmCode: "",
@@ -104,6 +144,17 @@ export default {
 		};
 	},
 	methods: {
+		handleOnComplete(value) {
+			this.confirmCode = value;
+		},
+		handleOnChange(value) {
+			this.confirmCode = value;
+		},
+		validatePhone(e) {
+			if (e.length > 10) {
+				this.registerPhone = e.substring(0, 10)
+			}
+		},
 		isNumber: function(evt) {
 			evt = evt ? evt : window.event;
 			var charCode = evt.which ? evt.which : evt.keyCode;
@@ -141,24 +192,43 @@ export default {
 				.sendConfirmCode(this.registerPhone, this.confirmCode)
 				.then(response => {
 					this.$message.success("Регистрация успешна!");
-					this.$store.dispatch("saveToken", response.token);
+					this.$store.dispatch("general/saveToken", response.token);
 
-					this.$router.push(this.$store.state.routesLinks.master)
+					this.$router.push('/master');
 				})
 				.catch(e => {
+					console.log(e);
+
 					this.confirmStep.isLoading = false;
 
 					api.errorHandler(e, this, {
-						404: () => this.$message.error("Введен неверный код")
-					})
+						400: () => this.$message.error("Введен неверный код")
+					});
 				});
 		}
 	},
 	computed: {
 		sendCodeText() {
-			return this.registerStep == 1
-				? "Отправить код"
-				: "Отправить код повторно";
+			return {
+				text:
+					this.registerStep == 1
+						? "Отправить код"
+						: "Отправить код повторно",
+				isIcon: this.registerStep == 1
+			};
+		},
+		isRegisterPhoneCorrect() {
+			let error = "";
+			let status = true;
+			if (this.registerPhone.length != 10) {
+				error = "Номер телефона должен содержать 10 цифр";
+				status = false;
+			}
+			if (this.registerPhone.charAt(0) != "9") {
+				error = "Номер телефона должен начинаться с цифры 9";
+				status = false;
+			}
+			return { status: status, error: error };
 		}
 	}
 };
@@ -169,36 +239,10 @@ export default {
 	display:flex;
 	flex-direction: column;
 	min-height: 100vh;
+	height: calc(var(--vh, 1vh) * 100);
 
 	.page {
 		flex-grow: 1;
-	}
-}
-
-::v-deep .ant-input-group {
-	border: solid 1px #e9378d;
-	box-shadow: 0px 1px4px-1px rgba(100,100,100,0.5);
-	border-radius: 4px;
-
-	.ant-input-group-addon, .ant-input {
-		border: none;
-		background: #fff;
-	}
-
-	.ant-input-group-addon {
-		border-right: solid 1px #e9378d;
-	}
-
-}
-::v-deep .ant-btn {
-	border: solid 1px #f3a9cd;
-	background: #f3a9cd;
-	box-shadow: 0px 1px4px-1px rgba(100,100,100,0.5);
-
-	&:disabled {
-		border: solid 1px #f3a9cd;
-		background: #f5f5f5;
-		box-shadow: none;
 	}
 }
 

@@ -10,25 +10,33 @@ const routes = [
 		name: 'home',
 		component: () => import('../views/Home.vue')
 	}, {
-		path: store.state.routesLinks.about,
+		path: '/about',
 		name: 'about',
 		component: () => import('../views/About.vue')
 	}, {
-		path: store.state.routesLinks.bids,
+		path: '/bids/:type?',
 		name: 'bids',
 		component: () => import('../views/Bids.vue')
 	}, {
-		path: store.state.routesLinks.masterRegistration,
+		path: '/bids/:id/responses',
+		name: 'bidResponses',
+		component: () => import('../views/BidResponses.vue')
+	}, {
+		path: '/masterRegistration',
 		name: 'masterRegistration',
 		component: () => import('../views/MasterRegistration.vue')
 	}, {
-		path: store.state.routesLinks.master,
+		path: '/master/profile',
+		name: 'nasterProfile',
+		component: () => import('../views/MasterProfile.vue')
+	}, {
+		path: '/master/profile/:id',
+		name: 'masterProfile',
+		component: () => import('../views/MasterProfile.vue')
+	}, {
+		path: '/master/:type?',
 		name: 'master',
 		component: () => import('../views/Master.vue')
-	}, {
-		path: store.state.routesLinks.masterProfile,
-		name: 'masterProfile',
-		component: () => import('../views/Profile.vue')
 	}
 ]
 

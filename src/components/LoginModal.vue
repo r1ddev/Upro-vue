@@ -3,33 +3,9 @@
 		<!-- v-if="registerStep === 1" -->
 		<a-form @submit.prevent="sendPhone" key="enterPhone" class="enterPhone">
 			<a-form-item label="Введите номер телефона для получения доступа в личный кабинет">
-				<a-input
-					@keydown="isNumber($event)"
-					v-model="registerPhone"
-					maxlength="10"
-					v-decorator="[
-							'phone',
-							{
-								rules: [
-									{
-										required: true,
-										message: 'Введите ваш номер'
-									}
-								]
-							}
-						]"
-					style="width: 100%"
-					placeholder="9991234567"
-				>
-					<a-select
-						v-model="registerPhonePrefix"
-						slot="addonBefore"
-						v-decorator="['prefix']"
-						style="width: 70px"
-					>
-						<a-select-option value="7">+7</a-select-option>
-					</a-select>
-				</a-input>
+				<el-input placeholder="Введите ваш номер" v-model="registerPhone" type="number" @input="validatePhone">
+					<template slot="prepend">+7</template>
+				</el-input>
 			</a-form-item>
 			<a-form-item>
 				<div v-if="!(isRegisterPhoneCorrect.status)">{{ isRegisterPhoneCorrect.error }}</div>
@@ -53,14 +29,6 @@
 				class="comfirmPhone"
 			>
 				<a-form-item label="Введите код из смс">
-					<!-- <otp-input
-						:change="otpchange"
-						v-model="confirmCode"
-						:length="6"
-						class
-						fieldClass="otp-input"
-						size="24"
-					></otp-input> -->
 
 					<v-otp-input
 						ref="otpInput"
@@ -73,13 +41,6 @@
 						@on-complete="handleOnComplete"
 					/>
 
-					<!-- <input
-						type="text"
-						@keydown="isNumber($event)"
-						@input="otpchange"
-						class="otp"
-						maxlength="6"
-						v-model="confirmCode" />-->
 				</a-form-item>
 				<a-form-item>
 					<a-button
@@ -119,6 +80,11 @@ export default {
 		};
 	},
 	methods: {
+		validatePhone(e) {
+			if (e.length > 10) {
+				this.registerPhone = e.substring(0, 10)
+			}
+		},
 		otpchange(v) {
 			// evt = evt ? evt : window.event;
 			// var charCode = evt.which ? evt.which : evt.keyCode;
@@ -134,10 +100,10 @@ export default {
 		},
 
 		handleOnComplete(value) {
-			this.confirmCode = value
+			this.confirmCode = value;
 		},
 		handleOnChange(value) {
-			this.confirmCode = value
+			this.confirmCode = value;
 		},
 		isNumber: function(evt) {
 			evt = evt ? evt : window.event;
@@ -176,11 +142,10 @@ export default {
 				.sendConfirmCode(this.registerPhone, this.confirmCode)
 				.then(response => {
 					this.$message.success("Регистрация успешна!");
-					this.$store.dispatch("saveToken", response.token);
+					this.$store.dispatch("general/saveToken", response.token);
 
 					console.log("this.$emit registerComplete");
 					this.$emit("registerComplete");
-					
 				})
 				.catch(e => {
 					console.log(e);
@@ -240,7 +205,7 @@ export default {
 	border-radius: 0.25rem;
 	max-width: 3rem;
 	text-align: center;
-	margin-left: 10px;
+	margin-right: 10px;
 	font-size: 27px;
 
 	&::-webkit-inner-spin-button,
@@ -279,5 +244,16 @@ export default {
 	width: 350px;
 	display: block;
 	margin-left: 8px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+	-moz-appearance: textfield;
 }
 </style>

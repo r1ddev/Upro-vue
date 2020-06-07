@@ -1,6 +1,13 @@
 <template>
 	<div class="root">
-		<HomeHeader ref="homeHeader" @registerComplete="registerComplete" />
+		<HomeHeader
+			ref="homeHeader"
+			@registerComplete="registerComplete"
+			:links="[
+				{label:'Вы мастер?', href: '/masterRegistration', active: true},
+				{label:'Часто задаваемые вопросы', href: '/about'}
+			]"
+		/>
 
 		<section class="header">
 			<div class>
@@ -20,28 +27,18 @@
 
 		<section class="about">
 			<div class="container px-5 pt-5">
-				<div class="about-title mb-5">Как работает YOUR PRO?</div>
+				<div class="about-title mb-4">Как работает YOUR PRO?</div>
+
 				<div class="row">
 					<div class="col-md-6">
-						<div class="about-item about-item-first">
+						<div class="about-item about-item-first mt-4">
 							<div class="about-item-title">Создаёте заявку</div>
 							<div
 								class="about-item-description"
 							>С кратким описанием работ и желаемой датой и временем. Потратите менее трех минут</div>
 						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="about-item about-item-third">
-							<div class="about-item-title">Сравниваете ответы</div>
-							<div
-								class="about-item-description"
-							>Чтобы выбрать лучший вариант на основе отзывов, стоимости и других параметров</div>
-						</div>
-					</div>
-				</div>
-				<div class="row mt-4">
-					<div class="col-md-6">
-						<div class="about-item about-item-second">
+
+						<div class="about-item about-item-second mt-4">
 							<div class="about-item-title">Получаете предложения</div>
 							<div
 								class="about-item-description"
@@ -49,12 +46,20 @@
 						</div>
 					</div>
 					<div class="col-md-6">
-						<div class="about-item about-item-fourth">
+						<div class="about-item about-item-third mt-4">
+							<div class="about-item-title">Сравниваете ответы</div>
+							<div
+								class="about-item-description"
+							>Чтобы выбрать лучший вариант на основе отзывов, стоимости и других параметров</div>
+						</div>
+
+						<div class="about-item about-item-fourth mt-4">
 							<div class="about-item-title">Подтверждаете запись</div>
 							<div class="about-item-description">И выбираете время визита. И все! Мастер Вас ждет!</div>
 						</div>
 					</div>
 				</div>
+
 				<div class="about-button p-6 mt-5">
 					<div class="row flex-center">
 						<div class="col-lg-auto flex-center">
@@ -77,23 +82,23 @@
 
 		<section class="features">
 			<div class="container p-5">
-				<div class="features-title mb-5">Почему именно мы?</div>
+				<div class="features-title mb-3 mb-md-5">Почему именно мы?</div>
 				<div class="row">
-					<div class="col-md-4 mt-3">
+					<div class="col-md-4 mt-5 mt-md-3">
 						<div class="features-item features-item-first">
 							<div class="features-item-title">100+</div>
 							<div class="features-item-description">Мастеров и салонов</div>
 						</div>
 					</div>
 
-					<div class="col-md-4 mt-3">
+					<div class="col-md-4 mt-5 mt-md-3">
 						<div class="features-item features-item-second">
-							<div class="features-item-title">11тыс.</div>
+							<div class="features-item-title">11 тыс.</div>
 							<div class="features-item-description">Клиентов</div>
 						</div>
 					</div>
 
-					<div class="col-md-4 mt-3">
+					<div class="col-md-4 mt-5 mt-md-3">
 						<div class="features-item features-item-third">
 							<div class="features-item-title">более 1000</div>
 							<div class="features-item-description">Реальных отзывов и оценок</div>
@@ -102,14 +107,14 @@
 				</div>
 
 				<div class="row">
-					<div class="col-md-4 mt-3">
+					<div class="col-md-4 mt-5 mt-md-3">
 						<div class="features-item features-item-fourth">
 							<div class="features-item-title">10 минут</div>
 							<div class="features-item-description">Среднее время ответа мастера на заявку</div>
 						</div>
 					</div>
 
-					<div class="col-md-4 mt-3">
+					<div class="col-md-4 mt-5 mt-md-3">
 						<div class="features-item features-item-fifth">
 							<div class="features-item-title">до 100%</div>
 							<div class="features-item-description">Скидки и бонусы для клиентов</div>
@@ -160,10 +165,10 @@
 	font-size: 20px;
 }
 .about-item {
-	padding-left: 100px;
+	padding-left: 80px;
 	background-position: left center;
 	background-repeat: no-repeat;
-	background-size: auto 80px;
+	background-size: auto 70px;
 }
 .about-item-first {
 	background-image: url(../assets/img/1.png);
@@ -276,16 +281,15 @@ export default {
 		};
 	},
 	methods: {
-		registerComplete () {
+		registerComplete() {
 			console.log("call registerComplete from Home");
-			
 
 			if (this.requestBidAfterRegister) {
 				console.log("this.requestBidAfterRegister from Home");
-				this.$refs.homeform.submit()
+				this.$refs.homeform.submit();
 			}
 
-			//this.$router.push(this.$store.state.routesLinks.bids)
+			this.$router.push('/bids');
 		},
 		openLoginModal() {
 			this.$refs.homeHeader.loginModal = true;

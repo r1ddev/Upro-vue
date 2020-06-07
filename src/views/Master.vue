@@ -1,34 +1,40 @@
 <template>
 	<div class="master">
-		<HomeHeader page="master" />
+		<HomeHeader
+			page="master"
+			:links="[
+				{label:'Заявки', href: '/master', active: true},
+				{label:'Профиль', href: '/master/profile'}
+			]"
+		/>
 
 		<NewResponseModal :visible="NewResponseModalVisible" @cancel="NewResponseModalVisible = false" />
 
 		<AccountTemplate
 			:sideLinks="[
-				{label:'Заявки', href: this.$store.state.routesLinks.master, active: true},
-				{label:'Профиль', href: this.$store.state.routesLinks.masterProfile}
+				{label:'Заявки', href: '/master', active: true},
+				{label:'Профиль', href: '/master/profile'}
 			]"
 		>
 			<template v-slot:account-menu>
 				<div class="row flex-center">
 					<div class="col-auto px-0">
-						<button class="btn yp-btn yp-btn-menu mt-3">Новые</button>
+						<router-link to="/master" :class="'btn yp-btn yp-btn-menu mt-3' + (($route.params.type == undefined) ? ' active' : '')">Новые</router-link>
 					</div>
 					<div class="col-auto px-0">
-						<button class="btn yp-btn yp-btn-menu ml-2 mt-3">Обработанные</button>
+						<router-link to="/master/process" :class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'process') ? ' active' : '')">Обработанные</router-link>
 					</div>
 					<div class="col-auto px-0">
-						<button class="btn yp-btn yp-btn-menu ml-2 mt-3">Вас выбрали</button>
+						<router-link to="/master/ms" :class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'ms') ? ' active' : '')">Вас выбрали</router-link>
 					</div>
 					<div class="col-auto px-0">
-						<button class="btn yp-btn yp-btn-menu ml-2 mt-3">Завершенные</button>
+						<router-link to="/master/cs" :class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cs') ? ' active' : '')">Завершенные</router-link>
 					</div>
 					<div class="col-auto px-0">
-						<button class="btn yp-btn yp-btn-menu ml-2 mt-3">Упущенные</button>
+						<router-link to="/master/cm" :class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cm') ? ' active' : '')">Упущенные</router-link>
 					</div>
 					<div class="col-auto px-0">
-						<button class="btn yp-btn yp-btn-menu ml-2 mt-3">Отмененные</button>
+						<router-link to="/master/cc" :class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cc') ? ' active' : '')">Отмененные</router-link>
 					</div>
 				</div>
 			</template>
@@ -36,11 +42,11 @@
 			<template v-slot:account-content>
 				<section class="bids-list">
 					<div class="container" v-loading="isLoading">
-						<div class="bid my-3">
+						<div class="bid my-3" v-for="order in getPageOrders" :key="order.id">
 							<div class="row py-3">
 								<div class="col d-flex align-items-center">
 									<span>
-										<u>Заявка №123</u> — Вас выбрали 
+										<u>Заявка №123</u> — Вас выбрали
 									</span>
 								</div>
 								<div class="col text-right">
@@ -74,7 +80,7 @@
 
 								<div class="col-md-5 py-2">
 									<div class="row h-100">
-										<div class="col-6" >
+										<div class="col-6">
 											<img
 												src="https://www.google.ru/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
 												alt
@@ -84,9 +90,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="divider py-3">
-								Ваш отклик:
-							</div>
+							<div class="divider py-3">Ваш отклик:</div>
 							<div class="flex-center response">
 								<div class="content">
 									<div class="row">
@@ -118,6 +122,7 @@
 								</div>
 							</div>
 						</div>
+						<div v-if="!isLoading && !getPageOrders.length" class="text-center">Нет данных для отображения</div>
 					</div>
 				</section>
 			</template>
@@ -125,8 +130,8 @@
 
 		<!-- <section class="account">
 			<section class="menu">
-				<router-link :to="this.$store.state.routesLinks.master" class="active">Заявки</router-link>
-				<router-link :to="this.$store.state.routesLinks.masterProfile">Профиль</router-link>
+				<router-link to="/master" class="active">Заявки</router-link>
+				<router-link to="/master/profile">Профиль</router-link>
 			</section>
 			<section class="account-menu pb-3">
 				<div class="container"></div>
@@ -158,60 +163,124 @@ export default {
 	data: function() {
 		return {
 			NewResponseModalVisible: false,
-			isLoading: false
+			isLoading: false,
+			orders: [],
+			pagination: {
+				currentPage: 1,
+				itemsOnPage: 10
+			}
 		};
 	},
 	methods: {
-		async logout() {
-			try {
-				let response = await api.account.logout();
-				console.log(response);
-
-				// let fd = new FormData()
-				// let response = await Axios.post(this.$store.state.server + "/logout", fd, { headers: {
-				// 	Authorization: 'Token ' + this.$store.state.userToken
-				// }})
-
-				if (response.status) {
-					this.$store.dispatch("removeToken");
-					this.$router.push(this.$store.state.routesLinks.home);
-				} else {
-					this.$message.error(
-						"Произошла ошибка сервера. Мы уже знаем о ней и делаем все, чтобы её исправить!"
-					);
-				}
-			} catch (e) {
-				switch (e.response.status) {
-					case 401:
-						this.$store.dispatch("removeToken");
-						this.$router.push(this.$store.state.routesLinks.home);
-						break;
-
-					default:
-						this.$message.error(
-							"Произошла ошибка сервера. Мы уже знаем о ней и делаем все, чтобы её исправить!"
-						);
-						break;
-				}
+		parseRoute() {
+			switch (this.$route.params.type) {
+				case "sm":
+					this.getOrders("sm");
+					break;
+				case "process":
+					this.getOrders("process");
+					break;
+				case "ms":
+					this.getOrders("ms");
+					break;
+				case "ms":
+					this.getOrders("cs");
+					break;
+				case "ms":
+					this.getOrders("cm");
+					break;
+				case "ms":
+					this.getOrders("cc");
+					break;
+				default:
+					this.getOrders("sm");
+					break;
 			}
-
-			this.$store.dispatch("removeToken");
-
-			this.$router.push(this.$store.state.routesLinks.home);
+		},
+		async getOrders(status = "") {
+			
+			switch (status) {
+				case 'sm':
+					var orders = await api.account.getMasterOrders("?order_status=sm&exist_master_reply=false")
+					this.orders = orders.orders
+					this.isLoading = false;
+					break;
+				case 'process':
+					var orders = await api.account.getMasterOrders("?order_status=sm&exist_master_reply=true")
+					this.orders = orders.orders
+					this.isLoading = false;
+					break;
+				case 'ms':
+					var orders = await api.account.getMasterOrders("?order_status=ms")
+					this.orders = orders.orders
+					this.isLoading = false;
+					break;
+				case 'cs':
+					var orders = await api.account.getMasterOrders("?order_status=cs")
+					this.orders = orders.orders
+					this.isLoading = false;
+					break;
+				case 'cm':
+					var orders = await api.account.getMasterOrders("?order_status=ms,cc,cm,na,cs&master_by_token=false")
+					this.orders = orders.orders
+					this.isLoading = false;
+					break;
+				case 'cc':
+					var orders = await api.account.getMasterOrders("?order_status=na,cc,cm")
+					this.orders = orders.orders
+					this.isLoading = false;
+					break;
+			
+				default:
+					break;
+			}
 		}
 	},
+	computed: {
+		getPageOrders() {
+			return this.orders
+				.slice()
+				.reverse()
+				.slice(
+					this.pagination.itemsOnPage *
+						(this.pagination.currentPage - 1),
+					this.pagination.itemsOnPage * this.pagination.currentPage
+				);
+		}
+	}, 
 	async created() {
 		api.account
 			.getLoginStatus()
-			.then(response => {})
+			.then(response => {
+				switch (response.user.type_code) {
+					case "c":
+						this.$router.push('/bids');
+						break;
+
+					case "m":
+						this.parseRoute()
+						break;
+
+					default:
+						break;
+				}
+				console.log(response.user.type_code);
+				
+			})
 			.catch(e => {
 				api.errorHandler(e, this, {
 					401: () => {
-						this.$store.dispatch("removeToken");
-						this.$router.push(this.$store.state.routesLinks.home);
+						this.$store.dispatch("general/removeToken");
+						this.$router.push("/");
 					}
 				});
 			});
+	},
+	watch: {
+		'$route.params.type': function () {
+			this.isLoading = true
+			this.parseRoute();
+		}
 	}
 };
 </script>
@@ -238,7 +307,7 @@ export default {
 	border: 2px solid #ffffff;
 
 	&.active {
-		border: 2px solid #ffffff;
+		border: 2px solid #ff94c8;
 	}
 }
 
@@ -259,6 +328,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	min-height: 100vh;
+	height: calc(var(--vh, 1vh) * 100);
 }
 
 .bids-list {
