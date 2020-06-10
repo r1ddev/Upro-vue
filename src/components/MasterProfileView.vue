@@ -15,7 +15,7 @@
 		<div class="mt-4">
 			<div class="label">Ваши виды деятельности:</div>
 			<div class="row">
-				<div class="col-auto" v-for="(spec, key) in speciality" :key="key">
+				<div class="col-auto" v-for="(spec, key) in master.speciality" :key="key">
 					<div class="badge mt-2">{{spec}}</div>
 				</div>
 			</div>
@@ -37,7 +37,7 @@
 			<div class="label">Галерея работ:</div>
 
 			<ImagesCarousel
-				:images="photosGallery"
+				:images="master.photosGallery"
 			/>
 		</div>
 
@@ -45,7 +45,7 @@
 			<div class="label">Фото рабочего места:</div>
 
 			<ImagesCarousel
-				:images="photosWorkplace"
+				:images="master.photosWorkplace"
 			/>
 		</div>
 

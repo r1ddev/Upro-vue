@@ -32,7 +32,8 @@ const general = {
 		],
 		loginData: {
 			isLoading: false,
-			data: {}
+			data: {},
+			lastUpdate: 0
 		}
 	},
 	mutations: {
@@ -47,6 +48,7 @@ const general = {
 		},
 		setLoginDataData(state, data) {
 			state.loginData.data = data
+			state.loginData.lastUpdate = new Date().getTime()
 		}
 	},
 	actions: {
@@ -70,29 +72,33 @@ const general = {
 			state.commit('setLoading', false)
 		},
 		async getLoginStatus(state) {
-			return new Promise((resolve, reject) => {
-				state.commit('setLoginDataLoading', true)
-				api.account
-					.getLoginStatus()
-					.then(response => {
-						state.commit('setLoginDataData', response)
-						state.commit('setLoginDataLoading', false)
-
-						resolve()
-					})
-					.catch(e => {
-						reject()
-						state.commit('setLoginDataLoading', false)					
-						api.errorHandler(e, this, {
-							401: () => {
-								this.dispatch("general/removeToken");
-								this.push("/");
-							}
+			return new Promise((resolve, reject) => {				
+				if (new Date().getTime() - state.state.loginData.lastUpdate > 10000) {
+					state.commit('setLoginDataLoading', true)
+					api.account
+						.getLoginStatus()
+						.then(response => {
+							state.commit('setLoginDataData', response)
+							state.commit('setLoginDataLoading', false)
+	
+							resolve()
+						})
+						.catch(e => {
+							reject()
+							state.commit('setLoginDataLoading', false)					
+							api.errorHandler(e, this, {
+								401: () => {
+									this.dispatch("general/removeToken");
+									this.push("/");
+								}
+							});
 						});
-					});
+				} else {
+					resolve()
+				}
+				
 			})
 
-			
 
 		}
 	},

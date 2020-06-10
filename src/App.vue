@@ -1,6 +1,6 @@
 <template>
 	<div id="app" v-loading="$store.getters.isLoading">
-		<vue-page-transition name="zoom">
+		<vue-page-transition name="fade-in-right">
 		<!-- <transition name="fade"> -->
 			<router-view/>
 		<!-- </transition> -->

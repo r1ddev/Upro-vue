@@ -102,7 +102,7 @@ var api = {
 		master: {
 			async changeProfile (masterId, types, name, desc) {
 				let response = await Axios.patch(store.state.general.server + `/v1/users/masters/${masterId}/`, api.toFormData({
-					types: types,
+					master_types: types,
 					name: name,
 					about_myself: desc
 				}), api.useAuth())

@@ -16,7 +16,9 @@ const master = {
 		},
 		userData: {
 			isLoading: false,
-			data: []
+			data: {
+				speciality: []
+			}
 		}
 	},
 	mutations: {
@@ -39,8 +41,6 @@ const master = {
 		},
 
 		userDataSetData(state, payload) {
-			console.log("userDataSetData", payload);
-			
 			state.userData.data = payload
 		},
 		userDataSetLoading(state, payload) {
@@ -88,10 +88,6 @@ const master = {
 				api.account
 					.getMasterData(id)
 					.then(res => {
-
-						console.log("res", res);
-						
-
 						state.commit('userDataSetData', {
 							username: res.name,
 							speciality: res.types,
@@ -108,7 +104,7 @@ const master = {
 						reject()
 					});
 			});
-		},
+		}
 	},
 	getters: {
 		isLoading: state => {

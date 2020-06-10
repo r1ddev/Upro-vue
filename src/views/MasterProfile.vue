@@ -1,5 +1,22 @@
 <template>
 	<div class="profile full-height">
+		<el-dialog :visible.sync="uploadPhotoVisible" class="text-center">
+			<el-upload
+				class="avatar-uploader"
+				ref="upload"
+				multiple
+				action="#"
+				accept="image/*"
+				:auto-upload="false"
+				list-type="picture-card"
+				:on-success="handleAvatarSuccess"
+				:before-upload="beforeAvatarUpload"
+				:on-change="handleChange"
+			>
+				<i class="el-icon-plus avatar-uploader-icon"></i>
+			</el-upload>
+		</el-dialog>
+
 		<HomeHeader page="master" />
 
 		<AccountTemplate
@@ -53,8 +70,11 @@
 
 							<div class="mt-2">
 								<div class="row">
-									<div class="col-auto" v-for="(spec, key) in selectedSpecialities" :key="key">
-										<div class="badge mt-2">{{spec}}</div>
+									<div class="col-auto" v-for="spec in selectedSpecialities" :key="spec.value">
+										<div class="badge mt-2">
+											<div class="">{{spec.label}}</div>
+											<div class="delete" @click="removeSpeciatity(spec.value)"><i class="el-icon-close"></i></div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -167,25 +187,38 @@ export default {
 	},
 	data: function() {
 		return {
+			uploadPhotoVisible: false,
 			isEditable: false,
 			id: undefined,
-			username: "",
 			master: undefined,
-			speciality: [],
 			city: "1",
 			phone: "",
-			description: ""
+			uploadPhotoUrl: ""
 		};
 	},
 	methods: {
-		uploadPhoto() {},
+		removeSpeciatity (value) {
+			this.speciality.splice(this.speciality.indexOf(value), 1);
+		},
+		handleChange(file, fileList) {
+			this.uploadPhotoUrl = file;
+		},
+		handleAvatarSuccess() {
+			return true;
+		},
+		beforeAvatarUpload() {
+			return true;
+		},
+		uploadPhoto() {
+			this.uploadPhotoVisible = true;
+		},
 		change(e) {
 			this.speciality.push(e);
 			this.master = undefined;
 		},
 		async fetchMasterData() {
 			await this.$store.dispatch("master/getUserData", this.id);
-		
+
 			this.$store.dispatch(
 				"master/getPhotosGallery",
 				this.$store.state.master.userData.data.albumIdGallery
@@ -196,15 +229,55 @@ export default {
 			);
 		},
 		save() {
-			this.$store.dispatch("updateMasterProfile", {
+			this.$store.dispatch("master/updateMasterProfile", {
 				id: this.id,
-				speciality: this.speciality.toString(),
+				speciality: JSON.stringify(this.speciality),
 				username: this.username,
 				description: this.description
 			});
 		}
 	},
 	computed: {
+		...mapState({
+			photosGallery: state => state.photosGallery.data,
+			photosWorkplace: state => state.photosWorkplace.data
+		}),
+		...mapStateGeneral({
+			loginData: state => state.loginData.data
+		}),
+		username: {
+			get() {
+				return this.$store.state.master.userData.data.username;
+			},
+			set(value) {
+				this.$store.commit("master/userDataSetData", {
+					...this.$store.state.master.userData.data,
+					username: value
+				});
+			}
+		},
+		description: {
+			get() {
+				return this.$store.state.master.userData.data.description;
+			},
+			set(value) {
+				this.$store.commit("master/userDataSetData", {
+					...this.$store.state.master.userData.data,
+					description: value
+				});
+			}
+		},
+		speciality: {
+			get() {
+				return this.$store.state.master.userData.data.speciality;
+			},
+			set(value) {
+				this.$store.commit("master/userDataSetData", {
+					...this.$store.state.master.userData.data,
+					speciality: value
+				});
+			}
+		},
 		getUnselectTypes() {
 			let types = this.$store.state.general.masterTypes;
 			types = types.filter(v => !this.speciality.includes(v.value));
@@ -214,16 +287,9 @@ export default {
 		selectedSpecialities() {
 			let qw = this.$store.state.general.masterTypes
 				.filter(v => this.speciality.includes(v.value))
-				.map(v => v.label);
 			return qw;
 		},
-		...mapState({
-			photosGallery: state => state.photosGallery.data,
-			photosWorkplace: state => state.photosWorkplace.data
-		}),
-		...mapStateGeneral({
-			loginData: state => state.loginData.data
-		})
+		
 	},
 	async created() {
 		await this.$store.dispatch("general/getLoginStatus");
@@ -231,64 +297,50 @@ export default {
 		if (this.$route.params.id) {
 			this.id = this.$route.params.id;
 
-			this.fetchMasterData()
+			this.fetchMasterData();
 		} else {
 			let user = this.$store.state.general.loginData.data.user;
 			if (user.master) {
 				this.id = user.master.id;
-				this.isEditable = true
+				this.isEditable = true;
 
-				this.fetchMasterData()
+				this.fetchMasterData();
 			} else {
-				this.$router.push("/bids")
+				this.$router.push("/bids");
 			}
 		}
-
-		// this.fetchMasterData();
-
-		// api.account
-		// 	.getLoginStatus()
-		// 	.then(response => {
-		// 		switch (response.user.type_code) {
-		// 			case "c":
-		// 				this.id = this.$route.params.id;
-		// 				this.isEditable = false;
-		// 				break;
-
-		// 			case "m":
-		// 				this.id = response.user.master.id;
-
-		// 				if (
-		// 					!this.$route.params.id ||
-		// 					response.user.master.id == this.$route.params.id
-		// 				) {
-		// 					this.isEditable = true;
-		// 					break;
-		// 				}
-
-		// 				break;
-
-		// 			default:
-		// 				break;
-		// 		}
-
-		// 		this.fetchMasterData();
-		// 	})
-		// 	.catch(e => {
-		// 		console.log(e);
-
-		// 		api.errorHandler(e, this, {
-		// 			401: () => {
-		// 				this.$store.dispatch("general/removeToken");
-		// 				this.$router.push("/");
-		// 			}
-		// 		});
-		// 	});
 	}
 };
 </script>
 
 <style lang="less" scoped>
+::v-deep .el-upload-list__item-thumbnail {
+	object-fit: cover;
+}
+// ::v-deep .avatar-uploader {
+
+// 	.el-upload {
+// 		border: 1px dashed #d9d9d9;
+// 		border-radius: 6px;
+// 		cursor: pointer;
+// 		position: relative;
+// 		overflow: hidden;
+
+// 		&:hover {
+// 			border-color: #409eff;
+// 		}
+// 	}
+
+// 	.avatar-uploader-icon {
+// 		font-size: 28px;
+// 		color: #8c939d;
+// 		width: 178px;
+// 		height: 178px;
+// 		line-height: 178px;
+// 		text-align: center;
+// 	}
+// }
+
 .verify-status {
 	border-radius: 20px;
 	padding: 10px 20px;
@@ -311,10 +363,24 @@ export default {
 		background: #fff;
 
 		.badge {
-			background: #ccc;
+			display: flex;
+			align-items: center;
+			background: #F3A9CD;
+			box-shadow: 0px 2px 4px rgba(100,100,100,0.5);
 			border-radius: 15px;
-			padding: 10px;
+			padding: 5px 15px;
 			color: #fff;
+
+			.delete {
+				margin-left: 10px;
+				font-size: 20px;
+				cursor: pointer;
+				transition: .2s;
+
+				&:hover {
+					color:  rgb(133, 133, 133);
+				}
+			}
 		}
 
 		.title {
