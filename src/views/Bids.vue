@@ -38,19 +38,34 @@
 			<template v-slot:account-menu>
 				<div class="row flex-center">
 					<div class="col-auto px-0">
-						<router-link to="/bids" :class="'btn yp-btn yp-btn-menu mt-3' + (($route.params.type == undefined) ? ' active' : '')">Все заявки</router-link>
+						<router-link
+							to="/bids"
+							:class="'btn yp-btn yp-btn-menu mt-3' + (($route.params.type == undefined) ? ' active' : '')"
+						>Все заявки</router-link>
 					</div>
 					<div class="col-auto px-0">
-						<router-link to="/bids/sm" :class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'sm') ? ' active' : '')">Подбор мастеров</router-link>
+						<router-link
+							to="/bids/sm"
+							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'sm') ? ' active' : '')"
+						>Подбор мастеров</router-link>
 					</div>
 					<div class="col-auto px-0">
-						<router-link to="/bids/ms" :class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'ms') ? ' active' : '')">Мастер выбран</router-link>
+						<router-link
+							to="/bids/ms"
+							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'ms') ? ' active' : '')"
+						>Мастер выбран</router-link>
 					</div>
 					<div class="col-auto px-0">
-						<router-link to="/bids/cs" :class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cs') ? ' active' : '')">Завершенные</router-link>
+						<router-link
+							to="/bids/cs"
+							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cs') ? ' active' : '')"
+						>Завершенные</router-link>
 					</div>
 					<div class="col-auto px-0">
-						<router-link to="/bids/cc" :class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cc') ? ' active' : '')">Отмененные</router-link>
+						<router-link
+							to="/bids/cc"
+							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cc') ? ' active' : '')"
+						>Отмененные</router-link>
 					</div>
 				</div>
 			</template>
@@ -62,7 +77,8 @@
 							<div class="row py-3">
 								<div class="col d-flex align-items-center">
 									<span>
-										<u>Заявка №{{ order.id }}</u> — {{order.status}}
+										<u>Заявка №{{ order.id }}</u>
+										— {{order.status}}
 									</span>
 								</div>
 								<div class="col-auto text-right">
@@ -123,7 +139,11 @@
 									>Посмотреть отклики</router-link>
 								</div>
 								<div class="col-5 text-right">
-									<a href="#" class="btn yp-btn yp-btn-fill h-100 flex-center" @click="cancelBid(order.id)">Отменить заявку</a>
+									<a
+										href="#"
+										class="btn yp-btn yp-btn-fill h-100 flex-center"
+										@click.prevent="cancelBid(order.id)"
+									>Отменить заявку</a>
 								</div>
 							</div>
 						</div>
@@ -180,7 +200,8 @@ export default {
 				orderId: 0,
 				imageIndex: 0
 			},
-			isLoading: true
+			isLoading: true,
+			ordersType: "",
 		};
 	},
 	methods: {
@@ -209,7 +230,8 @@ export default {
 
 			this.newBidModalVisible = false;
 		},
-		getOrders(status = "") {
+		getOrders() {
+			let status = this.ordersType
 			api.account.getOrders(status).then(async res => {
 				this.isLoading = false;
 
@@ -226,7 +248,7 @@ export default {
 		},
 		swipeHandler(direction) {
 			console.log(direction);
-			
+
 			if (direction == "left") {
 				this.$refs.carousel.next();
 			}
@@ -239,29 +261,35 @@ export default {
 			return `/bids/${id}/responses`;
 		},
 		cancelBid(id) {
-			api.account.newOrderResponse(id).then(res => {
+			
+
+			this.$confirm("Отменить заявку", "Внимание", {
+				confirmButtonText: "Отменить",
+				cancelButtonText: "Отмена отмены",
+				type: "Warning"
+			})
+				.then(() => {
+
+					api.account
+						.newOrderResponse(id, "cc")
+						.then(res => {
+							this.getOrders();
+
+							this.$message({
+								type: "success",
+								message: "Заявка отменена"
+							});
+						})
+						.catch(e => console.log(e));
+
+				})
+				.catch(() => {
+					// this.$message({
+					// 	type: "info",
+					// 	message: "Delete canceled"
+					// });
+				});
 				
-				switch (this.$route.params.type) {
-					case "sm":
-						this.getOrders("sm");
-						break;
-
-					case "ms":
-						this.getOrders("ms");
-						break;
-					case "cs":
-						this.getOrders("cs");
-						break;
-					case "сс":
-						this.getOrders("na,cc,cm");
-						break;
-
-					default:
-						this.getOrders("sm");
-						break;
-				}
-		
-			}).catch(e => console.log(e))
 		}
 	},
 	computed: {
@@ -299,30 +327,30 @@ export default {
 			.then(response => {
 				switch (response.user.type_code) {
 					case "m":
-						this.$router.push('/master');
+						this.$router.push("/master");
 						break;
 
 					case "c":
 						switch (this.$route.params.type) {
 							case "sm":
-								this.getOrders("sm");
+								this.ordersType = "sm"
 								break;
 
 							case "ms":
-								this.getOrders("ms");
+								this.ordersType = "ms"
 								break;
 							case "cs":
-								this.getOrders("cs");
+								this.ordersType = "cs"
 								break;
 							case "сс":
-								this.getOrders("na,cc,cm");
+								this.ordersType = "na,cc,cm"
 								break;
 
 							default:
-								this.getOrders("sm");
+								this.ordersType = "sm"
 								break;
 						}
-
+						this.getOrders();
 						break;
 
 					default:
@@ -334,15 +362,34 @@ export default {
 				api.errorHandler(e, this, {
 					401: () => {
 						this.$store.dispatch("general/removeToken");
-						this.$router.push('/');
+						this.$router.push("/");
 					}
 				});
 			});
 	},
 	watch: {
-		'$route.params.type': function () {
-			this.isLoading = true
-			this.getOrders(this.$route.params.type);
+		"$route.params.type": function() {
+			this.isLoading = true;
+			switch (this.$route.params.type) {
+				case "sm":
+					this.ordersType = "sm"
+					break;
+
+				case "ms":
+					this.ordersType = "ms"
+					break;
+				case "cs":
+					this.ordersType = "cs"
+					break;
+				case "сс":
+					this.ordersType = "na,cc,cm"
+					break;
+
+				default:
+					this.ordersType = "sm"
+					break;
+			}
+			this.getOrders();
 		}
 	}
 };

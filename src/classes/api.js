@@ -51,9 +51,9 @@ var api = {
 			let response = await Axios.get(store.state.general.server + "/v1/orders/" + id + "/replies/", api.useAuth())
 			return response.data
 		},
-		async newOrderResponse (id) {
+		async newOrderResponse (id, type) {
 			let response = await Axios.patch(store.state.general.server + `/v1/orders/${id}/`, api.toFormData({
-				status_code: "cc",
+				status_code: type,
 				reply_id: id
 			}) ,api.useAuth())
 			return response.data
