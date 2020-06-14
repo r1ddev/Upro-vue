@@ -62,7 +62,7 @@
 							<div class="row py-3">
 								<div class="col d-flex align-items-center">
 									<span>
-										<u>Заявка №{{ order.id }}</u> — подбор мастеров
+										<u>Заявка №{{ order.id }}</u> — {{order.status}}
 									</span>
 								</div>
 								<div class="col-auto text-right">
@@ -240,8 +240,27 @@ export default {
 		},
 		cancelBid(id) {
 			api.account.newOrderResponse(id).then(res => {
-				console.log(res);
 				
+				switch (this.$route.params.type) {
+					case "sm":
+						this.getOrders("sm");
+						break;
+
+					case "ms":
+						this.getOrders("ms");
+						break;
+					case "cs":
+						this.getOrders("cs");
+						break;
+					case "сс":
+						this.getOrders("na,cc,cm");
+						break;
+
+					default:
+						this.getOrders("sm");
+						break;
+				}
+		
 			}).catch(e => console.log(e))
 		}
 	},
@@ -273,6 +292,7 @@ export default {
 		console.log(this.$route.params.type);
 
 		//this.$router.push("/bids/cc");
+		// TODO: VUEX!!!
 
 		api.account
 			.getLoginStatus()

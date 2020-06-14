@@ -109,8 +109,11 @@ var api = {
 				return response.data
 			}
 		},
-		async getPhotos (albumId) {
-			let response = await Axios.get(store.state.general.server + `/albums/${albumId}/photos/`, api.useAuth())
+		async uploadPhotos (albumId, files) {
+			let response = await Axios.post(store.state.general.server + `/v1/albums/${albumId}/photos/`, api.toFormData({
+				...files
+			}), api.useAuth())
+
 			return response.data
 		}
 	},

@@ -16,7 +16,7 @@
 			<div class="label">Ваши виды деятельности:</div>
 			<div class="row">
 				<div class="col-auto" v-for="(spec, key) in master.speciality" :key="key">
-					<div class="badge mt-2">{{spec}}</div>
+					<div class="badge mt-2">{{spec.label}}</div>
 				</div>
 			</div>
 		</div>
@@ -77,7 +77,8 @@ export default {
 .badge {
 	background: #ccc;
 	border-radius: 15px;
-	padding: 10px;
+	// padding: 10px;
+	padding: 10px 15px !important;
 	color: #fff;
 }
 </style>

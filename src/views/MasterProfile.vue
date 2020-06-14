@@ -15,6 +15,10 @@
 			>
 				<i class="el-icon-plus avatar-uploader-icon"></i>
 			</el-upload>
+
+			<div class="text-center mt-3">
+				<input type="submit" class="btn yp-btn yp-btn-fill" value="Сохранить" @click="savePhotos()" />
+			</div>
 		</el-dialog>
 
 		<HomeHeader page="master" />
@@ -72,8 +76,10 @@
 								<div class="row">
 									<div class="col-auto" v-for="spec in selectedSpecialities" :key="spec.value">
 										<div class="badge mt-2">
-											<div class="">{{spec.label}}</div>
-											<div class="delete" @click="removeSpeciatity(spec.value)"><i class="el-icon-close"></i></div>
+											<div class>{{spec.label}}</div>
+											<div class="delete" @click="removeSpeciatity(spec.value)">
+												<i class="el-icon-close"></i>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -99,6 +105,10 @@
 								<ImagesCarousel :images="photosGallery" />
 							</div>
 
+							<div class="mt-4 text-center">
+								<a href="#" class="btn yp-btn yp-btn-fill" @click.prevent="uploadPhoto($store.state.master.userData.data.albumIdGallery, 'Gallery')">Загрузить фото</a>
+							</div>
+
 							<div class="mt-4 position-relative">
 								<div class="label">Фото рабочего места:</div>
 
@@ -106,7 +116,7 @@
 							</div>
 
 							<div class="mt-4 text-center">
-								<a href="#" class="btn yp-btn yp-btn-fill" @click.prevent="uploadPhoto">Загрузить фото</a>
+								<a href="#" class="btn yp-btn yp-btn-fill" @click.prevent="uploadPhoto($store.state.master.userData.data.albumIdWorkplace, 'Workplace')">Загрузить фото</a>
 							</div>
 
 							<div class="mt-4">
@@ -143,7 +153,7 @@
 							:master="{
 							username,
 							description,
-							speciality,
+							speciality: selectedSpecialities,
 							photosGallery,
 							photosWorkplace
 						}"
@@ -188,20 +198,37 @@ export default {
 	data: function() {
 		return {
 			uploadPhotoVisible: false,
+			uploadPhotoGalleryId: undefined,
+			uploadPhotoGalleryType: undefined,
 			isEditable: false,
 			id: undefined,
 			master: undefined,
 			city: "1",
 			phone: "",
-			uploadPhotoUrl: ""
+			uploadPhotos: []
 		};
 	},
 	methods: {
-		removeSpeciatity (value) {
+		savePhotos() {
+			let filesObj = {};
+			this.uploadPhotos.map((v, i) => {
+				filesObj["file" + i] = v.raw;
+			});
+
+			this.$store.dispatch("master/uploadPhotos", {
+				albumId: this.uploadPhotoGalleryId,
+				photos: filesObj,
+				type: this.uploadPhotoGalleryType
+			});
+
+			this.uploadPhotoVisible = false
+			this.uploadPhotos = []
+		},
+		removeSpeciatity(value) {
 			this.speciality.splice(this.speciality.indexOf(value), 1);
 		},
 		handleChange(file, fileList) {
-			this.uploadPhotoUrl = file;
+			this.uploadPhotos = fileList;
 		},
 		handleAvatarSuccess() {
 			return true;
@@ -209,8 +236,10 @@ export default {
 		beforeAvatarUpload() {
 			return true;
 		},
-		uploadPhoto() {
+		uploadPhoto(galleryId, type) {
 			this.uploadPhotoVisible = true;
+			this.uploadPhotoGalleryId = galleryId;
+			this.uploadPhotoGalleryType = type;
 		},
 		change(e) {
 			this.speciality.push(e);
@@ -226,6 +255,10 @@ export default {
 			this.$store.dispatch(
 				"master/getPhotosWorkplace",
 				this.$store.state.master.userData.data.albumIdWorkplace
+			);
+			this.$store.dispatch(
+				"master/getPhotosAvatar",
+				this.$store.state.master.userData.data.albumIdAvatar
 			);
 		},
 		save() {
@@ -285,11 +318,11 @@ export default {
 			return types;
 		},
 		selectedSpecialities() {
-			let qw = this.$store.state.general.masterTypes
-				.filter(v => this.speciality.includes(v.value))
+			let qw = this.$store.state.general.masterTypes.filter(v =>
+				this.speciality.includes(v.value)
+			);
 			return qw;
-		},
-		
+		}
 	},
 	async created() {
 		await this.$store.dispatch("general/getLoginStatus");
@@ -365,8 +398,8 @@ export default {
 		.badge {
 			display: flex;
 			align-items: center;
-			background: #F3A9CD;
-			box-shadow: 0px 2px 4px rgba(100,100,100,0.5);
+			background: #f3a9cd;
+			box-shadow: 0px 2px 4px rgba(100, 100, 100, 0.5);
 			border-radius: 15px;
 			padding: 5px 15px;
 			color: #fff;
@@ -375,10 +408,10 @@ export default {
 				margin-left: 10px;
 				font-size: 20px;
 				cursor: pointer;
-				transition: .2s;
+				transition: 0.2s;
 
 				&:hover {
-					color:  rgb(133, 133, 133);
+					color: rgb(133, 133, 133);
 				}
 			}
 		}

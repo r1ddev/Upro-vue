@@ -4,7 +4,7 @@
 			<div v-touch:swipe="swipeHandler">
 				<el-carousel ref="carousel" trigger="click" indicator-position="outside" :autoplay="false">
 					<el-carousel-item v-for="(image, key) in images" :key="key">
-						<img :src="image" class="carousel-photo" alt />
+						<img :src="'http://37.140.198.184' + image.image" class="carousel-photo" alt />
 					</el-carousel-item>
 				</el-carousel>
 			</div>
@@ -12,7 +12,7 @@
 		<div class="position-relative" v-if="images.length">
 			<swiper ref="swiper" :options="swiperOptions">
 				<swiper-slide v-for="(image, key) in images" :key="key">
-					<img :src="image" alt @click="photoPreview(image, key)" class="carousel-photo-thumb"/>
+					<img :src="'http://37.140.198.184' + image.image_thumb" alt @click="photoPreview(image, key)" class="carousel-photo-thumb"/>
 				</swiper-slide>
 			</swiper>
 			<div :class="'swiper-button-prev swiper-p' + _uid" slot="button-prev"></div>
@@ -83,7 +83,12 @@ export default {
 		}
 	},
 	created() {
-		// console.log(this.swiperOptions);
+		console.log("this.images", this.images);
+	},
+	watch: {
+		images: function(newVal, oldVal) { // watch it
+          console.log('Prop changed: ', newVal, ' | was: ', oldVal)
+        }
 	}
 };
 </script>
@@ -106,5 +111,23 @@ export default {
 
 .swiper-slide {
 	width: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
 }
+
+.carousel-photo-thumb {
+	border: solid 1px #e9378d;
+	box-shadow: 0px 1px 4px -1px rgba(100, 100, 100, 0.5);
+	border-radius: 6px;
+	object-fit: cover;
+	width: 150px;
+}
+
+.carousel-photo {
+	width: 100%;
+    height: 100%;
+    object-fit: contain;
+};
 </style>

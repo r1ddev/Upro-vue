@@ -46,7 +46,7 @@
 							<div class="row py-3">
 								<div class="col d-flex align-items-center">
 									<span>
-										<u>Заявка №123</u> — Вас выбрали
+										<u>Заявка №{{order.id}}</u> — {{order.status}}
 									</span>
 								</div>
 								<div class="col text-right">
@@ -57,23 +57,23 @@
 								<div class="col-md-7">
 									<div class="row">
 										<div class="col-lg-7 py-2">
-											<div class="field">Воронеж</div>
+											<div class="field">{{order.city}}</div>
 										</div>
 										<div class="col-lg-5 py-2">
-											<div class="field text-center">21.02.2020</div>
+											<div class="field text-center">{{ toDate(order.request_date_from) }}</div>
 										</div>
 									</div>
 									<div class="row">
 										<div class="col-lg-7 py-2">
-											<div class="field">Мастер по ногтям</div>
+											<div class="field">{{order.master_type}}</div>
 										</div>
 										<div class="col-lg-5 py-2">
-											<div class="field field-time">17:00 - 19:30</div>
+											<div class="field field-time">{{ toTime(order.request_date_from) }} - {{ toTime(order.request_date_to) }}</div>
 										</div>
 									</div>
 									<div class="row py-2">
 										<div class="col-12">
-											<div class="field-text">Описание задачи мастера</div>
+											<div class="field-text">{{order.description}}</div>
 										</div>
 									</div>
 								</div>
@@ -152,6 +152,7 @@ import HomeFooter from "../components/HomeFooter";
 import AccountTemplate from "../components/AccountTemplate";
 import HomeHeader from "../components/HomeHeader";
 import NewResponseModal from "../components/NewResponseModal";
+import moment from "moment";
 
 export default {
 	components: {
@@ -196,6 +197,12 @@ export default {
 					this.getOrders("sm");
 					break;
 			}
+		},
+		toDate(date) {
+			return moment.utc(date).format("DD.MM.YYYY");
+		},
+		toTime(date) {
+			return moment.utc(date).format("HH:mm");
 		},
 		async getOrders(status = "") {
 			

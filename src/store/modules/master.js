@@ -3,6 +3,10 @@ import api from './../../classes/api';
 const master = {
 	namespaced: true,
 	state: {
+		photosAvatar: {
+			isLoading: false,
+			data: []
+		},
 		photosGallery: {
 			isLoading: false,
 			data: []
@@ -34,6 +38,13 @@ const master = {
 		},
 		photosWorkplaceSetData(state, payload) {
 			state.photosWorkplace.data = payload
+		},
+
+		photosAvatarSetLoading(state, payload) {
+			state.photosAvatar.isLoading = payload
+		},
+		photosAvatarSetData(state, payload) {
+			state.photosAvatar.data = payload
 		},
 
 		changeProfileSetLoading(state, payload) {
@@ -81,6 +92,15 @@ const master = {
 			})
 		},
 
+		getPhotosAvatar(state, albumId) {
+			state.commit('photosAvatarSetLoading', true)
+
+			api.account.getAlbumPhotos(albumId).then(res => {
+				state.commit('photosAvatarSetData', res.photos)
+				state.commit('photosAvatarSetLoading', false)
+			}).catch(e => { console.log(e) })
+		},
+
 		async getUserData(state, id) {
 			return new Promise((resolve, reject) => {
 				state.commit('userDataSetLoading', true)
@@ -93,7 +113,8 @@ const master = {
 							speciality: res.types,
 							description: res.about_myself || "",
 							albumIdGallery: res.gallery_album_id,
-							albumIdWorkplace: res.workplace_album_id
+							albumIdWorkplace: res.workplace_album_id,
+							albumIdAvatar: res.avatar_album_id,
 						})
 						state.commit('userDataSetLoading', false)
 						resolve()
@@ -104,7 +125,27 @@ const master = {
 						reject()
 					});
 			});
-		}
+		},
+
+		async uploadPhotos(state, {albumId, photos, type}) {
+
+			return new Promise((resolve, reject) => {
+				state.commit(`photos${type}SetLoading`, true)
+
+				api.account
+					.uploadPhotos(albumId, photos)
+					.then(res => {
+						state.commit(`photos${type}SetData`, [...state.state[`photos${type}`].data, ...res.photos])
+						state.commit(`photos${type}SetLoading`, false)
+						resolve()
+					})
+					.catch(e => {
+						console.log(e);
+						state.commit(`photos${type}SetLoading`, false);
+						reject()
+					});
+			});
+		},
 	},
 	getters: {
 		isLoading: state => {
