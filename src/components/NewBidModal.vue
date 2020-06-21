@@ -232,8 +232,10 @@ export default {
 				.createOrder(
 					this.city,
 					this.master,
-					mDateFrom.format("X"),
-					mDateTo.format("X"),
+					1594149708,
+					1594149908,
+					// mDateFrom.format("X"),
+					// mDateTo.format("X"),
 					this.description,
 					filesObj
 				)
@@ -264,6 +266,7 @@ export default {
 		},
 		handleChange(file, fileList) {
 			//this.fileList = [...this.fileList, file]
+			console.log("select file", JSON.stringify(file, true, 2));
 			this.fileList = fileList;
 		},
 		handlePictureCardPreview(file) {

@@ -8,7 +8,8 @@
 			]"
 		/>
 
-		<NewResponseModal :visible="NewResponseModalVisible" @cancel="NewResponseModalVisible = false" />
+		<!-- <NewReplyPopup :visible="newResponseModalVisible" @cancel="newResponseModalVisible = false" /> -->
+		<NewResponseModal :orderId="newResponseOrderId" :visible="newResponseModalVisible" @cancel="newResponseModalVisible = false" />
 
 		<AccountTemplate
 			:sideLinks="[
@@ -19,22 +20,40 @@
 			<template v-slot:account-menu>
 				<div class="row flex-center">
 					<div class="col-auto px-0">
-						<router-link to="/master" :class="'btn yp-btn yp-btn-menu mt-3' + (($route.params.type == undefined) ? ' active' : '')">Новые</router-link>
+						<router-link
+							to="/master"
+							:class="'btn yp-btn yp-btn-menu mt-3' + (($route.params.type == undefined) ? ' active' : '')"
+						>Новые</router-link>
 					</div>
 					<div class="col-auto px-0">
-						<router-link to="/master/process" :class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'process') ? ' active' : '')">Обработанные</router-link>
+						<router-link
+							to="/master/process"
+							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'process') ? ' active' : '')"
+						>Обработанные</router-link>
 					</div>
 					<div class="col-auto px-0">
-						<router-link to="/master/ms" :class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'ms') ? ' active' : '')">Вас выбрали</router-link>
+						<router-link
+							to="/master/ms"
+							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'ms') ? ' active' : '')"
+						>Вас выбрали</router-link>
 					</div>
 					<div class="col-auto px-0">
-						<router-link to="/master/cs" :class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cs') ? ' active' : '')">Завершенные</router-link>
+						<router-link
+							to="/master/cs"
+							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cs') ? ' active' : '')"
+						>Завершенные</router-link>
 					</div>
 					<div class="col-auto px-0">
-						<router-link to="/master/cm" :class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cm') ? ' active' : '')">Упущенные</router-link>
+						<router-link
+							to="/master/cm"
+							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cm') ? ' active' : '')"
+						>Упущенные</router-link>
 					</div>
 					<div class="col-auto px-0">
-						<router-link to="/master/cc" :class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cc') ? ' active' : '')">Отмененные</router-link>
+						<router-link
+							to="/master/cc"
+							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cc') ? ' active' : '')"
+						>Отмененные</router-link>
 					</div>
 				</div>
 			</template>
@@ -46,7 +65,8 @@
 							<div class="row py-3">
 								<div class="col d-flex align-items-center">
 									<span>
-										<u>Заявка №{{order.id}}</u> — {{order.status}}
+										<u>Заявка №{{order.id}}</u>
+										— {{order.status}}
 									</span>
 								</div>
 								<div class="col text-right">
@@ -68,7 +88,9 @@
 											<div class="field">{{order.master_type}}</div>
 										</div>
 										<div class="col-lg-5 py-2">
-											<div class="field field-time">{{ toTime(order.request_date_from) }} - {{ toTime(order.request_date_to) }}</div>
+											<div
+												class="field field-time"
+											>{{ toTime(order.request_date_from) }} - {{ toTime(order.request_date_to) }}</div>
 										</div>
 									</div>
 									<div class="row py-2">
@@ -90,33 +112,42 @@
 									</div>
 								</div>
 							</div>
-							<div class="divider py-3">Ваш отклик:</div>
-							<div class="flex-center response">
-								<div class="content">
-									<div class="row">
-										<div class="col-md-3">
-											<div class="d-flex flex-column h-100">
-												<div class="flex-grow-1">
-													<div class="field field-time">1000р</div>
-												</div>
-												<div class="flex-grow-1 time-wrap">
-													<div class="field field-time">17:10 - 19:30</div>
+							<div class v-if="order.status == 'Подбор мастеров'">
+								<div class="row justify-content-center">
+									<div class="col-md flex-center">
+										<a href="#" class="btn yp-btn yp-btn-fill mt-4" @click.prevent="newResponse(order.id)">Откликнуться</a>
+									</div>
+								</div>
+							</div>
+							<div v-else>
+								<div class="divider py-3">Ваш отклик:</div>
+								<div class="flex-center response">
+									<div class="content">
+										<div class="row">
+											<div class="col-md-3">
+												<div class="d-flex flex-column h-100">
+													<div class="flex-grow-1">
+														<div class="field field-time">1000р</div>
+													</div>
+													<div class="flex-grow-1 time-wrap">
+														<div class="field field-time">17:10 - 19:30</div>
+													</div>
 												</div>
 											</div>
+											<div class="col-md-9">
+												<div class="field-text">Отклик - Комментарий Мастера</div>
+											</div>
 										</div>
-										<div class="col-md-9">
-											<div class="field-text">Отклик - Комментарий Мастера</div>
-										</div>
-									</div>
-									<div class="row justify-content-center">
-										<div class="col-md flex-center">
-											<a href="#" class="btn yp-btn yp-btn-fill mt-4">Завершить</a>
-										</div>
-										<div class="col-md flex-center">
-											<a href="#" class="btn yp-btn yp-btn-fill mt-4">Отказаться</a>
-										</div>
-										<div class="col-md flex-center">
-											<a href="#" class="btn yp-btn yp-btn-fill mt-4">Клиент не приехал</a>
+										<div class="row justify-content-center">
+											<div class="col-md flex-center">
+												<a href="#" class="btn yp-btn yp-btn-fill mt-4">Завершить</a>
+											</div>
+											<div class="col-md flex-center">
+												<a href="#" class="btn yp-btn yp-btn-fill mt-4">Отказаться</a>
+											</div>
+											<div class="col-md flex-center">
+												<a href="#" class="btn yp-btn yp-btn-fill mt-4">Клиент не приехал</a>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -152,6 +183,8 @@ import HomeFooter from "../components/HomeFooter";
 import AccountTemplate from "../components/AccountTemplate";
 import HomeHeader from "../components/HomeHeader";
 import NewResponseModal from "../components/NewResponseModal";
+import NewReplyPopup from "../components/master/NewReplyPopup";
+
 import moment from "moment";
 
 export default {
@@ -159,11 +192,13 @@ export default {
 		NewResponseModal,
 		HomeHeader,
 		AccountTemplate,
+		NewReplyPopup,
 		HomeFooter
 	},
 	data: function() {
 		return {
-			NewResponseModalVisible: false,
+			newResponseModalVisible: false,
+			newResponseOrderId: undefined,
 			isLoading: false,
 			orders: [],
 			pagination: {
@@ -173,6 +208,10 @@ export default {
 		};
 	},
 	methods: {
+		newResponse (orderId) {
+			this.newResponseModalVisible = true;
+			this.newResponseOrderId = orderId;
+		},
 		parseRoute() {
 			switch (this.$route.params.type) {
 				case "sm":
@@ -205,39 +244,50 @@ export default {
 			return moment.utc(date).format("HH:mm");
 		},
 		async getOrders(status = "") {
-			
 			switch (status) {
-				case 'sm':
-					var orders = await api.account.getMasterOrders("?order_status=sm&exist_master_reply=false")
-					this.orders = orders.orders
+				case "sm":
+					var orders = await api.account.getMasterOrders(
+						"?order_status=sm&exist_master_reply=false"
+					);
+					this.orders = orders.orders;
 					this.isLoading = false;
 					break;
-				case 'process':
-					var orders = await api.account.getMasterOrders("?order_status=sm&exist_master_reply=true")
-					this.orders = orders.orders
+				case "process":
+					var orders = await api.account.getMasterOrders(
+						"?order_status=sm&exist_master_reply=true"
+					);
+					this.orders = orders.orders;
 					this.isLoading = false;
 					break;
-				case 'ms':
-					var orders = await api.account.getMasterOrders("?order_status=ms")
-					this.orders = orders.orders
+				case "ms":
+					var orders = await api.account.getMasterOrders(
+						"?order_status=ms"
+					);
+					this.orders = orders.orders;
 					this.isLoading = false;
 					break;
-				case 'cs':
-					var orders = await api.account.getMasterOrders("?order_status=cs")
-					this.orders = orders.orders
+				case "cs":
+					var orders = await api.account.getMasterOrders(
+						"?order_status=cs"
+					);
+					this.orders = orders.orders;
 					this.isLoading = false;
 					break;
-				case 'cm':
-					var orders = await api.account.getMasterOrders("?order_status=ms,cc,cm,na,cs&master_by_token=false")
-					this.orders = orders.orders
+				case "cm":
+					var orders = await api.account.getMasterOrders(
+						"?order_status=ms,cc,cm,na,cs&master_by_token=false"
+					);
+					this.orders = orders.orders;
 					this.isLoading = false;
 					break;
-				case 'cc':
-					var orders = await api.account.getMasterOrders("?order_status=na,cc,cm")
-					this.orders = orders.orders
+				case "cc":
+					var orders = await api.account.getMasterOrders(
+						"?order_status=na,cc,cm"
+					);
+					this.orders = orders.orders;
 					this.isLoading = false;
 					break;
-			
+
 				default:
 					break;
 			}
@@ -254,25 +304,24 @@ export default {
 					this.pagination.itemsOnPage * this.pagination.currentPage
 				);
 		}
-	}, 
+	},
 	async created() {
 		api.account
 			.getLoginStatus()
 			.then(response => {
 				switch (response.user.type_code) {
 					case "c":
-						this.$router.push('/bids');
+						this.$router.push("/bids");
 						break;
 
 					case "m":
-						this.parseRoute()
+						this.parseRoute();
 						break;
 
 					default:
 						break;
 				}
 				console.log(response.user.type_code);
-				
 			})
 			.catch(e => {
 				api.errorHandler(e, this, {
@@ -284,8 +333,8 @@ export default {
 			});
 	},
 	watch: {
-		'$route.params.type': function () {
-			this.isLoading = true
+		"$route.params.type": function() {
+			this.isLoading = true;
 			this.parseRoute();
 		}
 	}

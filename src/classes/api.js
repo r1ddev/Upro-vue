@@ -107,6 +107,15 @@ var api = {
 					about_myself: desc
 				}), api.useAuth())
 				return response.data
+			},
+			async createResponse (orderId, dateFrom, dateTo, description, cost) {
+				let response = await Axios.post(store.state.general.server + `/v1/orders/${orderId}/replies/`, api.toFormData({
+					suggested_time_from: dateFrom,
+					suggested_time_to: dateTo,
+					comment: description,
+					cost: cost
+				}), api.useAuth())
+				return response.data
 			}
 		},
 		async uploadPhotos (albumId, files) {

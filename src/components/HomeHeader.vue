@@ -6,6 +6,67 @@
 			@cancel="loginModal = false"
 		/>
 
+		<el-dialog
+			title
+			:visible.sync="mobileMenuOpened"
+			:fullscreen="true"
+			:modal="false"
+			custom-class="menuFullscreen"
+			:show-close="false"
+			:close-on-click-modal="false"
+			:lock-scroll="true"
+		>
+			<div>
+				<a href="tel:8 (910) 282-53-40" class="header-menu-link">8 (910) 282-53-40</a>
+			</div>
+
+			<div v-if="page == 'home'" class="mt-5">
+				<div v-if="!this.$store.getters['general/isLogin']">
+					<router-link to="/masterRegistration" class="header-menu-link">Вы мастер?</router-link>
+				</div>
+				<div>
+					<router-link to="/about" class="header-menu-link">Часто задаваемые вопросы</router-link>
+				</div>
+				<div v-if="!this.$store.getters['general/isLogin']">
+					<a href="#" class="header-menu-link" @click.prevent="loginModal = true">Вход/Регистрация</a>
+				</div>
+				<div v-else>
+					<router-link to="/bids" class="header-menu-link">Личный кабинет</router-link>
+				</div>
+			</div>
+
+			<div v-if="page == 'bids'" class="mt-5">
+				<div>
+					<a href="#" class="header-menu-link">Заявки</a>
+				</div>
+				<div>
+					<a href="#" class="header-menu-link">Профиль</a>
+				</div>
+				<div>
+					<a
+						href="#"
+						class="header-menu-link"
+						@click.prevent="$parent.$parent.newBidModalVisible = true"
+					>Создать заявку</a>
+				</div>
+				<div>
+					<a href="#" class="header-menu-link" @click.prevent="logout()">Выход</a>
+				</div>
+			</div>
+
+			<div v-if="page == 'master'" class="mt-5">
+				<div v-for="(link, index) in links" :key="index">
+					<router-link
+						:to="link.href"
+						:class="'header-menu-link' + (link.active ? ' active' : '')"
+					>{{link.label}}</router-link>
+				</div>
+				<div>
+					<a href="#" class="header-menu-link" @click.prevent="logout()">Выход</a>
+				</div>
+			</div>
+		</el-dialog>
+
 		<section :class="'header-menu' + (mobileMenuOpened ? ' fixed-menu' : '')">
 			<div class="px-4">
 				<div class="desktopMenu row justify-content-between">
@@ -15,11 +76,9 @@
 								<router-link to="/" class="header-menu-logo" />
 							</div>
 							<div class="col-auto">
-
 								<el-select value="0" placeholder="Город" class="header-menu-link">
 									<el-option value="0" label="Воронеж" />
 								</el-select>
-
 							</div>
 							<div class="col-auto">
 								<a href="tel:8 (910) 282-53-40" class="header-menu-link">8 (910) 282-53-40</a>
@@ -29,25 +88,16 @@
 					<div class="col-md-auto">
 						<div class="row d-flex align-items-center h-100" v-if="page == 'home'">
 							<div class="col-auto" v-if="!this.$store.getters['general/isLogin']">
-								<router-link
-									to="/masterRegistration"
-									class="header-menu-link"
-								>Вы мастер?</router-link>
+								<router-link to="/masterRegistration" class="header-menu-link">Вы мастер?</router-link>
 							</div>
 							<div class="col-auto">
-								<router-link
-									to="/about"
-									class="header-menu-link"
-								>Часто задаваемые вопросы</router-link>
+								<router-link to="/about" class="header-menu-link">Часто задаваемые вопросы</router-link>
 							</div>
 							<div class="col-auto" v-if="!this.$store.getters['general/isLogin']">
 								<a href="#" class="header-menu-link" @click.prevent="loginModal = true">Вход/Регистрация</a>
 							</div>
 							<div class="col-auto" v-if="this.$store.getters['general/isLogin']">
-								<router-link
-									to="/bids"
-									class="header-menu-link"
-								>Личный кабинет</router-link>
+								<router-link to="/bids" class="header-menu-link">Личный кабинет</router-link>
 							</div>
 							<div class="col-auto" v-if="this.$store.getters['general/isLogin']">
 								<a href="#" class="header-menu-link" @click.prevent="logout()">Выход</a>
@@ -74,70 +124,6 @@
 						</div>
 					</div>
 				</div>
-
-				<el-dialog
-					title
-					:visible.sync="mobileMenuOpened"
-					:fullscreen="true"
-					:modal="false"
-					custom-class="menuFullscreen"
-					:show-close="false"
-					:close-on-click-modal="false"
-					:lock-scroll="true"
-				>
-					<div>
-						<a href="tel:8 (910) 282-53-40" class="header-menu-link">8 (910) 282-53-40</a>
-					</div>
-
-					<div v-if="page == 'home'" class="mt-5">
-						<div v-if="!this.$store.getters['general/isLogin']">
-							<router-link
-								to="/masterRegistration"
-								class="header-menu-link"
-							>Вы мастер?</router-link>
-						</div>
-						<div>
-							<router-link
-								to="/about"
-								class="header-menu-link"
-							>Часто задаваемые вопросы</router-link>
-						</div>
-						<div v-if="!this.$store.getters['general/isLogin']">
-							<a href="#" class="header-menu-link" @click.prevent="loginModal = true">Вход/Регистрация</a>
-						</div>
-						<div v-else>
-							<router-link to="/bids" class="header-menu-link">Личный кабинет</router-link>
-						</div>
-					</div>
-
-					<div v-if="page == 'bids'" class="mt-5">
-						<div>
-							<a href="#" class="header-menu-link">Заявки</a>
-						</div>
-						<div>
-							<a href="#" class="header-menu-link">Профиль</a>
-						</div>
-						<div>
-							<a
-								href="#"
-								class="header-menu-link"
-								@click.prevent="$parent.$parent.newBidModalVisible = true"
-							>Создать заявку</a>
-						</div>
-						<div>
-							<a href="#" class="header-menu-link" @click.prevent="logout()">Выход</a>
-						</div>
-					</div>
-
-					<div v-if="page == 'master'" class="mt-5">
-						<div v-for="(link, index) in links" :key="index">
-							<router-link :to="link.href" :class="'header-menu-link' + (link.active ? ' active' : '')">{{link.label}}</router-link>
-						</div>
-						<div>
-							<a href="#" class="header-menu-link" @click.prevent="logout()">Выход</a>
-						</div>
-					</div>
-				</el-dialog>
 
 				<div :class="'mobileMenu row justify-content-between'">
 					<div class="col-auto p-0">
@@ -244,12 +230,12 @@ export default {
 	color: #6b3752;
 	box-shadow: 0px 3px 3px 0px rgba(100, 100, 100, 0.5);
 	position: relative;
-	z-index: 1;
+	z-index: 1;	
+}
 
-	::v-deep .el-dialog__wrapper {
-		// margin-top: 56px;
-		pointer-events: none;
-	}
+::v-deep .el-dialog__wrapper {
+	margin-top: 56px;
+	pointer-events: none;
 }
 .header-menu-logo {
 	background: url(../assets/img/logo-mini.png) center center no-repeat;
@@ -329,7 +315,7 @@ export default {
 	::v-deep .menuFullscreen {
 		display: block;
 		position: fixed;
-		top: 56px;
+		// top: 56px;
 		left: 0;
 		width: 100%;
 		background: #fff;

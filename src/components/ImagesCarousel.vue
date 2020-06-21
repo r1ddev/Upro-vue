@@ -1,10 +1,10 @@
 <template>
 	<div class>
-		<el-dialog :visible.sync="dialogVisible">
+		<el-dialog :visible.sync="dialogVisible" custom-class="dialog-image">
 			<div v-touch:swipe="swipeHandler">
 				<el-carousel ref="carousel" trigger="click" indicator-position="outside" :autoplay="false">
 					<el-carousel-item v-for="(image, key) in images" :key="key">
-						<img :src="'http://37.140.198.184' + image.image" class="carousel-photo" alt />
+						<img :src="$store.state.general.server + image.image" class="carousel-photo" alt />
 					</el-carousel-item>
 				</el-carousel>
 			</div>
@@ -12,7 +12,7 @@
 		<div class="position-relative" v-if="images.length">
 			<swiper ref="swiper" :options="swiperOptions">
 				<swiper-slide v-for="(image, key) in images" :key="key">
-					<img :src="'http://37.140.198.184' + image.image_thumb" alt @click="photoPreview(image, key)" class="carousel-photo-thumb"/>
+					<img :src="$store.state.general.server + image.image_thumb" alt @click="photoPreview(image, key)" class="carousel-photo-thumb"/>
 				</swiper-slide>
 			</swiper>
 			<div :class="'swiper-button-prev swiper-p' + _uid" slot="button-prev"></div>
@@ -129,5 +129,36 @@ export default {
 	width: 100%;
     height: 100%;
     object-fit: contain;
-};
+}
+
+::v-deep .dialog-image {
+	width: 65% !important;
+    height: 90% !important;
+    margin-top: 5% !important;
+	margin-bottom: 5% !important;
+	
+	.el-dialog__body {
+		height: 100%;
+
+		div {
+			height: 100%;
+
+			.el-carousel {
+				height: 100%;
+
+				.el-carousel__container {
+					height: 90%;
+				}
+			}
+		}
+	}
+
+	@media screen and (max-width: 650px) {
+		width: 90% !important;
+	}
+}
+</style>
+
+<style>
+
 </style>

@@ -212,7 +212,7 @@ export default {
 			pickerOptions: {
 				disabledDate(time) {
 					return (
-						time.getTime() < Date.now() ||
+						time.getTime() < (Date.now() - 86400000) ||
 						time.getTime() > Date.now() + 86400000 * 180
 					);
 				}
@@ -229,6 +229,8 @@ export default {
 			);
 		},
 		submit() {
+			console.log("submit this.date", this.date);
+			
 			let mDateFrom = moment.utc(
 				this.date.toLocaleString(),
 				"DD.MM.YYYY, HH:mm:ss"
@@ -265,8 +267,10 @@ export default {
 				.createOrder(
 					this.city,
 					this.master,
-					mDateFrom.format("X"),
-					mDateTo.format("X"),
+					1594149708,
+					1594149908,
+					// mDateFrom.format("X"),
+					// mDateTo.format("X"),
 					this.text,
 					filesObj
 				)
@@ -290,6 +294,7 @@ export default {
 		},
 		handleChange(file, fileList) {
 			//this.fileList = [...this.fileList, file]
+			console.log("select file", JSON.stringify(file, true, 2));
 			this.fileList = fileList;
 		},
 		secondSlide() {

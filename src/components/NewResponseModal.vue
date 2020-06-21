@@ -63,7 +63,6 @@
 						:loading="isLoading"
 					>Откликнуться</a-button>
 				</el-form-item>
-
 			</el-form>
 		</a-modal>
 	</div>
@@ -82,10 +81,28 @@ export default {
 			isLoading: false
 		};
 	},
-	props: ["visible"],
+	props: {
+		visible: {
+			type: Boolean,
+			default: false
+		},
+		orderId: {
+			type: Number,
+			default: 0
+		}
+	},
 	methods: {
 		handleClose(e) {
 			console.log(e);
+		},
+		submit () {
+			this.$store.dispatch("master/createResponse", {
+				orderId: this.orderId,
+				dateFrom: this.timeFrom,
+				dateTo: this.timeTo,
+				description: this.description,
+				cost: this.price
+			})
 		}
 	},
 	computed: {
@@ -118,5 +135,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less" scoped>
+::v-deep .el-form-item__label {
+	line-height: unset;
+	padding-bottom: 0;
+}
 </style>

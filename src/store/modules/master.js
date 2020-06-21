@@ -23,6 +23,9 @@ const master = {
 			data: {
 				speciality: []
 			}
+		},
+		createResponse: {
+			isLoading: false
 		}
 	},
 	mutations: {
@@ -56,6 +59,10 @@ const master = {
 		},
 		userDataSetLoading(state, payload) {
 			state.userData.isLoading = payload
+		},
+
+		createResponseSetLoading(state, payload) {
+			state.createResponse.isLoading = payload
 		}
 	},
 	actions: {
@@ -77,7 +84,10 @@ const master = {
 			api.account.getAlbumPhotos(albumId).then(res => {
 				state.commit('photosGallerySetData', res.photos)
 				state.commit('photosGallerySetLoading', false)
-			}).catch(e => { console.log(e) })
+			}).catch(e => {
+				console.log(e);
+				state.commit('photosGallerySetLoading', false)
+			})
 		},
 
 		getPhotosWorkplace(state, albumId) {
@@ -98,7 +108,10 @@ const master = {
 			api.account.getAlbumPhotos(albumId).then(res => {
 				state.commit('photosAvatarSetData', res.photos)
 				state.commit('photosAvatarSetLoading', false)
-			}).catch(e => { console.log(e) })
+			}).catch(e => {
+				console.log(e);
+				state.commit('photosAvatarSetLoading', false)
+			})
 		},
 
 		async getUserData(state, id) {
@@ -146,14 +159,35 @@ const master = {
 					});
 			});
 		},
+		
+		async createResponse(state, {orderId, dateFrom, dateTo, description, cost}) {
+
+			return new Promise((resolve, reject) => {
+				state.commit('createResponseSetLoading', true)
+
+				api.account.master
+					.createResponse(orderId, dateFrom, dateTo, description, cost)
+					.then(res => {
+						state.commit('createResponseSetLoading', false)
+						resolve()
+					})
+					.catch(e => {
+						console.log(e);
+						state.commit('createResponseSetLoading', false);
+						reject()
+					});
+			});
+		},
 	},
 	getters: {
 		isLoading: state => {
 			return (
 				state.changeProfile.isLoading
+				|| state.userData.isLoading
 				|| state.photosGallery.isLoading
 				|| state.photosWorkplace.isLoading
-				|| state.userData.isLoading
+				|| state.photosAvatar.isLoading
+				|| state.createResponse.isLoading
 			)
 		}
 	}

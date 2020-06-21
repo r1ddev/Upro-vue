@@ -23,7 +23,7 @@
 			<div v-touch:swipe="swipeHandler">
 				<el-carousel ref="carousel" trigger="click" indicator-position="outside" :autoplay="false">
 					<el-carousel-item v-for="(image, index) in getOrderImages" :key="index">
-						<img :src="'http://37.140.198.184' + image.image" class="carousel-photo" alt />
+						<img :src="$store.state.general.server + image.image" class="carousel-photo" alt />
 					</el-carousel-item>
 				</el-carousel>
 			</div>
@@ -124,7 +124,7 @@
 											<!-- <img :src="image.image_thumb" alt class="image" @click="openImageViewer(order.id, index)"/> -->
 											<img
 												@click="openImageViewer(order.id, index)"
-												:src="'http://37.140.198.184' + image.image_thumb"
+												:src="$store.state.general.server + image.image_thumb"
 												class="image"
 											/>
 										</div>

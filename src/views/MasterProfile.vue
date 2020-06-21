@@ -45,7 +45,8 @@
 									<div class="avatar">
 										<div class="label">Аватар профиля:</div>
 										<img
-											src="https://www.google.ru/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
+											:src="$store.state.general.server + userAvatar"
+											@click.prevent="uploadPhoto($store.state.master.userData.data.albumIdAvatar, 'Avatar')"
 										/>
 									</div>
 								</div>
@@ -85,7 +86,7 @@
 								</div>
 							</div>
 
-							<div class="row">
+							<!-- <div class="row">
 								<div class="col-md-6 mt-4">
 									<div class="label">Город, где вы находитесь:</div>
 									<el-select filterable placeholder="Город" v-model="city" class="w-100">
@@ -97,7 +98,7 @@
 									<div class="label">Контактный телефон:</div>
 									<el-input placeholder="+79999999999" v-model="phone"></el-input>
 								</div>
-							</div>
+							</div> -->
 
 							<div class="mt-4">
 								<div class="label">Галерея работ:</div>
@@ -131,9 +132,9 @@
 								/>
 							</div>
 
-							<div class="mt-4">
+							<div class="">
 								<div class="row">
-									<div class="col text-left">
+									<div class="col-md-6 text-left-md mt-4">
 										<input
 											type="submit"
 											class="btn yp-btn yp-btn-fill"
@@ -141,7 +142,7 @@
 											@click="save"
 										/>
 									</div>
-									<div class="col text-right">
+									<div class="col-md-6 text-right-md mt-4">
 										<input type="submit" class="btn yp-btn yp-btn-fill" value="Верифицировать" />
 									</div>
 								</div>
@@ -155,7 +156,8 @@
 							description,
 							speciality: selectedSpecialities,
 							photosGallery,
-							photosWorkplace
+							photosWorkplace,
+							userAvatar,
 						}"
 						/>
 					</div>
@@ -273,7 +275,8 @@ export default {
 	computed: {
 		...mapState({
 			photosGallery: state => state.photosGallery.data,
-			photosWorkplace: state => state.photosWorkplace.data
+			photosWorkplace: state => state.photosWorkplace.data,
+			photosAvatar: state => state.photosAvatar.data,
 		}),
 		...mapStateGeneral({
 			loginData: state => state.loginData.data
@@ -322,6 +325,9 @@ export default {
 				this.speciality.includes(v.value)
 			);
 			return qw;
+		},
+		userAvatar() {
+			return this.photosAvatar.length > 0 ? this.photosAvatar[0].image_thumb : require(`@/assets/img/no-avatar.png`)
 		}
 	},
 	async created() {
@@ -450,6 +456,7 @@ export default {
 				width: 100%;
 				border: 1px solid #e9378d;
 				border-radius: 5px;
+				cursor: pointer;
 			}
 		}
 
