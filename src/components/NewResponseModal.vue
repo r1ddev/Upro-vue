@@ -70,6 +70,7 @@
 
 <script>
 import "../assets/css/yp-el.less";
+import moment from 'moment'
 
 export default {
 	data: function() {
@@ -89,20 +90,39 @@ export default {
 		orderId: {
 			type: Number,
 			default: 0
+		},
+		orderDateTime: {
+			type: String,
+			default: "",
 		}
 	},
 	methods: {
 		handleClose(e) {
 			console.log(e);
 		},
-		submit () {
-			this.$store.dispatch("master/createResponse", {
+
+		async submit () {
+			let orderDate = moment(this.orderDateTime).utcOffset(0)
+			orderDate.set({hour:0,minute:0,second:0,millisecond:0})
+
+			let timeFrom = this.timeFrom.split(":")
+			let timeTo = this.timeTo.split(":")
+
+			let responseFrom = orderDate.clone()
+			let responseTo = orderDate.clone()
+
+			responseFrom.set({hour:timeFrom[0],minute:timeFrom[1]})
+			responseTo.set({hour:timeTo[0],minute:timeTo[1]})
+
+			await this.$store.dispatch("master/createResponse", {
 				orderId: this.orderId,
-				dateFrom: this.timeFrom,
-				dateTo: this.timeTo,
+				dateFrom: responseFrom.unix(),
+				dateTo: responseTo.unix(),
 				description: this.description,
 				cost: this.price
-			})
+			});
+
+			this.$emit("success")
 		}
 	},
 	computed: {

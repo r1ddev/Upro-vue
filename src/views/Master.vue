@@ -3,18 +3,23 @@
 		<HomeHeader
 			page="master"
 			:links="[
-				{label:'Заявки', href: '/master', active: true},
-				{label:'Профиль', href: '/master/profile'}
+				{ label: 'Заявки', href: '/master', active: true },
+				{ label: 'Профиль', href: '/master/profile' },
 			]"
 		/>
 
-		<!-- <NewReplyPopup :visible="newResponseModalVisible" @cancel="newResponseModalVisible = false" /> -->
-		<NewResponseModal :orderId="newResponseOrderId" :visible="newResponseModalVisible" @cancel="newResponseModalVisible = false" />
+		<NewResponseModal
+			:orderId="newResponseData.orderId"
+			:orderDateTime="newResponseData.orderDateTime"
+			:visible="newResponseData.modal"
+			@cancel="newResponseData.modal = false"
+			@success="onNewResponseSuccess()"
+		/>
 
 		<AccountTemplate
 			:sideLinks="[
-				{label:'Заявки', href: '/master', active: true},
-				{label:'Профиль', href: '/master/profile'}
+				{ label: 'Заявки', href: '/master', active: true },
+				{ label: 'Профиль', href: '/master/profile' },
 			]"
 		>
 			<template v-slot:account-menu>
@@ -22,38 +27,66 @@
 					<div class="col-auto px-0">
 						<router-link
 							to="/master"
-							:class="'btn yp-btn yp-btn-menu mt-3' + (($route.params.type == undefined) ? ' active' : '')"
-						>Новые</router-link>
+							:class="
+								'btn yp-btn yp-btn-menu mt-3' +
+								($route.params.type == undefined
+									? ' active'
+									: '')
+							"
+							>Новые</router-link
+						>
 					</div>
 					<div class="col-auto px-0">
 						<router-link
 							to="/master/process"
-							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'process') ? ' active' : '')"
-						>Обработанные</router-link>
+							:class="
+								'btn yp-btn yp-btn-menu ml-2 mt-3' +
+								($route.params.type == 'process'
+									? ' active'
+									: '')
+							"
+							>Обработанные</router-link
+						>
 					</div>
 					<div class="col-auto px-0">
 						<router-link
 							to="/master/ms"
-							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'ms') ? ' active' : '')"
-						>Вас выбрали</router-link>
+							:class="
+								'btn yp-btn yp-btn-menu ml-2 mt-3' +
+								($route.params.type == 'ms' ? ' active' : '')
+							"
+							>Вас выбрали</router-link
+						>
 					</div>
 					<div class="col-auto px-0">
 						<router-link
 							to="/master/cs"
-							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cs') ? ' active' : '')"
-						>Завершенные</router-link>
+							:class="
+								'btn yp-btn yp-btn-menu ml-2 mt-3' +
+								($route.params.type == 'cs' ? ' active' : '')
+							"
+							>Завершенные</router-link
+						>
 					</div>
 					<div class="col-auto px-0">
 						<router-link
 							to="/master/cm"
-							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cm') ? ' active' : '')"
-						>Упущенные</router-link>
+							:class="
+								'btn yp-btn yp-btn-menu ml-2 mt-3' +
+								($route.params.type == 'cm' ? ' active' : '')
+							"
+							>Упущенные</router-link
+						>
 					</div>
 					<div class="col-auto px-0">
 						<router-link
 							to="/master/cc"
-							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cc') ? ' active' : '')"
-						>Отмененные</router-link>
+							:class="
+								'btn yp-btn yp-btn-menu ml-2 mt-3' +
+								($route.params.type == 'cc' ? ' active' : '')
+							"
+							>Отмененные</router-link
+						>
 					</div>
 				</div>
 			</template>
@@ -61,12 +94,16 @@
 			<template v-slot:account-content>
 				<section class="bids-list">
 					<div class="container" v-loading="isLoading">
-						<div class="bid my-3" v-for="order in getPageOrders" :key="order.id">
+						<div
+							class="bid my-3"
+							v-for="order in getPageOrders"
+							:key="order.id"
+						>
 							<div class="row py-3">
 								<div class="col d-flex align-items-center">
 									<span>
-										<u>Заявка №{{order.id}}</u>
-										— {{order.status}}
+										<u>Заявка №{{ order.id }}</u>
+										— {{ order.status }}
 									</span>
 								</div>
 								<div class="col text-right">
@@ -77,25 +114,47 @@
 								<div class="col-md-7">
 									<div class="row">
 										<div class="col-lg-7 py-2">
-											<div class="field">{{order.city}}</div>
+											<div class="field">
+												{{ order.city }}
+											</div>
 										</div>
 										<div class="col-lg-5 py-2">
-											<div class="field text-center">{{ toDate(order.request_date_from) }}</div>
+											<div class="field text-center">
+												{{
+													toDate(
+														order.request_date_from
+													)
+												}}
+											</div>
 										</div>
 									</div>
 									<div class="row">
 										<div class="col-lg-7 py-2">
-											<div class="field">{{order.master_type}}</div>
+											<div class="field">
+												{{ order.master_type }}
+											</div>
 										</div>
 										<div class="col-lg-5 py-2">
-											<div
-												class="field field-time"
-											>{{ toTime(order.request_date_from) }} - {{ toTime(order.request_date_to) }}</div>
+											<div class="field field-time">
+												{{
+													toTime(
+														order.request_date_from
+													)
+												}}
+												-
+												{{
+													toTime(
+														order.request_date_to
+													)
+												}}
+											</div>
 										</div>
 									</div>
 									<div class="row py-2">
 										<div class="col-12">
-											<div class="field-text">{{order.description}}</div>
+											<div class="field-text">
+												{{ order.description }}
+											</div>
 										</div>
 									</div>
 								</div>
@@ -115,65 +174,92 @@
 							<div class v-if="order.status == 'Подбор мастеров'">
 								<div class="row justify-content-center">
 									<div class="col-md flex-center">
-										<a href="#" class="btn yp-btn yp-btn-fill mt-4" @click.prevent="newResponse(order.id)">Откликнуться</a>
+										<a
+											href="#"
+											class="btn yp-btn yp-btn-fill mt-4"
+											@click.prevent="
+												newResponse(order.id)
+											"
+											>Откликнуться</a
+										>
 									</div>
 								</div>
 							</div>
-							<div v-else>
+
+							<div v-if="order.status == 'Выбран мастер'">
 								<div class="divider py-3">Ваш отклик:</div>
 								<div class="flex-center response">
 									<div class="content">
 										<div class="row">
 											<div class="col-md-3">
-												<div class="d-flex flex-column h-100">
+												<div
+													class="d-flex flex-column h-100"
+												>
 													<div class="flex-grow-1">
-														<div class="field field-time">1000р</div>
+														<div
+															class="field field-time"
+														>
+															1000р
+														</div>
 													</div>
-													<div class="flex-grow-1 time-wrap">
-														<div class="field field-time">17:10 - 19:30</div>
+													<div
+														class="flex-grow-1 time-wrap"
+													>
+														<div
+															class="field field-time"
+														>
+															17:10 - 19:30
+														</div>
 													</div>
 												</div>
 											</div>
 											<div class="col-md-9">
-												<div class="field-text">Отклик - Комментарий Мастера</div>
+												<div class="field-text">
+													Отклик - Комментарий Мастера
+												</div>
 											</div>
 										</div>
 										<div class="row justify-content-center">
 											<div class="col-md flex-center">
-												<a href="#" class="btn yp-btn yp-btn-fill mt-4">Завершить</a>
+												<a
+													href="#"
+													class="btn yp-btn yp-btn-fill mt-4"
+													>Завершить</a
+												>
 											</div>
 											<div class="col-md flex-center">
-												<a href="#" class="btn yp-btn yp-btn-fill mt-4">Отказаться</a>
+												<a
+													href="#"
+													class="btn yp-btn yp-btn-fill mt-4"
+													>Отказаться</a
+												>
 											</div>
 											<div class="col-md flex-center">
-												<a href="#" class="btn yp-btn yp-btn-fill mt-4">Клиент не приехал</a>
+												<a
+													href="#"
+													class="btn yp-btn yp-btn-fill mt-4"
+													>Клиент не приехал</a
+												>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
+
+							<div class v-if="order.status == 'Отменена клиентом'"></div>
 						</div>
-						<div v-if="!isLoading && !getPageOrders.length" class="text-center">Нет данных для отображения</div>
+						<div
+							v-if="!isLoading && !getPageOrders.length"
+							class="text-center"
+						>
+							Нет данных для отображения
+						</div>
 					</div>
 				</section>
 			</template>
 		</AccountTemplate>
 
-		<!-- <section class="account">
-			<section class="menu">
-				<router-link to="/master" class="active">Заявки</router-link>
-				<router-link to="/master/profile">Профиль</router-link>
-			</section>
-			<section class="account-menu pb-3">
-				<div class="container"></div>
-			</section>
-
-			<section class="bids-list py-3">
-				<div class="container flex-center"></div>
-			</section>
-		</section>-->
-
-		<HomeFooter style="border-top: 1px solid #B2B2B2;" />
+		<HomeFooter style="border-top: 1px solid #b2b2b2;" />
 	</div>
 </template>
 
@@ -193,49 +279,58 @@ export default {
 		HomeHeader,
 		AccountTemplate,
 		NewReplyPopup,
-		HomeFooter
+		HomeFooter,
 	},
-	data: function() {
+	data: function () {
 		return {
-			newResponseModalVisible: false,
-			newResponseOrderId: undefined,
+			newResponseData: {
+				modal: false,
+				orderId: undefined,
+				orderDateTime: "",
+			},
 			isLoading: false,
 			orders: [],
 			pagination: {
 				currentPage: 1,
-				itemsOnPage: 10
-			}
+				itemsOnPage: 10,
+			},
+			ordersType: ""
 		};
 	},
 	methods: {
-		newResponse (orderId) {
-			this.newResponseModalVisible = true;
-			this.newResponseOrderId = orderId;
+		newResponse(orderId) {
+			this.newResponseData.modal = true;
+			this.newResponseData.orderId = orderId;
+			this.newResponseData.orderDateTime = this.orders.find(
+				(v) => v.id == orderId
+			).request_date_from;
 		},
 		parseRoute() {
 			switch (this.$route.params.type) {
 				case "sm":
-					this.getOrders("sm");
+					this.ordersType = "sm"
 					break;
 				case "process":
-					this.getOrders("process");
+					this.ordersType = "process"
 					break;
 				case "ms":
-					this.getOrders("ms");
+					this.ordersType = "ms"
 					break;
-				case "ms":
-					this.getOrders("cs");
+				case "cs":
+					this.ordersType = "cs"
 					break;
-				case "ms":
-					this.getOrders("cm");
+				case "cm":
+					this.ordersType = "cm"
 					break;
-				case "ms":
-					this.getOrders("cc");
+				case "cc":
+					this.ordersType = "cc"
 					break;
 				default:
-					this.getOrders("sm");
+					this.ordersType = "new"
 					break;
 			}
+
+			this.getOrders();
 		},
 		toDate(date) {
 			return moment.utc(date).format("DD.MM.YYYY");
@@ -243,9 +338,10 @@ export default {
 		toTime(date) {
 			return moment.utc(date).format("HH:mm");
 		},
-		async getOrders(status = "") {
+		async getOrders() {
+			let status = this.ordersType
 			switch (status) {
-				case "sm":
+				case "new":
 					var orders = await api.account.getMasterOrders(
 						"?order_status=sm&exist_master_reply=false"
 					);
@@ -291,7 +387,11 @@ export default {
 				default:
 					break;
 			}
-		}
+		},
+		onNewResponseSuccess() {
+			this.newResponseData.modal = false;
+			this.getOrders();
+		},
 	},
 	computed: {
 		getPageOrders() {
@@ -303,12 +403,12 @@ export default {
 						(this.pagination.currentPage - 1),
 					this.pagination.itemsOnPage * this.pagination.currentPage
 				);
-		}
+		},
 	},
 	async created() {
 		api.account
 			.getLoginStatus()
-			.then(response => {
+			.then((response) => {
 				switch (response.user.type_code) {
 					case "c":
 						this.$router.push("/bids");
@@ -323,21 +423,21 @@ export default {
 				}
 				console.log(response.user.type_code);
 			})
-			.catch(e => {
+			.catch((e) => {
 				api.errorHandler(e, this, {
 					401: () => {
 						this.$store.dispatch("general/removeToken");
 						this.$router.push("/");
-					}
+					},
 				});
 			});
 	},
 	watch: {
-		"$route.params.type": function() {
+		"$route.params.type": function () {
 			this.isLoading = true;
 			this.parseRoute();
-		}
-	}
+		},
+	},
 };
 </script>
 

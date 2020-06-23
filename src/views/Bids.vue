@@ -131,7 +131,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="row py-2 buttons">
+							<div class="row py-2 buttons" v-if="order.status == 'Подбор мастеров'">
 								<div class="col-7">
 									<router-link
 										:to="buildResponsesLink(order.id)"
@@ -145,6 +145,9 @@
 										@click.prevent="cancelBid(order.id)"
 									>Отменить заявку</a>
 								</div>
+							</div>
+
+							<div class="row py-2 buttons" v-if="order.status == 'Выбран мастер'">
 							</div>
 						</div>
 						<div v-if="!isLoading && !getPageOrders.length" class="text-center">Нет данных для отображения</div>
@@ -342,12 +345,11 @@ export default {
 							case "cs":
 								this.ordersType = "cs"
 								break;
-							case "сс":
+							case "cc":
 								this.ordersType = "na,cc,cm"
 								break;
-
 							default:
-								this.ordersType = "sm"
+								this.ordersType = ""
 								break;
 						}
 						this.getOrders();
@@ -374,19 +376,18 @@ export default {
 				case "sm":
 					this.ordersType = "sm"
 					break;
-
 				case "ms":
 					this.ordersType = "ms"
 					break;
 				case "cs":
 					this.ordersType = "cs"
 					break;
-				case "сс":
+				case "cc":
 					this.ordersType = "na,cc,cm"
 					break;
 
 				default:
-					this.ordersType = "sm"
+					this.ordersType = ""
 					break;
 			}
 			this.getOrders();

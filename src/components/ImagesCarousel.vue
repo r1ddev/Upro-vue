@@ -147,7 +147,7 @@ export default {
 				height: 100%;
 
 				.el-carousel__container {
-					height: 90%;
+					height: 88%;
 				}
 			}
 		}
@@ -157,8 +157,4 @@ export default {
 		width: 90% !important;
 	}
 }
-</style>
-
-<style>
-
 </style>

@@ -1,11 +1,11 @@
 <template>
 	<div class="bid">
-		<div class="title">Ваш профиль</div>
+		<div class="title">Профиль мастера</div>
 		<div class="row">
 			<div class="col-3">
 				<div class="avatar">
 					<div class="label">Аватар профиля:</div>
-					<img :src="master.userAvatar" />
+					<img :src="$store.state.general.server + master.userAvatar" />
 				</div>
 			</div>
 			<div class="col d-flex justify-content-center flex-column">

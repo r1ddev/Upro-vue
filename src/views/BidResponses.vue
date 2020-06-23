@@ -3,36 +3,45 @@
 		<HomeHeader
 			page="bids"
 			:links="[
-				{label:'Заявки', href: '/bids'},
-				{label:'Профиль', href: '/bids'}
+				{ label: 'Заявки', href: '/bids' },
+				{ label: 'Профиль', href: '/bids' },
 			]"
 		/>
 
 		<NewBidModal
 			:visible="newBidModalVisible"
 			@cancel="newBidModalVisible = false"
-			@orderComlete="orderComlete($event)"
+			@orderComlete="false"
 		/>
 
-		<!-- <a-modal
-			:closable="true"
-			:visible="dialogBidImage.visible"
-			:footer="null"
-			@cancel="() => dialogBidImage.visible = false"
+		<el-dialog
+			title="Выберите время"
+			:visible.sync="selectedResponse.modalVisible"
 		>
-			<div v-touch:swipe="swipeHandler" v-touch:moving="draggingSideNavClose">
-				<el-carousel ref="carousel" trigger="click" indicator-position="outside" :autoplay="false">
-					<el-carousel-item v-for="(image, index) in getOrderImages" :key="index">
-						<img :src="image.image" alt />
-					</el-carousel-item>
-				</el-carousel>
-			</div>
-		</a-modal>-->
+			<el-time-picker
+				v-model="selectedResponse.selectedTime"
+				:picker-options="{
+					selectableRange: suggestedResponseTimeRange,
+					format: 'HH:mm',
+				}"
+				value-format="HH:mm"
+				format="HH:mm"
+				align="center"
+				placeholder="Выберите удобное время"
+			>
+			</el-time-picker>
+
+			<span slot="footer" class="dialog-footer">
+				<el-button type="primary" @click="confirmResponse()"
+					>Подтвердить</el-button
+				>
+			</span>
+		</el-dialog>
 
 		<AccountTemplate
 			:sideLinks="[
-				{label:'Заявки', href: '/bids'},
-				{label:'Профиль', href: '/bids'}
+				{ label: 'Заявки', href: '/bids' },
+				{ label: 'Профиль', href: '/bids' },
 			]"
 		>
 			<template v-slot:account-menu>
@@ -58,134 +67,71 @@
 					</div>
 				</div>
 			</template>
-			<!-- <template v-slot:account-menu>
-				<div class="row flex-center">
-					<div class="col-auto px-0">
-						<button class="btn yp-btn yp-btn-menu active mt-3">Все заявки</button>
-					</div>
-					<div class="col-auto px-0">
-						<button class="btn yp-btn yp-btn-menu ml-2 mt-3">Подбор мастеров</button>
-					</div>
-					<div class="col-auto px-0">
-						<button class="btn yp-btn yp-btn-menu ml-2 mt-3">Мастер выбран</button>
-					</div>
-					<div class="col-auto px-0">
-						<button class="btn yp-btn yp-btn-menu ml-2 mt-3">Завершенные</button>
-					</div>
-					<div class="col-auto px-0">
-						<button class="btn yp-btn yp-btn-menu ml-2 mt-3">Отмененные</button>
-					</div>
-				</div>
-			</template>-->
-
-			<!-- <template v-slot:account-content>
-				<section class="bids-list">
-					<div class="container" v-loading="isLoading">
-						<div class="bid my-3" v-for="order in getPageOrders" :key="order.id">
-							<div class="row py-3">
-								<div class="col d-flex align-items-center">
-									<span>
-										<u>Заявка №{{ order.id }}</u> — подбор мастеров
-									</span>
-								</div>
-								<div class="col-auto text-right">
-									<div class="id">123</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-7">
-									<div class="row">
-										<div class="col-lg-7 py-2">
-											<div class="field">{{ order.city }}</div>
-										</div>
-										<div class="col-lg-5 py-2">
-											<div class="field text-center">{{ toDate(order.request_date_from) }}</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-lg-7 py-2">
-											<div class="field">{{ order.master_type }}</div>
-										</div>
-										<div class="col-lg-5 py-2">
-											<div class="row">
-												<div class="col-6">
-													<div class="field field-time">{{ toTime(order.request_date_from) }}</div>
-												</div>
-												<div class="col-6">
-													<div class="field field-time">{{ toTime(order.request_date_to) }}</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row py-2">
-										<div class="col-12">
-											<VuePerfectScrollbar class="field-text">{{ order.description }}</VuePerfectScrollbar>
-										</div>
-									</div>
-								</div>
-
-								<div class="col-md-5 py-2">
-									<div class="row h-100">
-										<div class="col-6" v-for="(image, index) in order.albumImages" :key="index">
-											<img @click="openImageViewer(order.id, index)" :src="image.image_thumb" class="image" />
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row py-2 buttons">
-								<div class="col-7">
-									<a href="#" class="btn yp-btn yp-btn-fill">Посмотреть отклики</a>
-								</div>
-								<div class="col-5 text-right">
-									<a href="#" class="btn yp-btn yp-btn-fill h-100 flex-center">Отменить заявку</a>
-								</div>
-							</div>
-						</div>
-
-						<div class="pagination flex-center">
-							<el-pagination
-								background
-								layout="prev, pager, next"
-								:total="orders.length"
-								:page-count="pagination.itemsOnPage"
-								@current-change="currentchange"
-							/>
-						</div>
-					</div>
-				</section>
-			</template>-->
 
 			<template v-slot:account-content>
-				<div class="mx-0" v-for="response in responses" :key="response.id">
+				<div
+					class="mx-0"
+					v-for="(response, index) in responses"
+					:key="response.id"
+				>
 					<div class="responses-list p-4">
 						<div class="response">
 							<div class="row mt-3">
-								<div class="col-auto">
+								<div class="col-3">
 									<img
-										src="http://api-lunacy.icons8.com/api/assets/543ecbdc-31a7-408b-b3ed-c32452ad5870/Фото-1.png"
+										class="avatar"
+										:src="
+											$store.state.general.server +
+											response.albumImages[0].image_thumb
+										"
 										alt
 									/>
 								</div>
 								<div class="col">
-									<div class="name">Tatyana Nail-Studio</div>
-									<div class="address">г. Воронеж, ул. Пушкина, д.6/21 к.2</div>
-									<div class="time-wrap">
-										<span class="desc">Готовы вас принять:</span>
-										<span class="time">18:30 - 19:00</span>
+									<div class="name">
+										{{ response.master.name }}
 									</div>
-									<div class="price">{{response.cost}} руб.</div>
+									<!-- <div class="address">г. Воронеж, ул. Пушкина, д.6/21 к.2</div> -->
+									<div class="time-wrap">
+										<span class="desc"
+											>Готовы вас принять:</span
+										>
+										<span class="time ml-1">{{
+											toTime(
+												response.suggested_time_from
+											) +
+											" - " +
+											toTime(response.suggested_time_to)
+										}}</span>
+									</div>
+									<div class="price">
+										{{ response.cost }} руб.
+									</div>
 								</div>
 							</div>
-							<div class="field-text mt-3">{{response.comment}}</div>
+							<div class="field-text mt-3">
+								{{ response.comment }}
+							</div>
 							<div class="row mt-3">
 								<div class="col text-left md-text-center">
-									<a href="#" class="btn yp-btn yp-btn-fill" @click="sign(response.id)">Записаться</a>
-								</div>
-								<div class="col text-right md-text-center sm-mt-2">
-									<router-link
-										:to="'/master/profile/' + response.master.id"
+									<a
+										href="#"
 										class="btn yp-btn yp-btn-fill"
-									>Профиль</router-link>
+										@click.prevent="sign(index)"
+										>Записаться</a
+									>
+								</div>
+								<div
+									class="col text-right md-text-center sm-mt-2"
+								>
+									<router-link
+										:to="
+											'/master/profile/' +
+											response.master.id
+										"
+										class="btn yp-btn yp-btn-fill"
+										>Профиль</router-link
+									>
 								</div>
 							</div>
 						</div>
@@ -194,7 +140,7 @@
 			</template>
 		</AccountTemplate>
 
-		<HomeFooter style="border-top: 1px solid #B2B2B2;" />
+		<HomeFooter style="border-top: 1px solid #b2b2b2;" />
 	</vue100vh>
 </template>
 
@@ -216,132 +162,115 @@ export default {
 		AccountTemplate,
 		HomeFooter,
 		vue100vh,
-		VuePerfectScrollbar
+		VuePerfectScrollbar,
 	},
-	data: function() {
+	data: function () {
 		return {
 			newBidModalVisible: false,
 			responses: [],
-			orders: [],
-			pagination: {
-				currentPage: 1,
-				itemsOnPage: 10
+			selectedResponse: {
+				id: undefined,
+				modalVisible: false,
+				date: undefined,
+				selectedTime: "",
 			},
-			dialogBidImage: {
-				visible: false,
-				orderId: 0,
-				imageIndex: 0
-			},
-			isLoading: true
 		};
 	},
 	methods: {
-		openImageViewer(orderId, imageIndex) {
-			// this.dialogBidImage.imageIndex = imageIndex;
-			this.dialogBidImage.orderId = orderId;
-			this.dialogBidImage.visible = true;
-
-			setTimeout(() => {
-				this.$refs.carousel.setActiveItem(imageIndex);
-			}, 200);
-		},
-		currentchange(e) {
-			this.pagination.currentPage = e;
-			VueScrollTo.scrollTo("body");
-		},
 		toDate(date) {
 			return moment.utc(date).format("DD.MM.YYYY");
 		},
 		toTime(date) {
 			return moment.utc(date).format("HH:mm");
 		},
-		orderComlete(e) {
-			this.orders.push(e.order);
-			console.log(e);
+		async confirmResponse() {
+			let timeArray = this.selectedResponse.selectedTime.split(":");
 
-			this.newBidModalVisible = false;
+			let responseTimestamp = moment(
+				this.selectedResponse.date
+			).utcOffset(0);
+
+			responseTimestamp.set({
+				hour: timeArray[0],
+				minute: timeArray[1],
+				second: 0,
+				millisecond: 0,
+			});
+
+			// TODO: to store!!!
+			await api.account.createClientSign(
+				this.$route.params.id,
+				responseTimestamp.unix(),
+				this.selectedResponse.id
+			);
+
+			this.selectedResponse.modalVisible = false;
+
+			this.$notify({
+				title: "Успешно",
+				message: "Запись успешно создана",
+				type: "success",
+			});
+
+			this.$router.push("/bids/ms");
 		},
 		getOrderResponses(id) {
-			
-			api.account.getOrderResponses(id).then(async res => {
-				this.responses = res.replies;
-			}).catch(e => {
-				// TODO: error handler
-			})
-		},
-		getOrders() {
-			api.account.getOrders().then(async res => {
-				this.isLoading = false;
-				// this.orders = res.orders;
-
-				for (let index = 0; index < res.orders.length; index++) {
-					const order = res.orders[index];
-					let album = await api.account.getAlbumPhotos(
-						order.album_id
+			api.account
+				.getOrderResponses(id)
+				.then(async (res) => {
+					res.replies = res.replies.filter(
+						(reply) => reply.status == "considered"
 					);
-					res.orders[index].albumImages = album.photos;
-				}
 
-				this.orders = res.orders;
+					for (let index = 0; index < res.replies.length; index++) {
+						const reply = res.replies[index];
+						let album = await api.account.getAlbumPhotos(
+							reply.master.avatar_album_id
+						);
 
-				// this.orders = this.orders.map(async order => {
-				// 	let album = await api.account.getAlbumPhotos(order.album_id)
-				// 	order.albumImages = album.photos
-				// 	return order
-				// })
-			});
+						res.replies[index].albumImages = album.photos;
+					}
+
+					this.responses = res.replies;
+				})
+				.catch((e) => {
+					// TODO: error handler
+				});
 		},
-		swipeHandler(direction) {
-			if (direction == "left") {
-				this.$refs.carousel.next();
-			}
 
-			if (direction == "right") {
-				this.$refs.carousel.prev();
-			}
+		async sign(responseIndex) {
+			let resp = this.responses[responseIndex];
+
+			this.selectedResponse.id = resp.id;
+			this.selectedResponse.index = responseIndex;
+			this.selectedResponse.modalVisible = true;
+			this.selectedResponse.date = moment(resp.suggested_time_from);
 		},
-		async sign(reply_id) {
-			alert("выбран мастер (нет)")
-			api.account.createClientSign(this.$route.params.id, 100, reply_id)
-		}
 	},
 	computed: {
-		getOrderImages() {
-			return (
-				(
-					this.orders.find(
-						v => v.id == this.dialogBidImage.orderId
-					) || []
-				).albumImages || []
-			);
-		},
-		getTotalPages() {
-			return Math.ceil(this.orders.length / this.pagination.itemsOnPage);
-		},
-		getPageOrders() {
-			return this.orders
-				.slice()
-				.reverse()
-				.slice(
-					this.pagination.itemsOnPage *
-						(this.pagination.currentPage - 1),
-					this.pagination.itemsOnPage * this.pagination.currentPage
+		suggestedResponseTimeRange() {
+			if (this.selectedResponse.id) {
+				let resp = this.responses[this.selectedResponse.index];
+				return (
+					this.toTime(resp.suggested_time_from) +
+					":00 - " +
+					this.toTime(resp.suggested_time_to) +
+					":00"
 				);
-		}
+			}
+			return "";
+		},
 	},
 	async created() {
 		api.account
 			.getLoginStatus()
-			.then(response => {
+			.then((response) => {
 				switch (response.user.type_code) {
 					case "m":
 						this.$router.push("/master");
 						break;
 
 					case "c":
-						// this.getOrders();
-						// console.log("this.$route.params.id", this.$route.params.id);
-						
 						this.getOrderResponses(this.$route.params.id);
 						break;
 
@@ -350,15 +279,15 @@ export default {
 				}
 				console.log(response.user.type_code);
 			})
-			.catch(e => {
+			.catch((e) => {
 				api.errorHandler(e, this, {
 					401: () => {
 						this.$store.dispatch("general/removeToken");
-						this.$router.push('/');
-					}
+						this.$router.push("/");
+					},
 				});
 			});
-	}
+	},
 };
 </script>
 
@@ -535,12 +464,19 @@ export default {
 .responses-list {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-	
+
 	.response {
 		background: #fff;
 		box-shadow: 0px 2px4px rgba(100, 100, 100, 0.5);
 		border-radius: 25px;
 		padding: 15px 20px;
+
+		.avatar {
+			width: 100%;
+			border: 1px solid #e9378d;
+			border-radius: 5px;
+			cursor: pointer;
+		}
 
 		.name {
 			font-weight: bold;
