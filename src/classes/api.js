@@ -47,6 +47,10 @@ var api = {
 			let response = await Axios.get(store.state.general.server + "/v1/orders/?order_status=" + status, api.useAuth())
 			return response.data
 		},
+		getBid: async (bidId) => {
+			let response = await Axios.get(store.state.general.server + `/v1/orders/${bidId}/`, api.useAuth())
+			return response.data
+		},
 		getOrderResponses: async (id) => {
 			let response = await Axios.get(store.state.general.server + "/v1/orders/" + id + "/replies/", api.useAuth())
 			return response.data

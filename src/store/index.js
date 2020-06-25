@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-
 import general from './modules/general';
 import master from './modules/master';
+import client from './modules/client';
 
 Vue.use(Vuex)
 
@@ -11,7 +11,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 	modules: {
 		general: general,
-		master: master
+		master: master,
+		client: client,
 	},
 	getters: {
 		isLoading: (state, getters, rootState, rootGetters) => {
@@ -23,8 +24,10 @@ export default new Vuex.Store({
 			// console.log("rootGetters.master/isLoading", rootGetters.master/isLoading);
 			
 			return (
-				getters['general/isLoading'] ||
-				getters['master/isLoading'])
+				getters['general/isLoading']
+				|| getters['master/isLoading']
+				|| getters['client/isLoading']
+			)
 
 			// return false
 		}

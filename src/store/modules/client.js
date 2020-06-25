@@ -6,6 +6,10 @@ const client = {
 		bidResponses: {
 			isLoading: false,
 			data: []
+		},
+		bidData: {
+			isLoading: false,
+			data: []
 		}
 	},
 	mutations: {
@@ -14,17 +18,24 @@ const client = {
 		},
 		bidResponsesSetData(state, payload) {
 			state.bidResponses.data = payload
+		},
+
+		bidDataSetLoading(state, payload) {
+			state.bidData.isLoading = payload
+		},
+		bidDataSetData(state, payload) {
+			state.bidData.data = payload
 		}
 	},
 	actions: {
 		async getBidResponses(state, id) {
 			return new Promise((resolve, reject) => {
-				state.commit('userDataSetLoading', true)
+				state.commit('bidResponsesSetLoading', true)
 
 				api.account
 					.getMasterData(id)
 					.then(res => {
-						state.commit('userDataSetData', {
+						state.commit('bidResponsesSetData', {
 							username: res.name,
 							speciality: res.types,
 							description: res.about_myself || "",
@@ -32,68 +43,45 @@ const client = {
 							albumIdWorkplace: res.workplace_album_id,
 							albumIdAvatar: res.avatar_album_id,
 						})
-						state.commit('userDataSetLoading', false)
+						state.commit('bidResponsesSetLoading', false)
 						resolve()
 					})
 					.catch(e => {
 						console.log(e);
-						state.commit('userDataSetLoading', false);
+						state.commit('bidResponsesSetLoading', false);
 						reject()
 					});
 			});
 		},
 
-		async uploadPhotos(state, {albumId, photos, type}) {
-
+		async geBidData (state, id) {
 			return new Promise((resolve, reject) => {
-				state.commit(`photos${type}SetLoading`, true)
+				state.commit('bidDataSetLoading', true)
 
 				api.account
-					.uploadPhotos(albumId, photos)
+					.getBid(id)
 					.then(res => {
-						state.commit(`photos${type}SetData`, [...state.state[`photos${type}`].data, ...res.photos])
-						state.commit(`photos${type}SetLoading`, false)
+						state.commit('bidDataSetData', res)
+						state.commit('bidDataSetLoading', false)
 						resolve()
 					})
 					.catch(e => {
 						console.log(e);
-						state.commit(`photos${type}SetLoading`, false);
+						state.commit('bidDataSetLoading', false);
 						reject()
 					});
-			});
-		},
+			})
+		}
 		
-		async createResponse(state, {orderId, dateFrom, dateTo, description, cost}) {
-
-			return new Promise((resolve, reject) => {
-				state.commit('createResponseSetLoading', true)
-
-				api.account.master
-					.createResponse(orderId, dateFrom, dateTo, description, cost)
-					.then(res => {
-						state.commit('createResponseSetLoading', false)
-						resolve()
-					})
-					.catch(e => {
-						console.log(e);
-						state.commit('createResponseSetLoading', false);
-						reject()
-					});
-			});
-		},
 	},
 	getters: {
 		isLoading: state => {
 			return (
-				state.changeProfile.isLoading
-				|| state.userData.isLoading
-				|| state.photosGallery.isLoading
-				|| state.photosWorkplace.isLoading
-				|| state.photosAvatar.isLoading
-				|| state.createResponse.isLoading
+				state.bidResponses.isLoading
+				|| state.bidData.isLoading
 			)
 		}
 	}
 }
 
-export default master;
+export default client;

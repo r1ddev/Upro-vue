@@ -49,18 +49,18 @@
 					<div class>
 						<div class="title">
 							<div class="name">
-								<span class="id">Заявка № 678</span>
-								<span>- Подбор мастеров</span>
+								<span class="id">Заявка № {{bidData.order.id}}</span>
+								<span>- {{bidData.order.status}}</span>
 							</div>
 							<div class="row mt-2">
 								<div class="col-md-4 md-mt-2">
-									<div class="prop">Мастер по ногтям</div>
+									<div class="prop">{{bidData.order.master_type}}</div>
 								</div>
 								<div class="col-md-4 md-mt-2">
-									<div class="prop">21.02.2020</div>
+									<div class="prop">{{toDate(bidData.order.request_date_from)}}</div>
 								</div>
 								<div class="col-md-4 md-mt-2">
-									<div class="prop">4</div>
+									<div class="prop">{{responses.length}}</div>
 								</div>
 							</div>
 						</div>
@@ -80,10 +80,7 @@
 								<div class="col-3">
 									<img
 										class="avatar"
-										:src="
-											$store.state.general.server +
-											response.albumImages[0].image_thumb
-										"
+										:src="userAvatar(response)"
 										alt
 									/>
 								</div>
@@ -154,6 +151,9 @@ import moment from "moment";
 import VueScrollTo from "vue-scrollto";
 import vue100vh from "vue-100vh";
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
+
+import { createNamespacedHelpers } from "vuex";
+const { mapState, mapActions } = createNamespacedHelpers("client");
 
 export default {
 	components: {
@@ -236,6 +236,8 @@ export default {
 				.catch((e) => {
 					// TODO: error handler
 				});
+
+			this.$store.dispatch("client/geBidData", id)
 		},
 
 		async sign(responseIndex) {
@@ -246,8 +248,17 @@ export default {
 			this.selectedResponse.modalVisible = true;
 			this.selectedResponse.date = moment(resp.suggested_time_from);
 		},
+		userAvatar(response) {
+			return response.albumImages.length > 0
+				? $store.state.general.server +
+						response.albumImages[0].image_thumb
+				: require(`@/assets/img/no-avatar.png`);
+		},
 	},
 	computed: {
+		...mapState({
+			bidData: state => state.bidData.data,
+		}),
 		suggestedResponseTimeRange() {
 			if (this.selectedResponse.id) {
 				let resp = this.responses[this.selectedResponse.index];
