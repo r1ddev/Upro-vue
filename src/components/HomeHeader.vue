@@ -17,21 +17,36 @@
 			:lock-scroll="true"
 		>
 			<div>
-				<a href="tel:8 (910) 282-53-40" class="header-menu-link">8 (910) 282-53-40</a>
+				<a href="tel:8 (910) 282-53-40" class="header-menu-link"
+					>8 (910) 282-53-40</a
+				>
 			</div>
 
 			<div v-if="page == 'home'" class="mt-5">
 				<div v-if="!this.$store.getters['general/isLogin']">
-					<router-link to="/masterRegistration" class="header-menu-link">Вы мастер?</router-link>
+					<router-link
+						to="/masterRegistration"
+						class="header-menu-link"
+						>Вы мастер?</router-link
+					>
 				</div>
 				<div>
-					<router-link to="/about" class="header-menu-link">Часто задаваемые вопросы</router-link>
+					<router-link to="/about" class="header-menu-link"
+						>Часто задаваемые вопросы</router-link
+					>
 				</div>
 				<div v-if="!this.$store.getters['general/isLogin']">
-					<a href="#" class="header-menu-link" @click.prevent="loginModal = true">Вход/Регистрация</a>
+					<a
+						href="#"
+						class="header-menu-link"
+						@click.prevent="openLoginModal"
+						>Вход/Регистрация</a
+					>
 				</div>
 				<div v-else>
-					<router-link to="/bids" class="header-menu-link">Личный кабинет</router-link>
+					<router-link to="/bids" class="header-menu-link"
+						>Личный кабинет</router-link
+					>
 				</div>
 			</div>
 
@@ -46,11 +61,19 @@
 					<a
 						href="#"
 						class="header-menu-link"
-						@click.prevent="$parent.$parent.newBidModalVisible = true"
-					>Создать заявку</a>
+						@click.prevent="
+							$parent.$parent.newBidModalVisible = true
+						"
+						>Создать заявку</a
+					>
 				</div>
 				<div>
-					<a href="#" class="header-menu-link" @click.prevent="logout()">Выход</a>
+					<a
+						href="#"
+						class="header-menu-link"
+						@click.prevent="logout()"
+						>Выход</a
+					>
 				</div>
 			</div>
 
@@ -58,16 +81,26 @@
 				<div v-for="(link, index) in links" :key="index">
 					<router-link
 						:to="link.href"
-						:class="'header-menu-link' + (link.active ? ' active' : '')"
-					>{{link.label}}</router-link>
+						:class="
+							'header-menu-link' + (link.active ? ' active' : '')
+						"
+						>{{ link.label }}</router-link
+					>
 				</div>
 				<div>
-					<a href="#" class="header-menu-link" @click.prevent="logout()">Выход</a>
+					<a
+						href="#"
+						class="header-menu-link"
+						@click.prevent="logout()"
+						>Выход</a
+					>
 				</div>
 			</div>
 		</el-dialog>
 
-		<section :class="'header-menu' + (mobileMenuOpened ? ' fixed-menu' : '')">
+		<section
+			:class="'header-menu' + (mobileMenuOpened ? ' fixed-menu' : '')"
+		>
 			<div class="px-4">
 				<div class="desktopMenu row justify-content-between">
 					<div class="col-md-auto">
@@ -76,50 +109,112 @@
 								<router-link to="/" class="header-menu-logo" />
 							</div>
 							<div class="col-auto">
-								<el-select value="0" placeholder="Город" class="header-menu-link">
+								<el-select
+									value="0"
+									placeholder="Город"
+									class="header-menu-link"
+								>
 									<el-option value="0" label="Воронеж" />
 								</el-select>
 							</div>
 							<div class="col-auto">
-								<a href="tel:8 (910) 282-53-40" class="header-menu-link">8 (910) 282-53-40</a>
+								<a
+									href="tel:8 (910) 282-53-40"
+									class="header-menu-link"
+									>8 (910) 282-53-40</a
+								>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-auto">
-						<div class="row d-flex align-items-center h-100" v-if="page == 'home'">
-							<div class="col-auto" v-if="!this.$store.getters['general/isLogin']">
-								<router-link to="/masterRegistration" class="header-menu-link">Вы мастер?</router-link>
+						<div
+							class="row d-flex align-items-center h-100"
+							v-if="page == 'home'"
+						>
+							<div
+								class="col-auto"
+								v-if="!this.$store.getters['general/isLogin']"
+							>
+								<router-link
+									to="/masterRegistration"
+									class="header-menu-link"
+									>Вы мастер?</router-link
+								>
 							</div>
 							<div class="col-auto">
-								<router-link to="/about" class="header-menu-link">Часто задаваемые вопросы</router-link>
+								<router-link
+									to="/about"
+									class="header-menu-link"
+									>Часто задаваемые вопросы</router-link
+								>
 							</div>
-							<div class="col-auto" v-if="!this.$store.getters['general/isLogin']">
-								<a href="#" class="header-menu-link" @click.prevent="loginModal = true">Вход/Регистрация</a>
+							<div
+								class="col-auto"
+								v-if="!this.$store.getters['general/isLogin']"
+							>
+								<a
+									href="#"
+									class="header-menu-link"
+									@click.prevent="openLoginModal"
+									>Вход/Регистрация</a
+								>
 							</div>
-							<div class="col-auto" v-if="this.$store.getters['general/isLogin']">
-								<router-link to="/bids" class="header-menu-link">Личный кабинет</router-link>
+							<div
+								class="col-auto"
+								v-if="this.$store.getters['general/isLogin']"
+							>
+								<router-link to="/bids" class="header-menu-link"
+									>Личный кабинет</router-link
+								>
 							</div>
-							<div class="col-auto" v-if="this.$store.getters['general/isLogin']">
-								<a href="#" class="header-menu-link" @click.prevent="logout()">Выход</a>
+							<div
+								class="col-auto"
+								v-if="this.$store.getters['general/isLogin']"
+							>
+								<a
+									href="#"
+									class="header-menu-link"
+									@click.prevent="logout()"
+									>Выход</a
+								>
 							</div>
 						</div>
 
-						<div class="row d-flex align-items-center h-100" v-if="page == 'bids'">
+						<div
+							class="row d-flex align-items-center h-100"
+							v-if="page == 'bids'"
+						>
 							<div class="col-auto">
 								<a
 									href="#"
 									class="header-menu-link"
-									@click.prevent="$parent.$parent.newBidModalVisible = true"
-								>Создать заявку</a>
+									@click.prevent="
+										$parent.$parent.newBidModalVisible = true
+									"
+									>Создать заявку</a
+								>
 							</div>
 							<div class="col-auto">
-								<a href="#" class="header-menu-link" @click.prevent="logout()">Выход</a>
+								<a
+									href="#"
+									class="header-menu-link"
+									@click.prevent="logout()"
+									>Выход</a
+								>
 							</div>
 						</div>
 
-						<div class="row d-flex align-items-center h-100" v-if="page == 'master'">
+						<div
+							class="row d-flex align-items-center h-100"
+							v-if="page == 'master'"
+						>
 							<div class="col-auto">
-								<a href="#" class="header-menu-link" @click.prevent="logout()">Выход</a>
+								<a
+									href="#"
+									class="header-menu-link"
+									@click.prevent="logout()"
+									>Выход</a
+								>
 							</div>
 						</div>
 					</div>
@@ -130,7 +225,11 @@
 						<router-link to="/" class="header-menu-logo" />
 					</div>
 					<div class="col-auto flex-center p-0">
-						<el-select value="0" placeholder="Город" class="header-menu-link">
+						<el-select
+							value="0"
+							placeholder="Город"
+							class="header-menu-link"
+						>
 							<el-option value="0" label="Воронеж" />
 						</el-select>
 					</div>
@@ -138,11 +237,20 @@
 						<button
 							class="navbar-toggler"
 							type="button"
-							@click.prevent="mobileMenuOpened = !mobileMenuOpened"
+							@click.prevent="
+								mobileMenuOpened = !mobileMenuOpened
+							"
 						>
 							<span class="navbar-toggler-icon">
-								<transition name="translate-slide" mode="out-in">
-									<a-icon type="close" v-if="mobileMenuOpened" key="asd" />
+								<transition
+									name="translate-slide"
+									mode="out-in"
+								>
+									<a-icon
+										type="close"
+										v-if="mobileMenuOpened"
+										key="asd"
+									/>
 									<a-icon type="menu" v-else key="asd1" />
 								</transition>
 							</span>
@@ -162,20 +270,25 @@ export default {
 	props: {
 		page: {
 			default: "home",
-			type: String
+			type: String,
 		},
-		links: Array
+		links: Array,
 	},
 	components: {
-		LoginModal
+		LoginModal,
 	},
 	data() {
 		return {
 			loginModal: false,
-			mobileMenuOpened: false
+			mobileMenuOpened: false,
+			dialogVisible: false,
 		};
 	},
 	methods: {
+		openLoginModal() {
+			this.mobileMenuOpened = false;
+			this.loginModal = true;
+		},
 		registerComplete() {
 			console.log("call registerComplete from HomeHeader");
 
@@ -184,38 +297,23 @@ export default {
 		logout() {
 			api.account
 				.logout()
-				.then(res => {
+				.then((res) => {
 					this.$message.success("Вы успешно вышли из аккаунта");
 
 					this.$store.dispatch("general/removeToken");
 					this.$router.push("/");
 				})
-				.catch(e => {
+				.catch((e) => {
 					api.errorHandler(e, this, {
 						401: () => {
 							this.$message.error("Ошибка авторизации");
 							this.$store.dispatch("general/removeToken");
 							this.$router.push("/");
-						}
+						},
 					});
 				});
-		}
+		},
 	},
-	watch: {
-		mobileMenuOpened: function(newVal, oldVal) {
-			console.log("newVal", newVal);
-
-			if (newVal) {
-				// document.body.style.position = 'relative'
-				// document.body.style.width = 'calc(100% - 14px)'
-				// document.body.style.overflow = 'hidden'
-			} else {
-				// document.body.style.position = ''
-				// document.body.style.width = ''
-				// document.body.style.overflow = ''
-			}
-		}
-	}
 	// beforeDestroy() {
 	// 	console.log("HomeHeader beforeDestroy");
 	// 	console.log("HomeHeader beforeDestroy", document.body.style.overflow);
@@ -230,12 +328,12 @@ export default {
 	color: #6b3752;
 	box-shadow: 0px 3px 3px 0px rgba(100, 100, 100, 0.5);
 	position: relative;
-	z-index: 1;	
+	z-index: 1;
 }
 
 ::v-deep .el-dialog__wrapper {
 	margin-top: 56px;
-	pointer-events: none;
+	// pointer-events: none;
 }
 .header-menu-logo {
 	background: url(../assets/img/logo-mini.png) center center no-repeat;

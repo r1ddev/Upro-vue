@@ -1,19 +1,36 @@
 <template>
-	<a-modal title="Регистрация" :visible="visible" @cancel="$emit('cancel');" :footer="null">
-		<!-- v-if="registerStep === 1" -->
+	<!-- <a-modal title="Регистрация" :visible="visible" @cancel="$emit('cancel');" :footer="null"> -->
+
+	<el-dialog
+		custom-class="dialog"
+		:modal-append-to-body="false"
+		title="Регистрация"
+		width="50%"
+		:visible="visible"
+		:before-close="handleClose"
+	>
 		<a-form @submit.prevent="sendPhone" key="enterPhone" class="enterPhone">
-			<a-form-item label="Введите номер телефона для получения доступа в личный кабинет">
-				<el-input placeholder="Введите ваш номер" v-model="registerPhone" type="number" @input="validatePhone">
+			<a-form-item
+				label="Введите номер телефона для получения доступа в личный кабинет"
+			>
+				<el-input
+					placeholder="Введите ваш номер"
+					v-model="registerPhone"
+					type="number"
+					@input="validatePhone"
+				>
 					<template slot="prepend">+7</template>
 				</el-input>
 			</a-form-item>
 			<a-form-item>
-				<div v-if="!(isRegisterPhoneCorrect.status)">{{ isRegisterPhoneCorrect.error }}</div>
+				<div v-if="!isRegisterPhoneCorrect.status">
+					{{ isRegisterPhoneCorrect.error }}
+				</div>
 				<a-button
 					html-type="submit"
 					type="primary"
 					size="large"
-					:disabled="!(isRegisterPhoneCorrect.status)"
+					:disabled="!isRegisterPhoneCorrect.status"
 					:loading="isLoading"
 				>
 					{{ sendCodeText.text }}
@@ -29,7 +46,6 @@
 				class="comfirmPhone"
 			>
 				<a-form-item label="Введите код из смс">
-
 					<v-otp-input
 						ref="otpInput"
 						input-classes="otp-input-3"
@@ -40,7 +56,6 @@
 						@on-change="handleOnChange"
 						@on-complete="handleOnComplete"
 					/>
-
 				</a-form-item>
 				<a-form-item>
 					<a-button
@@ -49,11 +64,12 @@
 						size="large"
 						:disabled="!((confirmCode || '').length == 6)"
 						:loading="confirmStep.isLoading"
-					>Зарегистрироваться</a-button>
+						>Зарегистрироваться</a-button
+					>
 				</a-form-item>
 			</a-form>
 		</transition>
-	</a-modal>
+	</el-dialog>
 </template>
 
 <script>
@@ -62,27 +78,41 @@ import OTPInput8 from "@8bu/vue-otp-input";
 import OtpInput from "@bachdgvn/vue-otp-input";
 
 export default {
-	props: ["visible"],
+	props: {
+		visible: {
+			type: Boolean,
+			default: false,
+		},
+	},
 	components: {
 		"otp-input": OTPInput8,
-		"v-otp-input": OtpInput
+		"v-otp-input": OtpInput,
 	},
 	data() {
 		return {
+			dialogVisible: this.visible,
 			registerPhonePrefix: "+7",
 			registerPhone: "",
 			confirmCode: "",
 			isLoading: false,
 			registerStep: 1,
 			confirmStep: {
-				isLoading: false
-			}
+				isLoading: false,
+			},
 		};
 	},
 	methods: {
+		handleClose(done) {
+			this.$emit('cancel');
+		},
+		closeModal() {
+			// this.$emit('cancel');
+			// alert()
+			console.log("closeModal");
+		},
 		validatePhone(e) {
 			if (e.length > 10) {
-				this.registerPhone = e.substring(0, 10)
+				this.registerPhone = e.substring(0, 10);
 			}
 		},
 		otpchange(v) {
@@ -105,7 +135,7 @@ export default {
 		handleOnChange(value) {
 			this.confirmCode = value;
 		},
-		isNumber: function(evt) {
+		isNumber: function (evt) {
 			evt = evt ? evt : window.event;
 			var charCode = evt.which ? evt.which : evt.keyCode;
 			if (
@@ -123,11 +153,11 @@ export default {
 
 			api.login
 				.sendPhone(this.registerPhone)
-				.then(response => {
+				.then((response) => {
 					this.registerStep = 2;
 					this.isLoading = false;
 				})
-				.catch(e => {
+				.catch((e) => {
 					this.$message.error(
 						"Произошла ошибка сервера. Мы уже знаем о ней и делаем все, чтобы её исправить!"
 					);
@@ -140,23 +170,23 @@ export default {
 
 			api.login
 				.sendConfirmCode(this.registerPhone, this.confirmCode)
-				.then(response => {
+				.then((response) => {
 					this.$message.success("Регистрация успешна!");
 					this.$store.dispatch("general/saveToken", response.token);
 
 					console.log("this.$emit registerComplete");
 					this.$emit("registerComplete");
 				})
-				.catch(e => {
+				.catch((e) => {
 					console.log(e);
 
 					this.confirmStep.isLoading = false;
 
 					api.errorHandler(e, this, {
-						400: () => this.$message.error("Введен неверный код")
+						400: () => this.$message.error("Введен неверный код"),
 					});
 				});
-		}
+		},
 	},
 	computed: {
 		sendCodeText() {
@@ -165,7 +195,7 @@ export default {
 					this.registerStep == 1
 						? "Отправить код"
 						: "Отправить код повторно",
-				isIcon: this.registerStep == 1
+				isIcon: this.registerStep == 1,
 			};
 		},
 		isRegisterPhoneCorrect() {
@@ -180,12 +210,20 @@ export default {
 				status = false;
 			}
 			return { status: status, error: error };
-		}
-	}
+		},
+	},
 };
 </script>
 
 <style lang="less">
+// ::v-deep {
+// 	.ant-modal-mask {
+// 		z-index: 2000;
+// 	}
+// 	.ant-modal-wrap {
+// 		z-index: 2001;
+// 	}
+// }
 .otp-input input {
 	width: 100%;
 	height: 100%;
@@ -253,7 +291,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
 	-moz-appearance: textfield;
 }
 </style>

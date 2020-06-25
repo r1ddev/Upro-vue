@@ -250,8 +250,6 @@ export default {
 			});
 		},
 		swipeHandler(direction) {
-			console.log(direction);
-
 			if (direction == "left") {
 				this.$refs.carousel.next();
 			}

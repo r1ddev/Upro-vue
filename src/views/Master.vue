@@ -16,6 +16,21 @@
 			@success="onNewResponseSuccess()"
 		/>
 
+		<a-modal
+			:closable="true"
+			:visible="dialogBidImage.visible"
+			:footer="null"
+			@cancel="() => dialogBidImage.visible = false"
+		>
+			<div v-touch:swipe="swipeHandler">
+				<el-carousel ref="carousel" trigger="click" indicator-position="outside" :autoplay="false">
+					<el-carousel-item v-for="(image, index) in getOrderImages" :key="index">
+						<img :src="$store.state.general.server + image.image" class="carousel-photo" alt />
+					</el-carousel-item>
+				</el-carousel>
+			</div>
+		</a-modal>
+
 		<AccountTemplate
 			:sideLinks="[
 				{ label: 'Заявки', href: '/master', active: true },
@@ -161,10 +176,12 @@
 
 								<div class="col-md-5 py-2">
 									<div class="row h-100">
-										<div class="col-6">
+										<div class="col-6" v-for="(image, index) in order.albumImages" :key="index">
+											<!-- {{image.image_thumb}} -->
+											<!-- <img :src="image.image_thumb" alt class="image" @click="openImageViewer(order.id, index)"/> -->
 											<img
-												src="https://www.google.ru/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
-												alt
+												@click="openImageViewer(order.id, index)"
+												:src="$store.state.general.server + image.image_thumb"
 												class="image"
 											/>
 										</div>
@@ -294,10 +311,33 @@ export default {
 				currentPage: 1,
 				itemsOnPage: 10,
 			},
-			ordersType: ""
+			ordersType: "",
+			dialogBidImage: {
+				visible: false,
+				orderId: 0,
+				imageIndex: 0
+			}
 		};
 	},
 	methods: {
+		swipeHandler(direction) {
+			if (direction == "left") {
+				this.$refs.carousel.next();
+			}
+
+			if (direction == "right") {
+				this.$refs.carousel.prev();
+			}
+		},
+		openImageViewer(orderId, imageIndex) {
+			// this.dialogBidImage.imageIndex = imageIndex;
+			this.dialogBidImage.orderId = orderId;
+			this.dialogBidImage.visible = true;
+
+			setTimeout(() => {
+				this.$refs.carousel.setActiveItem(imageIndex);
+			}, 200);
+		},
 		newResponse(orderId) {
 			this.newResponseData.modal = true;
 			this.newResponseData.orderId = orderId;
@@ -340,53 +380,56 @@ export default {
 		},
 		async getOrders() {
 			let status = this.ordersType
+			var res = {};
 			switch (status) {
 				case "new":
-					var orders = await api.account.getMasterOrders(
+					res = await api.account.getMasterOrders(
 						"?order_status=sm&exist_master_reply=false"
 					);
-					this.orders = orders.orders;
-					this.isLoading = false;
 					break;
 				case "process":
-					var orders = await api.account.getMasterOrders(
+					res = await api.account.getMasterOrders(
 						"?order_status=sm&exist_master_reply=true"
 					);
-					this.orders = orders.orders;
-					this.isLoading = false;
 					break;
 				case "ms":
-					var orders = await api.account.getMasterOrders(
+					res = await api.account.getMasterOrders(
 						"?order_status=ms"
 					);
-					this.orders = orders.orders;
-					this.isLoading = false;
 					break;
 				case "cs":
-					var orders = await api.account.getMasterOrders(
+					res = await api.account.getMasterOrders(
 						"?order_status=cs"
 					);
-					this.orders = orders.orders;
-					this.isLoading = false;
 					break;
 				case "cm":
-					var orders = await api.account.getMasterOrders(
+					res = await api.account.getMasterOrders(
 						"?order_status=ms,cc,cm,na,cs&master_by_token=false"
 					);
-					this.orders = orders.orders;
-					this.isLoading = false;
 					break;
 				case "cc":
-					var orders = await api.account.getMasterOrders(
+					res = await api.account.getMasterOrders(
 						"?order_status=na,cc,cm"
 					);
-					this.orders = orders.orders;
-					this.isLoading = false;
 					break;
 
 				default:
 					break;
 			}
+
+			console.log("orders", res);
+			
+
+			for (let index = 0; index < res.orders.length; index++) {
+				const order = res.orders[index];
+				let album = await api.account.getAlbumPhotos(
+					order.album_id
+				);
+				res.orders[index].albumImages = album.photos;
+			}
+
+			this.orders = res.orders;
+			this.isLoading = false;
 		},
 		onNewResponseSuccess() {
 			this.newResponseData.modal = false;
@@ -394,6 +437,15 @@ export default {
 		},
 	},
 	computed: {
+		getOrderImages() {
+			return (
+				(
+					this.orders.find(
+						v => v.id == this.dialogBidImage.orderId
+					) || []
+				).albumImages || []
+			);
+		},
 		getPageOrders() {
 			return this.orders
 				.slice()
@@ -442,6 +494,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.carousel-photo {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
 .yp-btn {
 	transition: 0.2s;
 
@@ -532,9 +589,11 @@ export default {
 
 		.image {
 			.field();
+			padding: 0;
+			cursor: pointer;
 			width: 100%;
 			height: 100%;
-			object-fit: contain;
+			object-fit: cover;
 		}
 
 		.divider {

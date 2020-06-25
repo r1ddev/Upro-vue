@@ -1,12 +1,19 @@
 <template>
 	<div class="root">
-		<a-modal
+		<!-- <a-modal
 			top="20vh"
 			centered
 			title="Создать заявку"
 			:visible="visible"
 			@cancel="$emit('cancel');"
 			:footer="null"
+		> -->
+		<el-dialog
+			custom-class="dialog"
+			centered
+			title="Создать заявку"
+			:visible="visible"
+			:before-close="handleClose"
 		>
 			<el-form @submit.native.prevent="submit" label-position="top">
 				<el-form-item label="Город">
@@ -145,7 +152,7 @@
 					>Создать заявку</a-button>
 				</el-form-item>
 			</el-form>
-		</a-modal>
+		</el-dialog>
 	</div>
 </template>
 
@@ -193,6 +200,9 @@ export default {
 		};
 	},
 	methods: {
+		handleClose() {
+			this.$emit('cancel')
+		},
 		submit() {
 			console.log("this.date.toLocaleString()", this.date.toLocaleString());
 			
