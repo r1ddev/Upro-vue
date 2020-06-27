@@ -88,7 +88,6 @@
 									<div class="name">
 										{{ response.master.name }}
 									</div>
-									<!-- <div class="address">г. Воронеж, ул. Пушкина, д.6/21 к.2</div> -->
 									<div class="time-wrap">
 										<span class="desc"
 											>Готовы вас принять:</span
@@ -196,6 +195,7 @@ export default {
 				second: 0,
 				millisecond: 0,
 			});
+			
 
 			// TODO: to store!!!
 			await api.account.createClientSign(
@@ -242,6 +242,7 @@ export default {
 
 		async sign(responseIndex) {
 			let resp = this.responses[responseIndex];
+			
 
 			this.selectedResponse.id = resp.id;
 			this.selectedResponse.index = responseIndex;
@@ -250,7 +251,7 @@ export default {
 		},
 		userAvatar(response) {
 			return response.albumImages.length > 0
-				? $store.state.general.server +
+				? this.$store.state.general.server +
 						response.albumImages[0].image_thumb
 				: require(`@/assets/img/no-avatar.png`);
 		},
@@ -260,7 +261,9 @@ export default {
 			bidData: state => state.bidData.data,
 		}),
 		suggestedResponseTimeRange() {
-			if (this.selectedResponse.id) {
+			console.log("this.selectedResponse", JSON.stringify(this.selectedResponse));
+			
+			if (this.selectedResponse && this.selectedResponse.id) {
 				let resp = this.responses[this.selectedResponse.index];
 				return (
 					this.toTime(resp.suggested_time_from) +
@@ -280,7 +283,6 @@ export default {
 					case "m":
 						this.$router.push("/master");
 						break;
-
 					case "c":
 						this.getOrderResponses(this.$route.params.id);
 						break;

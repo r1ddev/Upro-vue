@@ -9,7 +9,11 @@ const client = {
 		},
 		bidData: {
 			isLoading: false,
-			data: []
+			data: {
+				order: {
+					id: undefined
+				}
+			}
 		}
 	},
 	mutations: {
