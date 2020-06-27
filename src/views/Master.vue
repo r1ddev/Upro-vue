@@ -241,12 +241,14 @@
 												<a
 													href="#"
 													class="btn yp-btn yp-btn-fill mt-4"
+													@click.prevent="finishBid(order.id)"
 													>Завершить</a
 												>
 											</div>
 											<div class="col-md flex-center">
 												<a
 													href="#"
+													@click.prevent="cancelBid(order.id)"
 													class="btn yp-btn yp-btn-fill mt-4"
 													>Отказаться</a
 												>
@@ -255,6 +257,7 @@
 												<a
 													href="#"
 													class="btn yp-btn yp-btn-fill mt-4"
+													@click.prevent="noClientBid(order.id)"
 													>Клиент не приехал</a
 												>
 											</div>
@@ -320,6 +323,36 @@ export default {
 		};
 	},
 	methods: {
+		finishBid (orderId) {
+			api.account.master.changeBidStatus(orderId, "cs").then(res => {
+				this.$notify({
+					title: "Успешно",
+					message: "Заявка успешно завершена",
+					type: "success",
+				});
+				this.getOrders()
+			})
+		},
+		cancelBid (orderId) {
+			api.account.master.changeBidStatus(orderId, "cc").then(res => {
+				this.$notify({
+					title: "Успешно",
+					message: "Заявка успешно отменена",
+					type: "success",
+				});
+				this.getOrders()
+			})
+		},
+		noClientBid (orderId) {
+			api.account.master.changeBidStatus(orderId, "na").then(res => {
+				this.$notify({
+					title: "Успешно",
+					message: "Статус заявки успешно изменен",
+					type: "success",
+				});
+				this.getOrders()
+			})
+		},
 		swipeHandler(direction) {
 			if (direction == "left") {
 				this.$refs.carousel.next();

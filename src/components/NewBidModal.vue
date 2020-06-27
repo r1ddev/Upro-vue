@@ -35,7 +35,7 @@
 				</el-form-item>
 
 				<el-form-item label="Дата визита">
-					<input
+					<!-- <input
 						type="date"
 						placeholder="Дата визита"
 						class="el-input__inner flex-center"
@@ -43,9 +43,10 @@
 						@change="dateChange"
 						:min="dateMin"
 						:max="dateMax"
-					/>
+					/> -->
+
+					<!-- v-else -->
 					<el-date-picker
-						v-else
 						v-model="date"
 						type="date"
 						placeholder="Дата визита"
@@ -57,16 +58,18 @@
 				<el-form-item label="Удобное время">
 					<div class="row">
 						<div class="col-6">
-							<input
+							<!-- <input
 								type="time"
 								placeholder="С"
 								class="el-input__inner flex-center"
 								v-if="isMobile"
 								step="900"
 								v-model="timeFrom"
-							/>
+							/> -->
+							
+							<!-- v-else -->
+
 							<el-time-select
-								v-else
 								v-model="timeFrom"
 								:picker-options="{
 									start: '00:00',
@@ -78,16 +81,17 @@
 							/>
 						</div>
 						<div class="col-6">
-							<input
+							<!-- <input
 								type="time"
 								v-model="timeTo"
 								placeholder="По"
 								class="el-input__inner flex-center"
 								v-if="isMobile"
 								step="900"
-							/>
+							/> -->
+							
+							<!-- v-else -->
 							<el-time-select
-								v-else
 								v-model="timeTo"
 								:picker-options="{
 									start: '00:00',

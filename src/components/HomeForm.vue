@@ -49,7 +49,7 @@
 				<div class="form-title mb-1">Выберите удобное время (промежуток) и дату визита</div>
 				<div class="row py-4 px-2">
 					<div class="col-lg-4 text-center">
-						<div class="select el-input" v-if="isMobile">
+						<!-- <div class="select el-input" v-if="isMobile">
 							<input
 								type="date"
 								placeholder="Дата визита"
@@ -58,10 +58,10 @@
 								:min="dateMin"
 								:max="dateMax"
 							/>
-						</div>
+						</div> -->
 
+						<!-- v-else -->
 						<el-date-picker
-							v-else
 							v-model="date"
 							type="date"
 							placeholder="Дата визита"
@@ -319,7 +319,9 @@ export default {
 			}
 		},
 		dateChange(e) {
-			this.date = new Date(e.target.value + " 00:00");
+			this.date = moment(e.target.value);
+			console.log("dateChange this.date", this.date);
+			
 		}
 	},
 	computed: {

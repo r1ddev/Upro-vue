@@ -119,6 +119,14 @@ var api = {
 					comment: description,
 					cost: cost
 				}), api.useAuth())
+
+				return response.data
+			},
+			async changeBidStatus(orderId, statusCode) {
+				let response = await Axios.patch(store.state.general.server + `/v1/orders/${orderId}/`, api.toFormData({
+					status_code: statusCode
+				}), api.useAuth())
+				
 				return response.data
 			}
 		},
