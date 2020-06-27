@@ -267,10 +267,10 @@ export default {
 				.createOrder(
 					this.city,
 					this.master,
-					1594149708,
-					1594149908,
-					// mDateFrom.format("X"),
-					// mDateTo.format("X"),
+					// 1594149708,
+					// 1594149908,
+					mDateFrom.format("X"),
+					mDateTo.format("X"),
 					this.text,
 					filesObj
 				)
