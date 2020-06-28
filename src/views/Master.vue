@@ -188,7 +188,7 @@
 									</div>
 								</div>
 							</div>
-							<div class v-if="order.status == 'Подбор мастеров'">
+							<div class v-if="order.status == 'Подбор мастеров' && ordersType !== 'process'">
 								<div class="row justify-content-center">
 									<div class="col-md flex-center">
 										<a
@@ -334,7 +334,7 @@ export default {
 			})
 		},
 		cancelBid (orderId) {
-			api.account.master.changeBidStatus(orderId, "cc").then(res => {
+			api.account.master.changeBidStatus(orderId, "cm").then(res => {
 				this.$notify({
 					title: "Успешно",
 					message: "Заявка успешно отменена",
