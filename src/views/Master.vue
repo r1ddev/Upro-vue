@@ -20,12 +20,24 @@
 			:closable="true"
 			:visible="dialogBidImage.visible"
 			:footer="null"
-			@cancel="() => dialogBidImage.visible = false"
+			@cancel="() => (dialogBidImage.visible = false)"
 		>
 			<div v-touch:swipe="swipeHandler">
-				<el-carousel ref="carousel" trigger="click" indicator-position="outside" :autoplay="false">
-					<el-carousel-item v-for="(image, index) in getOrderImages" :key="index">
-						<img :src="$store.state.general.server + image.image" class="carousel-photo" alt />
+				<el-carousel
+					ref="carousel"
+					trigger="click"
+					indicator-position="outside"
+					:autoplay="false"
+				>
+					<el-carousel-item
+						v-for="(image, index) in getOrderImages"
+						:key="index"
+					>
+						<img
+							:src="$store.state.general.server + image.image"
+							class="carousel-photo"
+							alt
+						/>
 					</el-carousel-item>
 				</el-carousel>
 			</div>
@@ -176,19 +188,39 @@
 
 								<div class="col-md-5 py-2">
 									<div class="row h-100">
-										<div class="col-6" v-for="(image, index) in order.albumImages" :key="index">
+										<div
+											class="col-6"
+											v-for="(image,
+											index) in order.albumImages"
+											:key="index"
+										>
 											<!-- {{image.image_thumb}} -->
 											<!-- <img :src="image.image_thumb" alt class="image" @click="openImageViewer(order.id, index)"/> -->
 											<img
-												@click="openImageViewer(order.id, index)"
-												:src="$store.state.general.server + image.image_thumb"
+												@click="
+													openImageViewer(
+														order.id,
+														index
+													)
+												"
+												:src="
+													$store.state.general
+														.server +
+													image.image_thumb
+												"
 												class="image"
 											/>
 										</div>
 									</div>
 								</div>
 							</div>
-							<div class v-if="order.status == 'Подбор мастеров' && ordersType !== 'process'">
+							<div
+								class
+								v-if="
+									order.status == 'Подбор мастеров' &&
+									ordersType !== 'process'
+								"
+							>
 								<div class="row justify-content-center">
 									<div class="col-md flex-center">
 										<a
@@ -203,7 +235,15 @@
 								</div>
 							</div>
 
-							<div v-if="order.status == 'Выбран мастер'">
+							<div
+								v-if="
+									(order.status == 'Выбран мастер' &&
+										order.replies.length > 0) ||
+									(order.status == 'Подбор мастеров' &&
+										order.replies.length > 0 &&
+										ordersType == 'process')
+								"
+							>
 								<div class="divider py-3">Ваш отклик:</div>
 								<div class="flex-center response">
 									<div class="content">
@@ -216,7 +256,10 @@
 														<div
 															class="field field-time"
 														>
-															1000р
+															{{
+																order.replies[0]
+																	.cost + "р"
+															}}
 														</div>
 													</div>
 													<div
@@ -225,30 +268,55 @@
 														<div
 															class="field field-time"
 														>
-															17:10 - 19:30
+															{{
+																toTime(
+																	order
+																		.replies[0]
+																		.suggested_time_from
+																) +
+																" - " +
+																toTime(
+																	order
+																		.replies[0]
+																		.suggested_time_to
+																)
+															}}
 														</div>
 													</div>
 												</div>
 											</div>
 											<div class="col-md-9">
 												<div class="field-text">
-													Отклик - Комментарий Мастера
+													{{
+														order.replies[0].comment
+													}}
 												</div>
 											</div>
 										</div>
-										<div class="row justify-content-center">
+										<div
+											class="row justify-content-center"
+											v-if="
+												order.status ==
+													'Выбран мастер' &&
+												order.replies.length > 0
+											"
+										>
 											<div class="col-md flex-center">
 												<a
 													href="#"
 													class="btn yp-btn yp-btn-fill mt-4"
-													@click.prevent="finishBid(order.id)"
+													@click.prevent="
+														finishBid(order.id)
+													"
 													>Завершить</a
 												>
 											</div>
 											<div class="col-md flex-center">
 												<a
 													href="#"
-													@click.prevent="cancelBid(order.id)"
+													@click.prevent="
+														cancelBid(order.id)
+													"
 													class="btn yp-btn yp-btn-fill mt-4"
 													>Отказаться</a
 												>
@@ -257,7 +325,9 @@
 												<a
 													href="#"
 													class="btn yp-btn yp-btn-fill mt-4"
-													@click.prevent="noClientBid(order.id)"
+													@click.prevent="
+														noClientBid(order.id)
+													"
 													>Клиент не приехал</a
 												>
 											</div>
@@ -266,7 +336,10 @@
 								</div>
 							</div>
 
-							<div class v-if="order.status == 'Отменена клиентом'"></div>
+							<div
+								class
+								v-if="order.status == 'Отменена клиентом'"
+							></div>
 						</div>
 						<div
 							v-if="!isLoading && !getPageOrders.length"
@@ -318,40 +391,40 @@ export default {
 			dialogBidImage: {
 				visible: false,
 				orderId: 0,
-				imageIndex: 0
-			}
+				imageIndex: 0,
+			},
 		};
 	},
 	methods: {
-		finishBid (orderId) {
-			api.account.master.changeBidStatus(orderId, "cs").then(res => {
+		finishBid(orderId) {
+			api.account.master.changeBidStatus(orderId, "cs").then((res) => {
 				this.$notify({
 					title: "Успешно",
 					message: "Заявка успешно завершена",
 					type: "success",
 				});
-				this.getOrders()
-			})
+				this.getOrders();
+			});
 		},
-		cancelBid (orderId) {
-			api.account.master.changeBidStatus(orderId, "cm").then(res => {
+		cancelBid(orderId) {
+			api.account.master.changeBidStatus(orderId, "cm").then((res) => {
 				this.$notify({
 					title: "Успешно",
 					message: "Заявка успешно отменена",
 					type: "success",
 				});
-				this.getOrders()
-			})
+				this.getOrders();
+			});
 		},
-		noClientBid (orderId) {
-			api.account.master.changeBidStatus(orderId, "na").then(res => {
+		noClientBid(orderId) {
+			api.account.master.changeBidStatus(orderId, "na").then((res) => {
 				this.$notify({
 					title: "Успешно",
 					message: "Статус заявки успешно изменен",
 					type: "success",
 				});
-				this.getOrders()
-			})
+				this.getOrders();
+			});
 		},
 		swipeHandler(direction) {
 			if (direction == "left") {
@@ -381,25 +454,25 @@ export default {
 		parseRoute() {
 			switch (this.$route.params.type) {
 				case "sm":
-					this.ordersType = "sm"
+					this.ordersType = "sm";
 					break;
 				case "process":
-					this.ordersType = "process"
+					this.ordersType = "process";
 					break;
 				case "ms":
-					this.ordersType = "ms"
+					this.ordersType = "ms";
 					break;
 				case "cs":
-					this.ordersType = "cs"
+					this.ordersType = "cs";
 					break;
 				case "cm":
-					this.ordersType = "cm"
+					this.ordersType = "cm";
 					break;
 				case "cc":
-					this.ordersType = "cc"
+					this.ordersType = "cc";
 					break;
 				default:
-					this.ordersType = "new"
+					this.ordersType = "new";
 					break;
 			}
 
@@ -412,7 +485,7 @@ export default {
 			return moment.utc(date).format("HH:mm");
 		},
 		async getOrders() {
-			let status = this.ordersType
+			let status = this.ordersType;
 			var res = {};
 			switch (status) {
 				case "new":
@@ -422,18 +495,16 @@ export default {
 					break;
 				case "process":
 					res = await api.account.getMasterOrders(
-						"?order_status=sm&exist_master_reply=true"
+						"?order_status=sm&exist_master_reply=true&order_fields=default,replies"
 					);
 					break;
 				case "ms":
 					res = await api.account.getMasterOrders(
-						"?order_status=ms"
+						"?order_status=ms&order_fields=default,replies"
 					);
 					break;
 				case "cs":
-					res = await api.account.getMasterOrders(
-						"?order_status=cs"
-					);
+					res = await api.account.getMasterOrders("?order_status=cs");
 					break;
 				case "cm":
 					res = await api.account.getMasterOrders(
@@ -451,13 +522,10 @@ export default {
 			}
 
 			console.log("orders", res);
-			
 
 			for (let index = 0; index < res.orders.length; index++) {
 				const order = res.orders[index];
-				let album = await api.account.getAlbumPhotos(
-					order.album_id
-				);
+				let album = await api.account.getAlbumPhotos(order.album_id);
 				res.orders[index].albumImages = album.photos;
 			}
 
@@ -474,7 +542,7 @@ export default {
 			return (
 				(
 					this.orders.find(
-						v => v.id == this.dialogBidImage.orderId
+						(v) => v.id == this.dialogBidImage.orderId
 					) || []
 				).albumImages || []
 			);
