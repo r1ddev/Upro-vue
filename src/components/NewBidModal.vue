@@ -208,32 +208,32 @@ export default {
 			this.$emit('cancel')
 		},
 		submit() {
-			console.log("this.date.toLocaleString()", this.date.toLocaleString());
+			//console.log("this.date.toLocaleString()", this.date.toLocaleString());
 			
 			let mDateFrom = moment.utc(
 				this.date.toLocaleString(),
 				"DD.MM.YYYY, HH:mm:ss"
 			);
-			console.log("mDateFrom", mDateFrom);
+			// console.log("mDateFrom", mDateFrom);
 			
 			let mDateTo = moment.utc(
 				this.date.toLocaleString(),
 				"DD.MM.YYYY, HH:mm:ss"
 			);
 
-			console.log("mDateTo", mDateTo);
+			// console.log("mDateTo", mDateTo);
 
 			let timeFrom = this.timeFrom.split(":");
 			let timeTo = this.timeTo.split(":");
 
-			console.log("timeFrom", timeFrom);
-			console.log("timeTo", timeTo);
+			// console.log("timeFrom", timeFrom);
+			// console.log("timeTo", timeTo);
 			
 			mDateFrom.add(timeFrom[0], "hour").add(timeFrom[1], "minute");
 			mDateTo.add(timeTo[0], "hour").add(timeTo[1], "minute");
-			console.log("this.date.toLocaleString()", this.date.toLocaleString());
-			console.log("mDateFrom2", mDateFrom);
-			console.log("mDateTo2", mDateTo);
+			// console.log("this.date.toLocaleString()", this.date.toLocaleString());
+			// console.log("mDateFrom2", mDateFrom);
+			// console.log("mDateTo2", mDateTo);
 
 			let filesObj = {};
 			this.fileList.map((v, i) => {
@@ -254,14 +254,16 @@ export default {
 					filesObj
 				)
 				.then(res => {
-					this.$emit("orderComlete", res);
 					this.resetFields();
+					this.$emit("orderComlete", res);
 				})
 				.catch(e => {
 					this.resetFields();
 				});
 		},
 		resetFields() {
+			this.$refs.upload.clearFiles()
+
 			this.city = "1";
 			this.master = undefined;
 			this.date = undefined;
@@ -270,7 +272,9 @@ export default {
 			this.description = "";
 
 			this.fileList = [];
-			this.$refs.upload.clearFiles()
+			console.log("this.$refs.upload", this.$refs.upload);
+			
+			// this.$refs.upload.clearFiles()
 
 			(this.dialogImageUrl = ""), (this.dialogVisible = false);
 			this.isLoading = false;
