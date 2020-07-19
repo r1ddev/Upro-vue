@@ -1,4 +1,5 @@
-import api from './../../classes/api';
+import api from "./../../classes/api";
+import router from "../../router";
 
 const general = {
 	namespaced: true,
@@ -9,105 +10,112 @@ const general = {
 		masterTypes: [
 			{
 				label: "Визажист",
-				value: 1
-			}, {
+				value: 1,
+			},
+			{
 				label: "Косметолог",
-				value: 2
-			}, {
+				value: 2,
+			},
+			{
 				label: "Массажист",
-				value: 3
-			}, {
+				value: 3,
+			},
+			{
 				label: "Мастер по маникюру",
-				value: 4
-			}, {
+				value: 4,
+			},
+			{
 				label: "Мастер по наращиванию ресниц",
-				value: 5
-			}, {
+				value: 5,
+			},
+			{
 				label: "Мастер эпиляции",
-				value: 6
-			}, {
+				value: 6,
+			},
+			{
 				label: "Парикмахер",
-				value: 7
+				value: 7,
 			},
 		],
 		loginData: {
 			isLoading: false,
 			data: {},
-			lastUpdate: 0
-		}
+			lastUpdate: 0,
+		},
 	},
 	mutations: {
 		setToken(state, token) {
-			state.userToken = token
+			state.userToken = token;
 		},
 		setLoading(state, status) {
-			state.isLoading = status
+			state.isLoading = status;
 		},
 		setLoginDataLoading(state, status) {
-			state.loginData.isLoading = status
+			state.loginData.isLoading = status;
 		},
 		setLoginDataData(state, data) {
-			state.loginData.data = data
-			state.loginData.lastUpdate = new Date().getTime()
-		}
+			state.loginData.data = data;
+			state.loginData.lastUpdate = new Date().getTime();
+		},
 	},
 	actions: {
 		removeToken(state) {
-			localStorage.removeItem("token")
+			localStorage.removeItem("token");
 
-			this.dispatch('general/setToken', null)
+			this.dispatch("general/setToken", null);
 		},
 		saveToken(state, token) {
-			localStorage.token = token
+			localStorage.token = token;
 
-			this.dispatch('general/setToken', token)
+			this.dispatch("general/setToken", token);
 		},
 		setToken(state, token) {
-			state.commit('setToken', token)
+			state.commit("setToken", token);
 		},
 		startLoading(state) {
-			state.commit('setLoading', true)
+			state.commit("setLoading", true);
 		},
 		stopLoading(state) {
-			state.commit('setLoading', false)
+			state.commit("setLoading", false);
 		},
 		async getLoginStatus(state) {
-			return new Promise((resolve, reject) => {				
+			return new Promise((resolve, reject) => {
 				if (new Date().getTime() - state.state.loginData.lastUpdate > 10000) {
-					state.commit('setLoginDataLoading', true)
+					state.commit("setLoginDataLoading", true);
 					api.account
 						.getLoginStatus()
-						.then(response => {
-							state.commit('setLoginDataData', response)
-							state.commit('setLoginDataLoading', false)
-	
-							resolve()
+						.then((response) => {
+							state.commit("setLoginDataData", response);
+							state.commit("setLoginDataLoading", false);
+
+							resolve();
 						})
-						.catch(e => {
-							reject()
-							state.commit('setLoginDataLoading', false)					
+						.catch((e) => {
+							console.log("e", e);
+							console.log("this", this);
+
+							state.commit("setLoginDataLoading", false);
 							api.errorHandler(e, this, {
 								401: () => {
 									this.dispatch("general/removeToken");
-									this.push("/");
-								}
+									router.push("/");
+								},
 							});
+
+							reject();
 						});
 				} else {
-					resolve()
+					resolve();
 				}
-				
-			})
-
-
-		}
+			});
+		},
 	},
 	getters: {
-		isLogin: state => !!state.userToken,
-		isLoading: state => {
-			return state.isLoading || state.loginData.isLoading
-		}
-	}
-}
+		isLogin: (state) => !!state.userToken,
+		isLoading: (state) => {
+			return state.isLoading || state.loginData.isLoading;
+		},
+	},
+};
 
-export default general
+export default general;

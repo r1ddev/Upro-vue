@@ -21,14 +21,19 @@
 			</div>
 		</el-dialog>
 
-		<HomeHeader page="master" />
+		<HomeHeader v-if="isEditable" page="master" :links="[
+			{ label: 'Заявки', href: '/master' },
+			{ label: 'Профиль', href: '/master/profile', active: true },
+			{ label: 'Отзывы', href: '/master/reviews' }
+		]"/>
 
-		<AccountTemplate
-			:sideLinks="[
-				{label:'Заявки', href: '/master'},
-				{label:'Профиль', href: '/master/profile', active: true}
-			]"
-		>
+		<HomeHeader v-else page="master" :links="[
+			{ label: 'Заявки', href: '/master' },
+			{ label: 'Профиль', href: '/master/profile', active: true },
+		]"/>
+
+		<AccountTemplate :sideLinks="getSideLinks" class="adasd">
+		
 			<template v-slot:account-menu>
 				<div class="row flex-center mt-4">
 					<div class="verify-status">Статус: Верифицирован</div>
@@ -46,7 +51,9 @@
 										<div class="label">Аватар профиля:</div>
 										<img
 											:src="$store.state.general.server + userAvatar"
-											@click.prevent="uploadPhoto($store.state.master.userData.data.albumIdAvatar, 'Avatar')"
+											@click.prevent="
+												uploadPhoto($store.state.master.userData.data.albumIdAvatar, 'Avatar')
+											"
 										/>
 									</div>
 								</div>
@@ -77,7 +84,7 @@
 								<div class="row">
 									<div class="col-auto" v-for="spec in selectedSpecialities" :key="spec.value">
 										<div class="badge mt-2">
-											<div class>{{spec.label}}</div>
+											<div class>{{ spec.label }}</div>
 											<div class="delete" @click="removeSpeciatity(spec.value)">
 												<i class="el-icon-close"></i>
 											</div>
@@ -107,7 +114,14 @@
 							</div>
 
 							<div class="mt-4 text-center">
-								<a href="#" class="btn yp-btn yp-btn-fill" @click.prevent="uploadPhoto($store.state.master.userData.data.albumIdGallery, 'Gallery')">Загрузить фото</a>
+								<a
+									href="#"
+									class="btn yp-btn yp-btn-fill"
+									@click.prevent="
+										uploadPhoto($store.state.master.userData.data.albumIdGallery, 'Gallery')
+									"
+									>Загрузить фото</a
+								>
 							</div>
 
 							<div class="mt-4 position-relative">
@@ -117,7 +131,14 @@
 							</div>
 
 							<div class="mt-4 text-center">
-								<a href="#" class="btn yp-btn yp-btn-fill" @click.prevent="uploadPhoto($store.state.master.userData.data.albumIdWorkplace, 'Workplace')">Загрузить фото</a>
+								<a
+									href="#"
+									class="btn yp-btn yp-btn-fill"
+									@click.prevent="
+										uploadPhoto($store.state.master.userData.data.albumIdWorkplace, 'Workplace')
+									"
+									>Загрузить фото</a
+								>
 							</div>
 
 							<div class="mt-4">
@@ -126,7 +147,7 @@
 								<el-input
 									type="textarea"
 									placeholder="Я мастер"
-									:autosize="{ minRows: 4, maxRows: 4}"
+									:autosize="{ minRows: 4, maxRows: 4 }"
 									maxlength="1000"
 									v-model="description"
 								/>
@@ -147,25 +168,26 @@
 									</div>
 								</div>
 							</div>
+							
 						</div>
 
 						<MasterProfileView
 							v-else
 							:master="{
-							username,
-							description,
-							speciality: selectedSpecialities,
-							photosGallery,
-							photosWorkplace,
-							userAvatar,
-						}"
+								username,
+								description,
+								speciality: selectedSpecialities,
+								photosGallery,
+								photosWorkplace,
+								userAvatar,
+							}"
 						/>
 					</div>
 				</section>
 			</template>
 		</AccountTemplate>
 
-		<HomeFooter style="border-top: 1px solid #B2B2B2;" />
+		<HomeFooter style="border-top: 1px solid #b2b2b2;" />
 	</div>
 </template>
 
@@ -182,10 +204,7 @@ import store from "../store";
 
 import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions } = createNamespacedHelpers("master");
-const {
-	mapState: mapStateGeneral,
-	mapActions: mapActionsGeneral
-} = createNamespacedHelpers("general");
+const { mapState: mapStateGeneral, mapActions: mapActionsGeneral } = createNamespacedHelpers("general");
 
 import { Loading } from "element-ui";
 
@@ -195,9 +214,9 @@ export default {
 		AccountTemplate,
 		HomeFooter,
 		ImagesCarousel,
-		MasterProfileView
+		MasterProfileView,
 	},
-	data: function() {
+	data: function () {
 		return {
 			uploadPhotoVisible: false,
 			uploadPhotoGalleryId: undefined,
@@ -207,7 +226,7 @@ export default {
 			master: undefined,
 			city: "1",
 			phone: "",
-			uploadPhotos: []
+			uploadPhotos: [],
 		};
 	},
 	methods: {
@@ -220,11 +239,11 @@ export default {
 			this.$store.dispatch("master/uploadPhotos", {
 				albumId: this.uploadPhotoGalleryId,
 				photos: filesObj,
-				type: this.uploadPhotoGalleryType
+				type: this.uploadPhotoGalleryType,
 			});
 
-			this.uploadPhotoVisible = false
-			this.uploadPhotos = []
+			this.uploadPhotoVisible = false;
+			this.uploadPhotos = [];
 		},
 		removeSpeciatity(value) {
 			this.speciality.splice(this.speciality.indexOf(value), 1);
@@ -250,36 +269,27 @@ export default {
 		async fetchMasterData() {
 			await this.$store.dispatch("master/getUserData", this.id);
 
-			this.$store.dispatch(
-				"master/getPhotosGallery",
-				this.$store.state.master.userData.data.albumIdGallery
-			);
-			this.$store.dispatch(
-				"master/getPhotosWorkplace",
-				this.$store.state.master.userData.data.albumIdWorkplace
-			);
-			this.$store.dispatch(
-				"master/getPhotosAvatar",
-				this.$store.state.master.userData.data.albumIdAvatar
-			);
+			this.$store.dispatch("master/getPhotosGallery", this.$store.state.master.userData.data.albumIdGallery);
+			this.$store.dispatch("master/getPhotosWorkplace", this.$store.state.master.userData.data.albumIdWorkplace);
+			this.$store.dispatch("master/getPhotosAvatar", this.$store.state.master.userData.data.albumIdAvatar);
 		},
 		save() {
 			this.$store.dispatch("master/updateMasterProfile", {
 				id: this.id,
 				speciality: JSON.stringify(this.speciality),
 				username: this.username,
-				description: this.description
+				description: this.description,
 			});
-		}
+		},
 	},
 	computed: {
 		...mapState({
-			photosGallery: state => state.photosGallery.data,
-			photosWorkplace: state => state.photosWorkplace.data,
-			photosAvatar: state => state.photosAvatar.data,
+			photosGallery: (state) => state.photosGallery.data,
+			photosWorkplace: (state) => state.photosWorkplace.data,
+			photosAvatar: (state) => state.photosAvatar.data,
 		}),
 		...mapStateGeneral({
-			loginData: state => state.loginData.data
+			loginData: (state) => state.loginData.data,
 		}),
 		username: {
 			get() {
@@ -288,9 +298,9 @@ export default {
 			set(value) {
 				this.$store.commit("master/userDataSetData", {
 					...this.$store.state.master.userData.data,
-					username: value
+					username: value,
 				});
-			}
+			},
 		},
 		description: {
 			get() {
@@ -299,9 +309,9 @@ export default {
 			set(value) {
 				this.$store.commit("master/userDataSetData", {
 					...this.$store.state.master.userData.data,
-					description: value
+					description: value,
 				});
-			}
+			},
 		},
 		speciality: {
 			get() {
@@ -310,24 +320,35 @@ export default {
 			set(value) {
 				this.$store.commit("master/userDataSetData", {
 					...this.$store.state.master.userData.data,
-					speciality: value
+					speciality: value,
 				});
-			}
+			},
 		},
 		getUnselectTypes() {
 			let types = this.$store.state.general.masterTypes;
-			types = types.filter(v => !this.speciality.includes(v.value));
+			types = types.filter((v) => !this.speciality.includes(v.value));
 
 			return types;
 		},
 		selectedSpecialities() {
-			let qw = this.$store.state.general.masterTypes.filter(v =>
-				this.speciality.includes(v.value)
-			);
+			let qw = this.$store.state.general.masterTypes.filter((v) => this.speciality.includes(v.value));
 			return qw;
 		},
 		userAvatar() {
-			return this.photosAvatar.length > 0 ? this.photosAvatar[0].image_thumb : require(`@/assets/img/no-avatar.png`)
+			return this.photosAvatar.length > 0
+				? this.photosAvatar[0].image_thumb
+				: require(`@/assets/img/no-avatar.png`);
+		},
+		getSideLinks() {
+			return this.isEditable ? 
+				[
+					{ label: 'Заявки', href: '/master' },
+					{ label: 'Профиль', href: '/master/profile', active: true },
+					{ label: 'Отзывы', href: '/master/reviews' }
+				] : [
+					{ label: 'Заявки', href: '/master' },
+					{ label: 'Профиль', href: '/master/profile', active: true },
+				]
 		}
 	},
 	async created() {
@@ -348,7 +369,7 @@ export default {
 				this.$router.push("/bids");
 			}
 		}
-	}
+	},
 };
 </script>
 

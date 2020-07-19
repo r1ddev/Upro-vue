@@ -54,15 +54,20 @@
 
 			<div class>{{master.description}}</div>
 		</div>
+
+
+		<Reviews />
 	</div>
 </template>
 
 <script>
 import ImagesCarousel from "../components/ImagesCarousel";
+import Reviews from "../components/master/Reviews";
 
 export default {
 	components: {
-		ImagesCarousel
+		ImagesCarousel,
+		Reviews,
 	},
 	props: {
 		master: {
