@@ -239,7 +239,7 @@ export default {
 	display:flex;
 	flex-direction: column;
 	min-height: 100vh;
-	height: calc(var(--vh, 1vh) * 100);
+	// height: calc(var(--vh, 1vh) * 100);
 
 	.page {
 		flex-grow: 1;

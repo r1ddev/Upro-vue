@@ -41,7 +41,7 @@ export default {
 	props: {
 		images: {
 			type: Array,
-			default: []
+			default: () => []
 		}
 	},
 	data: function() {
@@ -83,12 +83,7 @@ export default {
 		}
 	},
 	created() {
-		console.log("this.images", this.images);
-	},
-	watch: {
-		images: function(newVal, oldVal) { // watch it
-          console.log('Prop changed: ', newVal, ' | was: ', oldVal)
-        }
+		//console.log("this.images", this.images);
 	}
 };
 </script>

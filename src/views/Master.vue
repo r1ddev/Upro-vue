@@ -1,13 +1,5 @@
 <template>
 	<div class="master">
-		<HomeHeader
-			page="master"
-			:links="[
-				{ label: 'Заявки', href: '/master', active: true },
-				{ label: 'Профиль', href: '/master/profile' },
-			]"
-		/>
-
 		<NewResponseModal
 			:orderId="newResponseData.orderId"
 			:orderDateTime="newResponseData.orderDateTime"
@@ -43,314 +35,201 @@
 			</div>
 		</a-modal>
 
-		<AccountTemplate
-			:sideLinks="[
-				{ label: 'Заявки', href: '/master', active: true },
-				{ label: 'Профиль', href: '/master/profile' },
-			]"
-		>
-			<template v-slot:account-menu>
-				<div class="row flex-center">
-					<div class="col-auto px-0">
-						<router-link
-							to="/master"
-							:class="
-								'btn yp-btn yp-btn-menu mt-3' +
-								($route.params.type == undefined
-									? ' active'
-									: '')
-							"
-							>Новые</router-link
-						>
-					</div>
-					<div class="col-auto px-0">
-						<router-link
-							to="/master/process"
-							:class="
-								'btn yp-btn yp-btn-menu ml-2 mt-3' +
-								($route.params.type == 'process'
-									? ' active'
-									: '')
-							"
-							>Обработанные</router-link
-						>
-					</div>
-					<div class="col-auto px-0">
-						<router-link
-							to="/master/ms"
-							:class="
-								'btn yp-btn yp-btn-menu ml-2 mt-3' +
-								($route.params.type == 'ms' ? ' active' : '')
-							"
-							>Вас выбрали</router-link
-						>
-					</div>
-					<div class="col-auto px-0">
-						<router-link
-							to="/master/cs"
-							:class="
-								'btn yp-btn yp-btn-menu ml-2 mt-3' +
-								($route.params.type == 'cs' ? ' active' : '')
-							"
-							>Завершенные</router-link
-						>
-					</div>
-					<div class="col-auto px-0">
-						<router-link
-							to="/master/cm"
-							:class="
-								'btn yp-btn yp-btn-menu ml-2 mt-3' +
-								($route.params.type == 'cm' ? ' active' : '')
-							"
-							>Упущенные</router-link
-						>
-					</div>
-					<div class="col-auto px-0">
-						<router-link
-							to="/master/cc"
-							:class="
-								'btn yp-btn yp-btn-menu ml-2 mt-3' +
-								($route.params.type == 'cc' ? ' active' : '')
-							"
-							>Отмененные</router-link
-						>
-					</div>
-				</div>
-			</template>
+		<div class="row m-0 flex-center">
+			<div class="col-auto px-0">
+				<router-link
+					to="/master"
+					:class="'btn yp-btn yp-btn-menu mt-3' + ($route.params.type == undefined ? ' active' : '')"
+					>Новые</router-link
+				>
+			</div>
+			<div class="col-auto px-0">
+				<router-link
+					to="/master/process"
+					:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + ($route.params.type == 'process' ? ' active' : '')"
+					>Обработанные</router-link
+				>
+			</div>
+			<div class="col-auto px-0">
+				<router-link
+					to="/master/ms"
+					:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + ($route.params.type == 'ms' ? ' active' : '')"
+					>Вас выбрали</router-link
+				>
+			</div>
+			<div class="col-auto px-0">
+				<router-link
+					to="/master/cs"
+					:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + ($route.params.type == 'cs' ? ' active' : '')"
+					>Завершенные</router-link
+				>
+			</div>
+			<div class="col-auto px-0">
+				<router-link
+					to="/master/cm"
+					:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + ($route.params.type == 'cm' ? ' active' : '')"
+					>Упущенные</router-link
+				>
+			</div>
+			<div class="col-auto px-0">
+				<router-link
+					to="/master/cc"
+					:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + ($route.params.type == 'cc' ? ' active' : '')"
+					>Отмененные</router-link
+				>
+			</div>
+		</div>
 
-			<template v-slot:account-content>
-				<section class="bids-list">
-					<div class="container" v-loading="isLoading">
-						<div
-							class="bid my-3"
-							v-for="order in getPageOrders"
-							:key="order.id"
-						>
-							<div class="row py-3">
-								<div class="col d-flex align-items-center">
-									<span>
-										<u>Заявка №{{ order.id }}</u>
-										— {{ order.status }}
-									</span>
+		<section class="bids-list">
+			<div class="container" v-loading="isLoading">
+				<div class="bid my-3" v-for="order in getPageOrders" :key="order.id">
+					<div class="row py-3">
+						<div class="col d-flex align-items-center">
+							<span>
+								<u>Заявка №{{ order.id }}</u>
+								— {{ order.status }}
+							</span>
+						</div>
+						<div class="col text-right">
+							<div class="id d-none">123</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-7">
+							<div class="row">
+								<div class="col-lg-7 py-2">
+									<div class="field">
+										{{ order.city }}
+									</div>
 								</div>
-								<div class="col text-right">
-									<div class="id d-none">123</div>
+								<div class="col-lg-5 py-2">
+									<div class="field text-center">
+										{{ toDate(order.request_date_from) }}
+									</div>
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-md-7">
-									<div class="row">
-										<div class="col-lg-7 py-2">
-											<div class="field">
-												{{ order.city }}
-											</div>
-										</div>
-										<div class="col-lg-5 py-2">
-											<div class="field text-center">
-												{{
-													toDate(
-														order.request_date_from
-													)
-												}}
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-lg-7 py-2">
-											<div class="field">
-												{{ order.master_type }}
-											</div>
-										</div>
-										<div class="col-lg-5 py-2">
-											<div class="field field-time">
-												{{
-													toTime(
-														order.request_date_from
-													)
-												}}
-												-
-												{{
-													toTime(
-														order.request_date_to
-													)
-												}}
-											</div>
-										</div>
-									</div>
-									<div class="row py-2">
-										<div class="col-12">
-											<div class="field-text">
-												{{ order.description }}
-											</div>
-										</div>
+								<div class="col-lg-7 py-2">
+									<div class="field">
+										{{ order.master_type }}
 									</div>
 								</div>
-
-								<div class="col-md-5 py-2">
-									<div class="row h-100">
-										<div
-											class="col-6"
-											v-for="(image,
-											index) in order.albumImages"
-											:key="index"
-										>
-											<!-- {{image.image_thumb}} -->
-											<!-- <img :src="image.image_thumb" alt class="image" @click="openImageViewer(order.id, index)"/> -->
-											<img
-												@click="
-													openImageViewer(
-														order.id,
-														index
-													)
-												"
-												:src="
-													$store.state.general
-														.server +
-													image.image_thumb
-												"
-												class="image"
-											/>
-										</div>
+								<div class="col-lg-5 py-2">
+									<div class="field field-time">
+										{{ toTime(order.request_date_from) }}
+										-
+										{{ toTime(order.request_date_to) }}
 									</div>
 								</div>
 							</div>
-							<div
-								class
-								v-if="
-									order.status == 'Подбор мастеров' &&
-									ordersType !== 'process'
-								"
-							>
-								<div class="row justify-content-center">
-									<div class="col-md flex-center">
-										<a
-											href="#"
-											class="btn yp-btn yp-btn-fill mt-4"
-											@click.prevent="
-												newResponse(order.id)
-											"
-											>Откликнуться</a
-										>
+							<div class="row py-2">
+								<div class="col-12">
+									<div class="field-text">
+										{{ order.description }}
 									</div>
 								</div>
 							</div>
+						</div>
 
-							<div
-								v-if="
-									(order.status == 'Выбран мастер' &&
-										order.replies.length > 0) ||
-									(order.status == 'Подбор мастеров' &&
-										order.replies.length > 0 &&
-										ordersType == 'process')
-								"
-							>
-								<div class="divider py-3">Ваш отклик:</div>
-								<div class="flex-center response">
-									<div class="content">
-										<div class="row">
-											<div class="col-md-3">
-												<div
-													class="d-flex flex-column h-100"
-												>
-													<div class="flex-grow-1">
-														<div
-															class="field field-time"
-														>
-															{{
-																order.replies[0]
-																	.cost + "р"
-															}}
-														</div>
-													</div>
-													<div
-														class="flex-grow-1 time-wrap"
-													>
-														<div
-															class="field field-time"
-														>
-															{{
-																toTime(
-																	order
-																		.replies[0]
-																		.suggested_time_from
-																) +
-																" - " +
-																toTime(
-																	order
-																		.replies[0]
-																		.suggested_time_to
-																)
-															}}
-														</div>
-													</div>
+						<div class="col-md-5 py-2">
+							<div class="row h-100">
+								<div class="col-6" v-for="(image, index) in order.albumImages" :key="index">
+									<img
+										@click="openImageViewer(order.id, index)"
+										:src="$store.state.general.server + image.image_thumb"
+										class="image"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class v-if="order.status == 'Подбор мастеров' && ordersType !== 'process'">
+						<div class="row justify-content-center">
+							<div class="col-md flex-center">
+								<a href="#" class="btn yp-btn yp-btn-fill mt-4" @click.prevent="newResponse(order.id)"
+									>Откликнуться</a
+								>
+							</div>
+						</div>
+					</div>
+
+					<div
+						v-if="
+							(order.status == 'Выбран мастер' && order.replies && order.replies.length > 0) ||
+							(order.status == 'Подбор мастеров' &&
+								order.replies &&
+								order.replies.length > 0 &&
+								ordersType == 'process')
+						"
+					>
+						<div class="divider py-3">Ваш отклик:</div>
+						<div class="flex-center response">
+							<div class="content">
+								<div class="row">
+									<div class="col-md-3">
+										<div class="d-flex flex-column h-100">
+											<div class="flex-grow-1">
+												<div class="field field-time">
+													{{ order.replies[0].cost + "р" }}
 												</div>
 											</div>
-											<div class="col-md-9">
-												<div class="field-text">
+											<div class="flex-grow-1 time-wrap">
+												<div class="field field-time">
 													{{
-														order.replies[0].comment
+														toTime(order.replies[0].suggested_time_from) +
+														" - " +
+														toTime(order.replies[0].suggested_time_to)
 													}}
 												</div>
 											</div>
 										</div>
-										<div
-											class="row justify-content-center"
-											v-if="
-												order.status ==
-													'Выбран мастер' &&
-												order.replies.length > 0
-											"
-										>
-											<div class="col-md flex-center">
-												<a
-													href="#"
-													class="btn yp-btn yp-btn-fill mt-4"
-													@click.prevent="
-														finishBid(order.id)
-													"
-													>Завершить</a
-												>
-											</div>
-											<div class="col-md flex-center">
-												<a
-													href="#"
-													@click.prevent="
-														cancelBid(order.id)
-													"
-													class="btn yp-btn yp-btn-fill mt-4"
-													>Отказаться</a
-												>
-											</div>
-											<div class="col-md flex-center">
-												<a
-													href="#"
-													class="btn yp-btn yp-btn-fill mt-4"
-													@click.prevent="
-														noClientBid(order.id)
-													"
-													>Клиент не приехал</a
-												>
-											</div>
+									</div>
+									<div class="col-md-9">
+										<div class="field-text">
+											{{ order.replies[0].comment }}
 										</div>
 									</div>
 								</div>
+								<div
+									class="row justify-content-center"
+									v-if="order.status == 'Выбран мастер' && order.replies.length > 0"
+								>
+									<div class="col-md flex-center">
+										<a
+											href="#"
+											class="btn yp-btn yp-btn-fill mt-4"
+											@click.prevent="finishBid(order.id)"
+											>Завершить</a
+										>
+									</div>
+									<div class="col-md flex-center">
+										<a
+											href="#"
+											@click.prevent="cancelBid(order.id)"
+											class="btn yp-btn yp-btn-fill mt-4"
+											>Отказаться</a
+										>
+									</div>
+									<div class="col-md flex-center">
+										<a
+											href="#"
+											class="btn yp-btn yp-btn-fill mt-4"
+											@click.prevent="noClientBid(order.id)"
+											>Клиент не приехал</a
+										>
+									</div>
+								</div>
 							</div>
-
-							<div
-								class
-								v-if="order.status == 'Отменена клиентом'"
-							></div>
-						</div>
-						<div
-							v-if="!isLoading && !getPageOrders.length"
-							class="text-center"
-						>
-							Нет данных для отображения
 						</div>
 					</div>
-				</section>
-			</template>
-		</AccountTemplate>
+
+					<div class v-if="order.status == 'Отменена клиентом'"></div>
+				</div>
+				<div v-if="!isLoading && !getPageOrders.length" class="text-center">
+					Нет данных для отображения
+				</div>
+			</div>
+		</section>
 
 		<HomeFooter style="border-top: 1px solid #b2b2b2;" />
 	</div>
@@ -367,6 +246,7 @@ import NewReplyPopup from "../components/master/NewReplyPopup";
 import moment from "moment";
 
 export default {
+	name: 'master',
 	components: {
 		NewResponseModal,
 		HomeHeader,
@@ -447,9 +327,7 @@ export default {
 		newResponse(orderId) {
 			this.newResponseData.modal = true;
 			this.newResponseData.orderId = orderId;
-			this.newResponseData.orderDateTime = this.orders.find(
-				(v) => v.id == orderId
-			).request_date_from;
+			this.newResponseData.orderDateTime = this.orders.find((v) => v.id == orderId).request_date_from;
 		},
 		parseRoute() {
 			switch (this.$route.params.type) {
@@ -489,9 +367,7 @@ export default {
 			var res = {};
 			switch (status) {
 				case "new":
-					res = await api.account.getMasterOrders(
-						"?order_status=sm&exist_master_reply=false"
-					);
+					res = await api.account.getMasterOrders("?order_status=sm&exist_master_reply=false");
 					break;
 				case "process":
 					res = await api.account.getMasterOrders(
@@ -499,22 +375,16 @@ export default {
 					);
 					break;
 				case "ms":
-					res = await api.account.getMasterOrders(
-						"?order_status=ms&order_fields=default,replies"
-					);
+					res = await api.account.getMasterOrders("?order_status=ms&order_fields=default,replies");
 					break;
 				case "cs":
 					res = await api.account.getMasterOrders("?order_status=cs");
 					break;
 				case "cm":
-					res = await api.account.getMasterOrders(
-						"?order_status=ms,cc,cm,na,cs&master_by_token=false"
-					);
+					res = await api.account.getMasterOrders("?order_status=ms,cc,cm,na,cs&master_by_token=false");
 					break;
 				case "cc":
-					res = await api.account.getMasterOrders(
-						"?order_status=na,cc,cm"
-					);
+					res = await api.account.getMasterOrders("?order_status=na,cc,cm");
 					break;
 
 				default:
@@ -539,21 +409,14 @@ export default {
 	},
 	computed: {
 		getOrderImages() {
-			return (
-				(
-					this.orders.find(
-						(v) => v.id == this.dialogBidImage.orderId
-					) || []
-				).albumImages || []
-			);
+			return (this.orders.find((v) => v.id == this.dialogBidImage.orderId) || []).albumImages || [];
 		},
 		getPageOrders() {
 			return this.orders
 				.slice()
 				.reverse()
 				.slice(
-					this.pagination.itemsOnPage *
-						(this.pagination.currentPage - 1),
+					this.pagination.itemsOnPage * (this.pagination.currentPage - 1),
 					this.pagination.itemsOnPage * this.pagination.currentPage
 				);
 		},
@@ -642,7 +505,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	min-height: 100vh;
-	height: calc(var(--vh, 1vh) * 100);
+	//   height: calc(var(--vh, 1vh) * 100);
 }
 
 .bids-list {

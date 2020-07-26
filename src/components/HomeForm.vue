@@ -294,7 +294,7 @@ export default {
 		},
 		handleChange(file, fileList) {
 			//this.fileList = [...this.fileList, file]
-			console.log("select file", JSON.stringify(file, true, 2));
+			// console.log("select file", JSON.stringify(file, true, 2));
 			this.fileList = fileList;
 		},
 		secondSlide() {
