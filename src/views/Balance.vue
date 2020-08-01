@@ -4,7 +4,7 @@
         <el-dialog
             :visible.sync="helpVisible"
             title=""
-            class="help-dialog">
+            class="help-dialog el-dialog-responsive">
 
             <div slot="title" class="title text-right">О балансе</div>
 
@@ -193,24 +193,6 @@ export default {
         text-align: center;
         margin: 0 -20px;
         word-break: break-word; 
-    }
-
-    @media screen and (max-width: 1100px) {
-        ::v-deep .el-dialog {
-            width: 70%;
-        }
-    }
-
-    @media screen and (max-width: 800px) {
-        ::v-deep .el-dialog {
-            width: 80%;
-        }
-    }
-
-    @media screen and (max-width: 600px) {
-        ::v-deep .el-dialog {
-            width: 90%;
-        }
     }
 }
 </style>

@@ -12,6 +12,10 @@ body {
 	font-family: "Century Gothic",AppleGothic,sans-serif!important;
 }
 
+* {
+	word-break: break-word;
+}
+
 .p-6 {
     padding: 5rem!important;
 }
@@ -123,4 +127,24 @@ body {
 	@media screen and (max-width: 576px) {
 		width: 95% !important;
 	}
+}
+
+.el-dialog-responsive {
+	@media screen and (max-width: 1100px) {
+        .el-dialog {
+            width: 70%;
+        }
+    }
+
+    @media screen and (max-width: 800px) {
+        .el-dialog {
+            width: 80%;
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+        .el-dialog {
+            width: 90%;
+        }
+    }
 }

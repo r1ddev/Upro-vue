@@ -1,5 +1,5 @@
 <template>
-	<el-dialog :visible.sync="visible" title="" :show-close="false" class="">
+	<el-dialog class="el-dialog-responsive" :visible.sync="visible" title="" :show-close="false">
 		<div slot="title" class="title">
 			<div class="row">
 				<div class="col-auto">
@@ -9,11 +9,11 @@
 						alt=""
 					/>
 				</div>
-				<div class="col master-data">
+				<div class="col-md master-data">
 					<div class="name">Мария Александровна</div>
 					<div class="row">
 						<div class="col type">Массаж</div>
-						<div class="col-auto date">11 июля</div>
+						<div class="col-md-auto date">11 июля</div>
 					</div>
 				</div>
 			</div>
@@ -40,12 +40,12 @@
 
 			<el-form-item>
 				<div class="row">
-					<div class="col-8">
+					<div class="col-md-8">
 						<a-button html-type="submit" type="primary" size="large" class="yp-btn yp-btn-fill"
 							>Оценить</a-button
 						>
 					</div>
-					<div class="col-4">
+					<div class="col-md-4">
 						<a-button html-type="submit" type="secondary" size="large" class="yp-btn">Позже</a-button>
 					</div>
 				</div>
@@ -77,7 +77,11 @@ export default {
 	padding: 0;
 }
 ::v-deep .el-rate__icon {
-	font-size: 38px;
+    font-size: 38px;
+    
+    @media screen and (max-width: 550px) {
+        font-size: 30px;
+    }
 }
 .title {
     background: #f3a9cd;
