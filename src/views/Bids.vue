@@ -1,18 +1,12 @@
 <template>
 	<vue100vh class="bids">
-		<HomeHeader
-			page="bids"
-			:links="[
-				{label:'Заявки', href: '', active: true},
-				{label:'Профиль', href: ''}
-			]"
-		/>
+		
 
-		<NewBidModal
+		<!-- <NewBidModal
 			:visible="newBidModalVisible"
 			@cancel="newBidModalVisible = false"
 			@orderComlete="orderComlete($event)"
-		/>
+		/> -->
 
 		<a-modal
 			:closable="true"
@@ -29,14 +23,8 @@
 			</div>
 		</a-modal>
 
-		<AccountTemplate
-			:sideLinks="[
-				{label:'Заявки', href: '/bids', active: true},
-				{label:'Профиль', href: '/bids'}
-			]"
-		>
-			<template v-slot:account-menu>
-				<div class="row flex-center">
+		
+				<div class="row flex-center m-0">
 					<div class="col-auto px-0">
 						<router-link
 							to="/bids"
@@ -68,9 +56,9 @@
 						>Отмененные</router-link>
 					</div>
 				</div>
-			</template>
+			
 
-			<template v-slot:account-content>
+			
 				<section class="bids-list">
 					<div class="container" v-loading="isLoading">
 						<div class="bid my-3" v-for="order in getPageOrders" :key="order.id">
@@ -163,8 +151,6 @@
 						</div>
 					</div>
 				</section>
-			</template>
-		</AccountTemplate>
 
 		<HomeFooter style="border-top: 1px solid #B2B2B2;" />
 	</vue100vh>

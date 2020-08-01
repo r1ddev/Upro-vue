@@ -17,7 +17,9 @@
 			</div>
 		</div>
 
-		<div class="flex-center mt-4">
+		<div class="text-center p-4" v-if="reviews.length == 0">Отзывов нет :(</div>
+
+		<div class="flex-center mt-4" v-if="reviews.length > pagination.itemsOnPage">
 			<el-pagination
 				background
 				layout="prev, pager, next"
@@ -32,82 +34,22 @@
 <script>
 import VueScrollTo from "vue-scrollto";
 
+import { createNamespacedHelpers } from "vuex";
+const { mapState, mapActions } = createNamespacedHelpers("master");
+
 export default {
+	props: {
+		masterId: {
+			type: Number,
+			default: 0
+		}
+	},
 	data: () => {
 		return {
 			pagination: {
 				currentPage: 1,
 				itemsOnPage: 10,
 			},
-			reviews: [
-				{
-					date: "11.07.20",
-					name: "Антон",
-					text: "Не мастер, а золотце",
-					rating: 3,
-				},
-				{
-					date: "11.07.20",
-					name: "Андрюха",
-					text: "Парни обзавидовались!",
-					rating: 1,
-				},
-				{
-					date: "11.07.20",
-					name: "Ксюша",
-					text:
-						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nisl enim blandit praesent pellentesque fames amet. Ac in auctor ultrices egestas faucibus nibh. Massa facilisis iaculis porta sed sit amet. Felis ante leo, pretium tristique congue a aliquam, ultrices nulla.",
-					rating: 5,
-				},
-				{
-					date: "11.07.20",
-					name: "Андрюха",
-					text: "Парни обзавидовались!",
-					rating: 1,
-				},
-				{
-					date: "11.07.20",
-					name: "Андрюха",
-					text: "Парни обзавидовались!",
-					rating: 1,
-				},
-				{
-					date: "11.07.20",
-					name: "Андрюха",
-					text: "Парни обзавидовались!",
-					rating: 1,
-				},
-				{
-					date: "11.07.20",
-					name: "Андрюха",
-					text: "Парни обзавидовались!",
-					rating: 1,
-				},
-				{
-					date: "11.07.20",
-					name: "Андрюха",
-					text: "Парни обзавидовались!",
-					rating: 1,
-				},
-				{
-					date: "11.07.20",
-					name: "Андрюха",
-					text: "Парни обзавидовались!",
-					rating: 1,
-				},
-				{
-					date: "11.07.20",
-					name: "Андрюха",
-					text: "Парни обзавидовались!",
-					rating: 1,
-				},
-				{
-					date: "11.07.20",
-					name: "Андрюха",
-					text: "Парни обзавидовались!",
-					rating: 2,
-				},
-			],
 		};
 	},
 	methods: {
@@ -117,12 +59,19 @@ export default {
 		},
 	},
 	computed: {
+		...mapState({
+			reviews: (state) => state.reviews.data,
+		}),
 		getCurrentPageReviews() {
 			return this.reviews.slice(
 				this.pagination.itemsOnPage * (this.pagination.currentPage - 1),
 				this.pagination.itemsOnPage * this.pagination.currentPage
 			);
 		},
+	},
+	created() {
+		this.$store.dispatch("master/getReviews", { masterId: this.masterId });
+		console.log("created");
 	},
 };
 </script>
@@ -160,7 +109,7 @@ export default {
 		font-size: 18px;
 		color: #382835;
 		padding-left: 2rem;
-		padding-top: .5rem;
+		padding-top: 0.5rem;
 	}
 
 	.rating {

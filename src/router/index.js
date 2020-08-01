@@ -33,6 +33,9 @@ const routes = [
 				path: "/master/profile/:id",
 				component: () => import("../views/MasterProfile.vue"),
 			}, {
+				path: "/master/balance",
+				component: () => import("../views/Balance.vue"),
+			}, {
 				path: "/master/:type?",
 				component: () => import("../views/Master.vue"),
 			}

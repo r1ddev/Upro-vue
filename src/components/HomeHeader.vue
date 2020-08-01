@@ -6,6 +6,12 @@
 			@cancel="loginModal = false"
 		/>
 
+		<NewBidModal
+			:visible="newBidModalVisible"
+			@cancel="newBidModalVisible = false"
+			@orderComlete="orderComlete($event)"
+		/>
+
 		<el-dialog
 			title
 			:visible.sync="mobileMenuOpened"
@@ -15,6 +21,7 @@
 			:show-close="false"
 			:close-on-click-modal="false"
 			:lock-scroll="true"
+			class="loginModal"
 		>
 			<div>
 				<a href="tel:8 (910) 282-53-40" class="header-menu-link"
@@ -62,7 +69,7 @@
 						href="#"
 						class="header-menu-link"
 						@click.prevent="
-							$parent.$parent.newBidModalVisible = true
+							newBidModalVisible = true; mobileMenuOpened = false
 						"
 						>Создать заявку</a
 					>
@@ -189,7 +196,7 @@
 									href="#"
 									class="header-menu-link"
 									@click.prevent="
-										$parent.$parent.newBidModalVisible = true
+										newBidModalVisible = true
 									"
 									>Создать заявку</a
 								>
@@ -265,6 +272,7 @@
 <script>
 import LoginModal from "./LoginModal";
 import api from "../classes/api";
+import NewBidModal from '../components/NewBidModal'
 
 export default {
 	props: {
@@ -276,12 +284,14 @@ export default {
 	},
 	components: {
 		LoginModal,
+		NewBidModal
 	},
 	data() {
 		return {
 			loginModal: false,
 			mobileMenuOpened: false,
 			dialogVisible: false,
+			newBidModalVisible: false
 		};
 	},
 	methods: {
@@ -290,9 +300,13 @@ export default {
 			this.loginModal = true;
 		},
 		registerComplete() {
-			console.log("call registerComplete from HomeHeader");
-
 			this.$parent.registerComplete();
+		},
+		orderComlete () {
+			//this.getOrders();
+			alert("Горячая главиша для обновления списка заявок -- F5")
+			
+			this.newBidModalVisible = false;
 		},
 		logout() {
 			api.account
@@ -331,9 +345,10 @@ export default {
 	z-index: 1;
 }
 
-::v-deep .el-dialog__wrapper {
-	margin-top: 56px;
-	// pointer-events: none;
+::v-deep .loginModal {
+	&.el-dialog__wrapper {
+		margin-top: 56px;
+	}
 }
 .header-menu-logo {
 	background: url(../assets/img/logo-mini.png) center center no-repeat;

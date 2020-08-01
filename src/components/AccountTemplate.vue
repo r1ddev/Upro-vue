@@ -1,6 +1,6 @@
 <template>
 	<div id="account-template">
-		<HomeHeader page="master" :links="sideLinks" />
+		<HomeHeader :page="accountType" :links="sideLinks" />
 		<section class="account row m-0" v-if="loginData.user">
 			<section class="menu col-auto p-0">
 				<router-link
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import Vue from 'vue';
+import Vue from "vue";
 
 import HomeHeader from "../components/HomeHeader";
 
@@ -32,7 +32,8 @@ export default {
 	},
 	data: () => {
 		return {
-			sideLinks: []
+			sideLinks: [],
+			accountType: ""
 		};
 	},
 	async created() {
@@ -40,44 +41,48 @@ export default {
 
 		switch (this.loginData.user.type_code) {
 			case "m":
+				this.accountType = "master"
 				this.sideLinks = [
 					{ label: "Заявки", href: "/master", active: this.activeMenu == "/master" },
 					{ label: "Профиль", href: "/master/profile", active: this.activeMenu == "/master/profile" },
 					{ label: "Отзывы", href: "/master/reviews", active: this.activeMenu == "/master/reviews" },
-				]
+					{ label: "Баланс", href: "/master/balance", active: this.activeMenu == "/master/balance" },
+				];
 				break;
 
 			case "c":
-				this.sideLinks = [];
+				this.accountType = "bids"
+				this.sideLinks = [
+					{ label: "Заявки", href: "/bids", active: true }
+				];
 				break;
 		}
 	},
 	methods: {
-		compareLink (link) {
+		compareLink(link) {
 			console.log("location.pathname", location.pathname);
 			console.log("link", link);
-			return location.pathname === link
-		}
+			return location.pathname === link;
+		},
 	},
 	computed: {
 		...mapState({
 			loginData: (state) => state.loginData.data,
 		}),
-		activeMenu () {
+		activeMenu() {
 			console.log("call activeMenu");
-			return location.pathname
-		}
+			return location.pathname;
+		},
 	},
 	watch: {
-		"$route.params": function() {
-			this.sideLinks.map(link => {
-				link.active = link.href === location.pathname
-				return link
-			})
-			console.log(this.$route.params);
+		"$route.params": function () {
+			this.sideLinks.map((link) => {
+				link.active = link.href === location.pathname;
+				return link;
+			});
 			//Vue.forceUpdate();
-		}
-	}
+		},
+	},
 };
 </script>
 
@@ -87,7 +92,6 @@ export default {
 	display: flex;
 	flex-direction: column;
 
-	
 	::v-deep .shadow {
 		box-shadow: 0px 2px 4px rgba(100, 100, 100, 0.5);
 		width: 100%;

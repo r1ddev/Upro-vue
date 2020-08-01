@@ -128,6 +128,10 @@ var api = {
 				}), api.useAuth())
 				
 				return response.data
+			},
+			async getReviews (masterId) {
+				let response = await Axios.get(store.state.general.server + `/v2/feedbacks/?master_id=${masterId}`, api.useAuth())
+				return response.data
 			}
 		},
 		async uploadPhotos (albumId, files) {

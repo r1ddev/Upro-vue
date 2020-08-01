@@ -1,18 +1,11 @@
 <template>
 	<vue100vh class="bids">
-		<HomeHeader
-			page="bids"
-			:links="[
-				{ label: 'Заявки', href: '/bids' },
-				{ label: 'Профиль', href: '/bids' },
-			]"
-		/>
 
-		<NewBidModal
+		<!-- <NewBidModal
 			:visible="newBidModalVisible"
 			@cancel="newBidModalVisible = false"
 			@orderComlete="false"
-		/>
+		/> -->
 
 		<el-dialog
 			title="Выберите время"
@@ -38,103 +31,97 @@
 			</span>
 		</el-dialog>
 
-		<AccountTemplate
-			:sideLinks="[
-				{ label: 'Заявки', href: '/bids' },
-				{ label: 'Профиль', href: '/bids' },
-			]"
+		
+		<div class="mt-4">
+			<div class>
+				<div class="title">
+					<div class="name">
+						<span class="id">Заявка № {{bidData.order.id}}</span>
+						<span>- {{bidData.order.status}}</span>
+					</div>
+					<div class="row mt-2">
+						<div class="col-md-4 md-mt-2">
+							<div class="prop">{{bidData.order.master_type}}</div>
+						</div>
+						<div class="col-md-4 md-mt-2">
+							<div class="prop">{{toDate(bidData.order.request_date_from)}}</div>
+						</div>
+						<div class="col-md-4 md-mt-2">
+							<div class="prop">{{responses.length}}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+			
+		<div
+			class="mx-0"
+			v-for="(response, index) in responses"
+			:key="response.id"
 		>
-			<template v-slot:account-menu>
-				<div class="mt-4">
-					<div class>
-						<div class="title">
+			<div class="responses-list p-4">
+				<div class="response">
+					<div class="row mt-3">
+						<div class="col-3">
+							<img
+								class="avatar"
+								:src="userAvatar(response)"
+								alt
+							/>
+						</div>
+						<div class="col">
 							<div class="name">
-								<span class="id">Заявка № {{bidData.order.id}}</span>
-								<span>- {{bidData.order.status}}</span>
+								{{ response.master.name }}
 							</div>
-							<div class="row mt-2">
-								<div class="col-md-4 md-mt-2">
-									<div class="prop">{{bidData.order.master_type}}</div>
-								</div>
-								<div class="col-md-4 md-mt-2">
-									<div class="prop">{{toDate(bidData.order.request_date_from)}}</div>
-								</div>
-								<div class="col-md-4 md-mt-2">
-									<div class="prop">{{responses.length}}</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</template>
-
-			<template v-slot:account-content>
-				<div
-					class="mx-0"
-					v-for="(response, index) in responses"
-					:key="response.id"
-				>
-					<div class="responses-list p-4">
-						<div class="response">
-							<div class="row mt-3">
-								<div class="col-3">
-									<img
-										class="avatar"
-										:src="userAvatar(response)"
-										alt
-									/>
-								</div>
-								<div class="col">
-									<div class="name">
-										{{ response.master.name }}
-									</div>
-									<div class="time-wrap">
-										<span class="desc"
-											>Готовы вас принять:</span
-										>
-										<span class="time ml-1">{{
-											toTime(
-												response.suggested_time_from
-											) +
-											" - " +
-											toTime(response.suggested_time_to)
-										}}</span>
-									</div>
-									<div class="price">
-										{{ response.cost }} руб.
-									</div>
-								</div>
-							</div>
-							<div class="field-text mt-3">
-								{{ response.comment }}
-							</div>
-							<div class="row mt-3">
-								<div class="col text-left md-text-center">
-									<a
-										href="#"
-										class="btn yp-btn yp-btn-fill"
-										@click.prevent="sign(index)"
-										>Записаться</a
-									>
-								</div>
-								<div
-									class="col text-right md-text-center sm-mt-2"
+							<div class="time-wrap">
+								<span class="desc"
+									>Готовы вас принять:</span
 								>
-									<router-link
-										:to="
-											'/master/profile/' +
-											response.master.id
-										"
-										class="btn yp-btn yp-btn-fill"
-										>Профиль</router-link
-									>
-								</div>
+								<span class="time ml-1">{{
+									toTime(
+										response.suggested_time_from
+									) +
+									" - " +
+									toTime(response.suggested_time_to)
+								}}</span>
+							</div>
+							<div class="price">
+								{{ response.cost }} руб.
 							</div>
 						</div>
 					</div>
+					<div class="field-text mt-3">
+						{{ response.comment }}
+					</div>
+					<div class="row mt-3">
+						<div class="col text-left md-text-center">
+							<a
+								href="#"
+								class="btn yp-btn yp-btn-fill"
+								@click.prevent="sign(index)"
+								>Записаться</a
+							>
+						</div>
+						<div
+							class="col text-right md-text-center sm-mt-2"
+						>
+							<router-link
+								:to="
+									'/master/profile/' +
+									response.master.id
+								"
+								class="btn yp-btn yp-btn-fill"
+								>Профиль</router-link
+							>
+						</div>
+					</div>
 				</div>
-			</template>
-		</AccountTemplate>
+			</div>
+		</div>
+
+		<div v-if="responses.length == 0" class="p-4 text-center">
+			Нет данных для отображения
+		</div>
 
 		<HomeFooter style="border-top: 1px solid #b2b2b2;" />
 	</vue100vh>

@@ -28,6 +28,10 @@ const master = {
 		createResponse: {
 			isLoading: false,
 		},
+		reviews: {
+			isLoading: false,
+			data: []
+		}
 	},
 	mutations: {
 		photosGallerySetLoading(state, payload) {
@@ -64,6 +68,13 @@ const master = {
 
 		createResponseSetLoading(state, payload) {
 			state.createResponse.isLoading = payload;
+		},
+
+		getReviewsSetData(state, payload) {
+			state.reviews.data = payload;
+		},
+		getReviewsSetLoading(state, payload) {
+			state.reviews.isLoading = payload;
 		},
 	},
 	actions: {
@@ -184,6 +195,14 @@ const master = {
 				api.account.master
 					.createResponse(orderId, dateFrom, dateTo, description, cost)
 					.then((res) => {
+						state.commit("userDataSetData", {
+							username: res.name,
+							speciality: res.types,
+							description: res.about_myself || "",
+							albumIdGallery: res.gallery_album_id,
+							albumIdWorkplace: res.workplace_album_id,
+							albumIdAvatar: res.avatar_album_id,
+						});
 						state.commit("createResponseSetLoading", false);
 						resolve();
 					})
@@ -194,10 +213,30 @@ const master = {
 					});
 			});
 		},
+
+		async getReviews(state, { masterId }) {
+			return new Promise((resolve, reject) => {
+				state.commit("getReviewsSetLoading", true);
+
+				api.account.master
+					.getReviews(masterId)
+					.then((res) => {
+						state.commit("getReviewsSetData", res);
+						state.commit("getReviewsSetLoading", false);
+						resolve();
+					})
+					.catch((e) => {
+						console.log(e);
+						state.commit("getReviewsSetLoading", false);
+						reject();
+					});
+			});
+		},
 	},
 	getters: {
 		isLoading: (state) => {
 			return (
+				state.reviews.isLoading ||
 				state.changeProfile.isLoading ||
 				state.userData.isLoading ||
 				state.photosGallery.isLoading ||
