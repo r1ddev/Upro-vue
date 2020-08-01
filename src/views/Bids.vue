@@ -23,134 +23,136 @@
 			</div>
 		</a-modal>
 
-		
-				<div class="row flex-center m-0">
-					<div class="col-auto px-0">
-						<router-link
-							to="/bids"
-							:class="'btn yp-btn yp-btn-menu mt-3' + (($route.params.type == undefined) ? ' active' : '')"
-						>Все заявки</router-link>
-					</div>
-					<div class="col-auto px-0">
-						<router-link
-							to="/bids/sm"
-							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'sm') ? ' active' : '')"
-						>Подбор мастеров</router-link>
-					</div>
-					<div class="col-auto px-0">
-						<router-link
-							to="/bids/ms"
-							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'ms') ? ' active' : '')"
-						>Мастер выбран</router-link>
-					</div>
-					<div class="col-auto px-0">
-						<router-link
-							to="/bids/cs"
-							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cs') ? ' active' : '')"
-						>Завершенные</router-link>
-					</div>
-					<div class="col-auto px-0">
-						<router-link
-							to="/bids/cc"
-							:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cc') ? ' active' : '')"
-						>Отмененные</router-link>
-					</div>
-				</div>
-			
+		<ReviewNotification />
 
-			
-				<section class="bids-list">
-					<div class="container" v-loading="isLoading">
-						<div class="bid my-3" v-for="order in getPageOrders" :key="order.id">
-							<div class="row py-3">
-								<div class="col d-flex align-items-center">
-									<span>
-										<u>Заявка №{{ order.id }}</u>
-										— {{order.status}}
-									</span>
+		
+		<div class="row flex-center m-0">
+			<div class="col-auto px-0">
+				<router-link
+					to="/bids"
+					:class="'btn yp-btn yp-btn-menu mt-3' + (($route.params.type == undefined) ? ' active' : '')"
+				>Все заявки</router-link>
+			</div>
+			<div class="col-auto px-0">
+				<router-link
+					to="/bids/sm"
+					:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'sm') ? ' active' : '')"
+				>Подбор мастеров</router-link>
+			</div>
+			<div class="col-auto px-0">
+				<router-link
+					to="/bids/ms"
+					:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'ms') ? ' active' : '')"
+				>Мастер выбран</router-link>
+			</div>
+			<div class="col-auto px-0">
+				<router-link
+					to="/bids/cs"
+					:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cs') ? ' active' : '')"
+				>Завершенные</router-link>
+			</div>
+			<div class="col-auto px-0">
+				<router-link
+					to="/bids/cc"
+					:class="'btn yp-btn yp-btn-menu ml-2 mt-3' + (($route.params.type == 'cc') ? ' active' : '')"
+				>Отмененные</router-link>
+			</div>
+		</div>
+	
+
+	
+		<section class="bids-list">
+			<div class="container" v-loading="isLoading">
+				<div class="bid my-3" v-for="order in getPageOrders" :key="order.id">
+					<div class="row py-3">
+						<div class="col d-flex align-items-center">
+							<span>
+								<u>Заявка №{{ order.id }}</u>
+								— {{order.status}}
+							</span>
+						</div>
+						<div class="col-auto text-right">
+							<div class="id">123</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md">
+							<div class="row">
+								<div class="col-lg-7 py-2">
+									<div class="field">{{ order.city }}</div>
 								</div>
-								<div class="col-auto text-right">
-									<div class="id">123</div>
+								<div class="col-lg-5 py-2">
+									<div class="field text-center">{{ toDate(order.request_date_from) }}</div>
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-md">
-									<div class="row">
-										<div class="col-lg-7 py-2">
-											<div class="field">{{ order.city }}</div>
-										</div>
-										<div class="col-lg-5 py-2">
-											<div class="field text-center">{{ toDate(order.request_date_from) }}</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-lg-7 py-2">
-											<div class="field">{{ order.master_type }}</div>
-										</div>
-										<div class="col-lg-5 py-2">
-											<div class="row">
-												<div class="col-6">
-													<div class="field field-time">{{ toTime(order.request_date_from) }}</div>
-												</div>
-												<div class="col-6">
-													<div class="field field-time">{{ toTime(order.request_date_to) }}</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row py-2">
-										<div class="col-12">
-											<VuePerfectScrollbar class="field-text">{{ order.description }}</VuePerfectScrollbar>
-										</div>
-									</div>
+								<div class="col-lg-7 py-2">
+									<div class="field">{{ order.master_type }}</div>
 								</div>
-
-								<div class="col-md-5 py-2" v-if="order.albumImages.length > 0">
-									<div class="row h-100">
-										<div class="col-6" v-for="(image, index) in order.albumImages" :key="index">
-											<!-- {{image.image_thumb}} -->
-											<!-- <img :src="image.image_thumb" alt class="image" @click="openImageViewer(order.id, index)"/> -->
-											<img
-												@click="openImageViewer(order.id, index)"
-												:src="$store.state.general.server + image.image_thumb"
-												class="image"
-											/>
+								<div class="col-lg-5 py-2">
+									<div class="row">
+										<div class="col-6">
+											<div class="field field-time">{{ toTime(order.request_date_from) }}</div>
+										</div>
+										<div class="col-6">
+											<div class="field field-time">{{ toTime(order.request_date_to) }}</div>
 										</div>
 									</div>
 								</div>
 							</div>
-							<div class="row py-2 buttons" v-if="order.status == 'Подбор мастеров'">
-								<div class="col-7">
-									<router-link
-										:to="buildResponsesLink(order.id)"
-										class="btn yp-btn yp-btn-fill"
-									>Посмотреть отклики</router-link>
+							<div class="row py-2">
+								<div class="col-12">
+									<VuePerfectScrollbar class="field-text">{{ order.description }}</VuePerfectScrollbar>
 								</div>
-								<div class="col-5 text-right">
-									<a
-										href="#"
-										class="btn yp-btn yp-btn-fill h-100 flex-center"
-										@click.prevent="cancelBid(order.id)"
-									>Отменить заявку</a>
-								</div>
-							</div>
-
-							<div class="row py-2 buttons" v-if="order.status == 'Выбран мастер'">
 							</div>
 						</div>
-						<div v-if="!isLoading && !getPageOrders.length" class="text-center">Нет данных для отображения</div>
 
-						<div class="pagination flex-center">
-							<el-pagination
-								background
-								layout="prev, pager, next"
-								:total="orders.length"
-								:page-count="pagination.itemsOnPage"
-								@current-change="currentchange"
-							/>
+						<div class="col-md-5 py-2" v-if="order.albumImages.length > 0">
+							<div class="row h-100">
+								<div class="col-6" v-for="(image, index) in order.albumImages" :key="index">
+									<!-- {{image.image_thumb}} -->
+									<!-- <img :src="image.image_thumb" alt class="image" @click="openImageViewer(order.id, index)"/> -->
+									<img
+										@click="openImageViewer(order.id, index)"
+										:src="$store.state.general.server + image.image_thumb"
+										class="image"
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
-				</section>
+					<div class="row py-2 buttons" v-if="order.status == 'Подбор мастеров'">
+						<div class="col-7">
+							<router-link
+								:to="buildResponsesLink(order.id)"
+								class="btn yp-btn yp-btn-fill"
+							>Посмотреть отклики</router-link>
+						</div>
+						<div class="col-5 text-right">
+							<a
+								href="#"
+								class="btn yp-btn yp-btn-fill h-100 flex-center"
+								@click.prevent="cancelBid(order.id)"
+							>Отменить заявку</a>
+						</div>
+					</div>
+
+					<div class="row py-2 buttons" v-if="order.status == 'Выбран мастер'">
+					</div>
+				</div>
+				<div v-if="!isLoading && !getPageOrders.length" class="text-center">Нет данных для отображения</div>
+
+				<div class="pagination flex-center">
+					<el-pagination
+						background
+						layout="prev, pager, next"
+						:total="orders.length"
+						:page-count="pagination.itemsOnPage"
+						@current-change="currentchange"
+					/>
+				</div>
+			</div>
+		</section>
 
 		<HomeFooter style="border-top: 1px solid #B2B2B2;" />
 	</vue100vh>
@@ -161,7 +163,7 @@ import api from "../classes/api";
 import NewBidModal from "../components/NewBidModal";
 import HomeFooter from "../components/HomeFooter";
 import HomeHeader from "../components/HomeHeader";
-import AccountTemplate from "../components/AccountTemplate";
+import ReviewNotification from "../components/ReviewNotification";
 import moment from "moment";
 import VueScrollTo from "vue-scrollto";
 import vue100vh from "vue-100vh";
@@ -175,10 +177,10 @@ export default {
 	components: {
 		NewBidModal,
 		HomeHeader,
-		AccountTemplate,
 		HomeFooter,
 		vue100vh,
-		VuePerfectScrollbar
+		VuePerfectScrollbar,
+		ReviewNotification
 	},
 	data: function() {
 		return {
