@@ -29,6 +29,9 @@ Vue.use(BootstrapVue)
 Vue.use(Antd)
 Vue.use(ElementUI, { locale: ruLocale })
 
+// Vue.config.errorHandler = function(err, vm, info) {
+// 	console.log(`Error: ${err.toString()}\nInfo: ${info}`);
+// }
 
 new Vue({
 	router,

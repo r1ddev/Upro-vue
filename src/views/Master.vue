@@ -598,38 +598,39 @@ export default {
 }
 
 @media screen and (max-width: 991px) {
-	.account {
+	.bids-list {
 		.container {
 			padding: 0 15px;
 		}
+	}
 
-		.menu {
-			display: none;
-		}
-		.bids-list {
-			.bid {
-				.yp-btn-fill {
-					width: 100%;
-				}
+	.menu {
+		display: none;
+	}
 
-				.response {
-					.content {
-						// width: 100%;
+	.bids-list {
+		.bid {
+			.yp-btn-fill {
+				width: 100%;
+			}
 
-						.time-wrap {
-							padding-top: 1rem;
-						}
+			.response {
+				.content {
+					// width: 100%;
 
-						.field-text {
-							// margin-top: 1rem;
-						}
+					.time-wrap {
+						padding-top: 1rem;
+					}
+
+					.field-text {
+						// margin-top: 1rem;
 					}
 				}
 			}
+		}
 
-			.container {
-				padding: 0 15px;
-			}
+		.container {
+			padding: 0 15px;
 		}
 	}
 }

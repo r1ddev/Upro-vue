@@ -96,7 +96,7 @@ const general = {
 
 							state.commit("setLoginDataLoading", false);
 							api.errorHandler(e, this, {
-								401: () => {
+								403: () => {
 									this.dispatch("general/removeToken");
 									router.push("/");
 								},

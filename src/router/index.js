@@ -14,6 +14,10 @@ const routes = [
 		component: () => import("../views/About.vue"),
 	},
 	{
+		path: "/masterRegistration",
+		component: () => import("../views/MasterRegistration.vue"),
+	},
+	{
 		path: "/bids",
 		component: () => import("../components/AccountTemplate.vue"),
 		children: [
