@@ -42,6 +42,9 @@ const routes = [
 			}, {
 				path: "/master/:type?",
 				component: () => import("../views/Master.vue"),
+			}, {
+				path: "/settings",
+				component: () => import("../views/Settings.vue"),
 			}
 		],
 	}
