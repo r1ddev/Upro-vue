@@ -240,7 +240,9 @@
 					<div class v-if="order.status == 'Отменена клиентом'"></div>
 				</div>
 				<div v-if="!isLoading && !getPageOrders.length" class="text-center">
-					Нет данных для отображения
+					<div class="bids-empty"></div>
+					<div class="bids-empty-text">скоро здесь что-то будет...</div>
+					
 				</div>
 			</div>
 		</section>
@@ -561,6 +563,21 @@ export default {
 	}
 	.container {
 		padding: 0 150px;
+	}
+
+	.bids-empty {
+		background: url("../assets/img/bids-empty.svg");
+		background-size: contain;
+		background-position: center;
+		background-repeat: no-repeat;
+		height: 450px;
+	}
+
+	.bids-empty-text {
+		text-align: right;
+		font-style: italic;
+		font-size: 25px;
+		padding-top: 1rem;
 	}
 
 	.bid {
