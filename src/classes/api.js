@@ -132,6 +132,23 @@ var api = {
 			async getReviews (masterId) {
 				let response = await Axios.get(store.state.general.server + `/v2/feedbacks/?master_id=${masterId}`, api.useAuth())
 				return response.data
+			},
+			async getBalance () {
+				let response = await Axios.get(store.state.general.server + `/v2/balance/`, api.useAuth())
+				return response.data
+			}
+		},
+		client: {
+			async submitReview (nickname, master_id, rating, comment) {
+				let response = await Axios.post(store.state.general.server + `/v2/feedbacks/`, api.toFormData({
+					nickname, master_id, rating, comment
+				}), api.useAuth())
+
+				return response.data
+			},
+			async getNeedReviews () {
+				let response = await Axios.get(store.state.general.server + `/v2/feedbacks/notifications/`, api.useAuth())
+				return response.data	
 			}
 		},
 		async uploadPhotos (albumId, files) {

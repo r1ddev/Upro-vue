@@ -58,11 +58,15 @@
 </template>
 
 <script>
+import api from '../classes/api'
 export default {
     data: function () {
         return {
             helpVisible: false,
         }
+    },
+    created () {
+        api.account.master.getBalance()
     }
 }
 </script>

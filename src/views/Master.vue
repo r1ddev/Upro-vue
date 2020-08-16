@@ -81,7 +81,21 @@
 		</div>
 
 		<section class="bids-list">
+			
 			<div class="container" v-loading="isLoading">
+				<div class="balance-error">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="title">Отрицательный баланс!</div>
+							<div class="desc">При отрицательном балансе новые заявки не показываются...</div>
+							<div class="btn-wrap">
+								<router-link to="/master/balance" class="btn btn-balance">пополнить</router-link>
+							</div>
+						</div>
+						<div class="col-md-6 balance-error-image"></div>
+					</div>
+				</div>
+
 				<div class="bid my-3" v-for="order in getPageOrders" :key="order.id">
 					<div class="row py-3">
 						<div class="col d-flex align-items-center">
@@ -509,6 +523,42 @@ export default {
 }
 
 .bids-list {
+	.balance-error {
+		padding: 3rem 0;
+
+		.title {
+			color: #6B3752;
+			font-weight: bold;
+			font-size: 37px;
+			text-align: center;
+		}
+		.desc {
+			color: #4F4F4E;
+			font-size: 21px;
+			text-align: center;
+			padding-top: 1rem;
+		}
+		.btn-wrap {
+			text-align: center;
+			padding-top: 1rem;
+
+			.btn-balance {
+				border-radius: 10px;
+				display: inline-block;
+				background: #F3A9CD;
+				padding: 10px 30px;
+				color: #fff;
+				text-transform: uppercase;
+			}
+		}
+		
+		.balance-error-image {
+			background: url("../assets/img/balance_error.svg");
+			background-size: contain;
+			background-position: center;
+			background-repeat: no-repeat;
+		}
+	}
 	.container {
 		padding: 0 150px;
 	}

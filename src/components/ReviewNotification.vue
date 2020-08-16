@@ -25,7 +25,7 @@
 
 		<el-form @submit.native.prevent="submit" label-position="top">
 			<el-form-item>
-				<el-input placeholder="Анонимная лисичка?" maxlength="1000" v-model="name" />
+				<el-input placeholder="Анонимная лисичка" maxlength="1000" v-model="name" />
 			</el-form-item>
 
 			<el-form-item>
@@ -45,29 +45,50 @@
 							>Оценить</a-button
 						>
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-4 d-flex justify-content-center">
 						<a-button html-type="submit" type="secondary" size="large" class="yp-btn">Позже</a-button>
 					</div>
 				</div>
 			</el-form-item>
 
-            <div class="notice">Ваш отзыв поможет другим пользователям!</div>
+			<div class="notice">Ваш отзыв поможет другим пользователям!</div>
 		</el-form>
 	</el-dialog>
 </template>
 
 <script>
+import api from "../classes/api";
 export default {
+	props: {
+		masters: {
+			default: [],
+			type: Array,
+		},
+	},
 	data: function () {
 		return {
 			visible: true,
 			rate: null,
 			name: "",
 			comment: "",
+			currentMasterIndex: undefined,
 		};
 	},
 	methods: {
-		submit() {},
+		submit() {
+			api.account.client.submitReview(this.name, this.masters[this.currentMasterIndex], this.rate, this.comment);
+		},
+		nextMaster() {
+			if (this.masters.length - 1 > this.currentMasterIndex) {
+				this.currentMasterIndex++;
+			}
+		},
+	},
+	created() {
+		if (this.masters.length > 0) {
+			this.currentMasterIndex = 0;
+		}
+		api.account.client.getNeedReviews()
 	},
 };
 </script>
@@ -77,15 +98,15 @@ export default {
 	padding: 0;
 }
 ::v-deep .el-rate__icon {
-    font-size: 38px;
-    
-    @media screen and (max-width: 550px) {
-        font-size: 30px;
-    }
+	font-size: 38px;
+
+	@media screen and (max-width: 550px) {
+		font-size: 30px;
+	}
 }
 .title {
-    background: #f3a9cd;
-    padding: 5px 20px;
+	background: #f3a9cd;
+	padding: 5px 20px;
 
 	.avatar {
 		width: 60px;
@@ -97,23 +118,23 @@ export default {
 	.master-data {
 		display: flex;
 		flex-direction: column;
-        justify-content: center;
-        
-        .name {
-            color: #000000;
-            font-size: 18px;
-        }
+		justify-content: center;
 
-        .type {
-            color: #818181;
-            font-size: 18px;
-        }
+		.name {
+			color: #000000;
+			font-size: 18px;
+		}
 
-        .date {
-            color: #000000;
-            font-size: 18px;
-            font-weight: bold;
-        }
+		.type {
+			color: #818181;
+			font-size: 18px;
+		}
+
+		.date {
+			color: #000000;
+			font-size: 18px;
+			font-weight: bold;
+		}
 	}
 }
 
@@ -122,8 +143,8 @@ export default {
 }
 
 .notice {
-    font-weight: 100;
-    font-size: 14px;
-    text-align: center;
+	font-weight: 100;
+	font-size: 14px;
+	text-align: center;
 }
 </style>
