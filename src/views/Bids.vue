@@ -23,7 +23,7 @@
 			</div>
 		</a-modal>
 
-		<ReviewNotification />
+		<ReviewNotification :reviews="needReviews" v-if="needReviews && needReviews.length > 0" />
 
 		
 		<div class="row flex-center m-0">
@@ -171,6 +171,7 @@ import VuePerfectScrollbar from "vue-perfect-scrollbar";
 
 import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions } = createNamespacedHelpers("general");
+const { mapState: mapStateClient, mapActions: mapActionsClient } = createNamespacedHelpers("client");
 
 
 export default {
@@ -291,6 +292,9 @@ export default {
 		...mapState({
 			loginData: state => state.loginData.data,
 		}),
+		...mapStateClient({
+			needReviews: state => state.needReviews.data,
+		}),
 		getOrderImages() {
 			return (
 				(
@@ -346,6 +350,8 @@ export default {
 						break;
 				}
 				this.getOrders();
+
+				this.$store.dispatch('client/getNeedReviews')
 				break;
 
 			default:
@@ -451,7 +457,8 @@ export default {
 
 .bids-list {
 	.container {
-		padding: 0 150px;
+		// padding: 0 100px;
+		max-width: 700px;
 	}
 
 	.bid {

@@ -15,6 +15,10 @@ const client = {
 				},
 			},
 		},
+		needReviews: {
+			isLoading: false,
+			data: []
+		}
 	},
 	mutations: {
 		bidResponsesSetLoading(state, payload) {
@@ -29,6 +33,13 @@ const client = {
 		},
 		bidDataSetData(state, payload) {
 			state.bidData.data = payload;
+		},
+		
+		needReviewsSetLoading(state, payload) {
+			state.needReviews.isLoading = payload;
+		},
+		needReviewsSetData(state, payload) {
+			state.needReviews.data = payload;
 		},
 	},
 	actions: {
@@ -67,6 +78,25 @@ const client = {
 					.then((res) => {
 						state.commit("bidDataSetData", res);
 						state.commit("bidDataSetLoading", false);
+						resolve();
+					})
+					.catch((e) => {
+						console.log(e);
+						state.commit("bidDataSetLoading", false);
+						reject();
+					});
+			});
+		},
+
+		async getNeedReviews(state, id) {
+			return new Promise((resolve, reject) => {
+				state.commit("needReviewsSetLoading", true);
+
+				api.account.client
+					.getNeedReviews()
+					.then((res) => {
+						state.commit("needReviewsSetData", res.feedbacks_notification_data);
+						state.commit("needReviewsSetLoading", false);
 						resolve();
 					})
 					.catch((e) => {

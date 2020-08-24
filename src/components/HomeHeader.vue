@@ -58,12 +58,17 @@
 			</div>
 
 			<div v-if="page == 'bids'" class="mt-5">
-				<div>
-					<a href="#" class="header-menu-link">Заявки</a>
+				<div v-for="(link, index) in links" :key="index">
+					<router-link
+						@click.native="mobileMenuOpened = false"
+						:to="link.href"
+						:class="
+							'header-menu-link' + (link.active ? ' active' : '')
+						">
+						{{ link.label }}
+					</router-link>
 				</div>
-				<div>
-					<a href="#" class="header-menu-link">Профиль</a>
-				</div>
+
 				<div>
 					<a
 						href="#"
@@ -87,20 +92,21 @@
 			<div v-if="page == 'master'" class="mt-5">
 				<div v-for="(link, index) in links" :key="index">
 					<router-link
+						@click.native="mobileMenuOpened = false"
 						:to="link.href"
 						:class="
 							'header-menu-link' + (link.active ? ' active' : '')
-						"
-						>{{ link.label }}</router-link
-					>
+						">
+						{{ link.label }}
+					</router-link>
 				</div>
 				<div>
 					<a
 						href="#"
 						class="header-menu-link"
-						@click.prevent="logout()"
-						>Выход</a
-					>
+						@click.prevent="logout()">
+						Выход
+					</a>
 				</div>
 			</div>
 		</el-dialog>

@@ -4,16 +4,16 @@
 			<div class="row">
 				<div class="col-auto">
 					<img
-						src="https://www.google.ru/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
+						:src="userAvatar()"
 						class="avatar"
 						alt=""
 					/>
 				</div>
 				<div class="col-md master-data">
-					<div class="name">Мария Александровна</div>
+					<div class="name">{{ this.currentReview.master.name }}</div>
 					<div class="row">
-						<div class="col type">Массаж</div>
-						<div class="col-md-auto date">11 июля</div>
+						<div class="col type">{{ this.currentReview.order.master_type_id }}</div>
+						<div class="col-md-auto date">{{ toDate(this.currentReview.order.date_finished) }}</div>
 					</div>
 				</div>
 			</div>
@@ -30,6 +30,7 @@
 
 			<el-form-item>
 				<el-input
+					required
 					type="textarea"
 					placeholder="Комментарий"
 					:autosize="{ minRows: 2, maxRows: 4 }"
@@ -41,7 +42,7 @@
 			<el-form-item>
 				<div class="row">
 					<div class="col-md-8">
-						<a-button html-type="submit" type="primary" size="large" class="yp-btn yp-btn-fill"
+						<a-button html-type="submit" type="primary" size="large" class="yp-btn yp-btn-fill" :disabled="rate == 0 || !comment"
 							>Оценить</a-button
 						>
 					</div>
@@ -58,37 +59,72 @@
 
 <script>
 import api from "../classes/api";
+import moment from 'moment';
+import { createNamespacedHelpers } from "vuex";
+const { mapState: mapStateMaster, mapActions: mapActionsMaster } = createNamespacedHelpers("master");
+
+
 export default {
 	props: {
-		masters: {
-			default: [],
+		reviews: {
+			default: () => [],
 			type: Array,
 		},
 	},
 	data: function () {
 		return {
 			visible: true,
-			rate: null,
+			rate: 0,
 			name: "",
 			comment: "",
-			currentMasterIndex: undefined,
+			currentReviewIndex: 0,
 		};
 	},
 	methods: {
 		submit() {
-			api.account.client.submitReview(this.name, this.masters[this.currentMasterIndex], this.rate, this.comment);
+			let name = this.name.length > 0 ? this.name : "Анонимная лисичка"
+			// if (this.rate > 0) {
+			api.account.client.submitReview(name, this.currentReview.master.id, this.rate, this.comment);
+			
+			this.$notify({
+				title: "Успешно",
+				message: "Отзыв отправлен",
+				type: "success",
+			});
+
+			this.nextMaster()
 		},
 		nextMaster() {
-			if (this.masters.length - 1 > this.currentMasterIndex) {
-				this.currentMasterIndex++;
+			if (this.reviews.length - 1 > this.currentReviewIndex) {
+				this.currentReviewIndex++;
+
+				this.$store.dispath("master/getPhotosAvatar", this.currentReview.master.avatar_album_id)
+
+				this.rate = 0;
+				this.comment = "";
 			}
 		},
+		toDate (date) {
+			return moment(date).locale('ru').format("D MMMM")
+		},
+		userAvatar() {
+			return this.photosAvatar.length > 0
+				? this.photosAvatar[0].image_thumb
+				: require(`@/assets/img/no-avatar.png`);
+		},
+	},
+	computed: {
+		currentReview () {
+			return this.reviews[this.currentReviewIndex]
+		},
+		...mapStateMaster ({
+			photosAvatar: (state) => state.photosAvatar.data,
+		})
 	},
 	created() {
-		if (this.masters.length > 0) {
-			this.currentMasterIndex = 0;
-		}
-		api.account.client.getNeedReviews()
+		this.$store.dispath("master/getPhotosAvatar", this.currentReview.master.avatar_album_id)
+		// api.account.client.getNeedReviews()
+		// console.log(this.reviews);
 	},
 };
 </script>

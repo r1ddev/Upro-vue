@@ -56,7 +56,7 @@
 		</div>
 
 
-		<Reviews />
+		<Reviews :masterId="master.id" />
 	</div>
 </template>
 

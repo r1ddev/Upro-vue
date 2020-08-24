@@ -71,7 +71,7 @@ export default {
 	},
 	created() {
 		this.$store.dispatch("master/getReviews", { masterId: this.masterId });
-		console.log("created");
+		console.log("created", this.masterId);
 	},
 };
 </script>

@@ -39,6 +39,7 @@
 				<MasterProfileView
 					v-else
 					:master="{
+						id,
 						username,
 						description,
 						speciality: selectedSpecialities,
@@ -152,7 +153,7 @@ export default {
 		// await this.$store.dispatch("general/getLoginStatus");
 
 		if (this.$route.params.id) {
-			this.id = this.$route.params.id;
+			this.id = parseInt(this.$route.params.id);
 
 			this.fetchMasterData();
 		} else {

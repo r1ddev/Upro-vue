@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
         <div class="shadow mt-4">
-            <Reviews />
+            <Reviews :masterId="1"/>
         </div>
 		
 	</div>

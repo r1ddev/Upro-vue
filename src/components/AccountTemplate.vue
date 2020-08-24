@@ -47,13 +47,15 @@ export default {
 					{ label: "Профиль", href: "/master/profile", active: this.activeMenu == "/master/profile" },
 					{ label: "Отзывы", href: "/master/reviews", active: this.activeMenu == "/master/reviews" },
 					{ label: "Баланс", href: "/master/balance", active: this.activeMenu == "/master/balance" },
+					{ label: "Настройки", href: "/settings", active: this.activeMenu == "/settings" },
 				];
 				break;
 
 			case "c":
 				this.accountType = "bids"
 				this.sideLinks = [
-					{ label: "Заявки", href: "/bids", active: true }
+					{ label: "Заявки", href: "/bids", active: this.activeMenu == "/bids" },
+					{ label: "Настройки", href: "/settings", active: this.activeMenu == "/settings" },
 				];
 				break;
 		}
