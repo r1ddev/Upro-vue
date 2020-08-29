@@ -142,7 +142,7 @@
 				</div>
 				<div v-if="!isLoading && !getPageOrders.length" class="text-center">Нет данных для отображения</div>
 
-				<div class="pagination flex-center">
+				<div class="pagination flex-center" v-if="orders.length > pagination.itemsOnPage">
 					<el-pagination
 						background
 						layout="prev, pager, next"
@@ -189,7 +189,7 @@ export default {
 			orders: [],
 			pagination: {
 				currentPage: 1,
-				itemsOnPage: 10
+				itemsOnPage: 5
 			},
 			dialogBidImage: {
 				visible: false,
