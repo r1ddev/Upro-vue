@@ -4,7 +4,7 @@ import router from "../../router";
 const general = {
 	namespaced: true,
 	state: {
-		server: "http://37.140.198.184",
+		server: "https://tauva.pw",
 		userToken: null,
 		isLoading: false,
 		masterTypes: [
