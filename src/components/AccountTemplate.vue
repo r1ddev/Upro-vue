@@ -33,7 +33,13 @@ export default {
 	data: () => {
 		return {
 			sideLinks: [],
-			accountType: ""
+			accountType: "",
+			allowedPages: {
+				all: ["home", "about"],
+				guest: ["masterRegistration"],
+				client: ["clientOrders", "clientOrderResponses", "clientMasterReviews", "clientMasterProfile", "settings"],
+				master: ["masterProfile", "masterBalance", "masterOrders", "settings"],
+			}
 		};
 	},
 	async created() {
@@ -49,21 +55,27 @@ export default {
 					{ label: "Баланс", href: "/master/balance", active: this.activeMenu == "/master/balance" },
 					{ label: "Настройки", href: "/settings", active: this.activeMenu == "/settings" },
 				];
+
+				if (!~this.allowedPages.master.indexOf(this.$route.name)) {
+					this.$router.push("/");
+				}
 				break;
 
 			case "c":
-				this.accountType = "bids"
+				this.accountType = "client"
 				this.sideLinks = [
 					{ label: "Заявки", href: "/bids", active: this.activeMenu == "/bids" },
 					{ label: "Настройки", href: "/settings", active: this.activeMenu == "/settings" },
 				];
+
+				if (!~this.allowedPages.client.indexOf(this.$route.name)) {
+					this.$router.push("/");
+				}
 				break;
 		}
 	},
 	methods: {
 		compareLink(link) {
-			console.log("location.pathname", location.pathname);
-			console.log("link", link);
 			return location.pathname === link;
 		},
 	},
@@ -72,7 +84,6 @@ export default {
 			loginData: (state) => state.loginData.data,
 		}),
 		activeMenu() {
-			console.log("call activeMenu");
 			return location.pathname;
 		},
 	},

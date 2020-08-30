@@ -325,38 +325,42 @@ export default {
 		// TODO: VUEX!!!
 
 		await this.$store.dispatch('general/getLoginStatus')
-		switch (this.loginData.user.type_code) {
-			case "m":
-				this.$router.push("/master");
+
+
+		switch (this.$route.params.type) {
+			case "sm":
+				this.ordersType = "sm"
 				break;
 
-			case "c":
-				switch (this.$route.params.type) {
-					case "sm":
-						this.ordersType = "sm"
-						break;
-
-					case "ms":
-						this.ordersType = "ms"
-						break;
-					case "cs":
-						this.ordersType = "cs"
-						break;
-					case "cc":
-						this.ordersType = "na,cc,cm"
-						break;
-					default:
-						this.ordersType = ""
-						break;
-				}
-				this.getOrders();
-
-				this.$store.dispatch('client/getNeedReviews')
+			case "ms":
+				this.ordersType = "ms"
 				break;
-
+			case "cs":
+				this.ordersType = "cs"
+				break;
+			case "cc":
+				this.ordersType = "na,cc,cm"
+				break;
 			default:
+				this.ordersType = ""
 				break;
 		}
+		this.getOrders();
+
+		this.$store.dispatch('client/getNeedReviews')
+		
+		// switch (this.loginData.user.type_code) {
+		// 	case "m":
+		// 		this.$router.push("/master");
+		// 		break;
+
+		// 	case "c":
+				
+		// 		break;
+
+		// 	default:
+		// 		break;
+		// }
 	},
 	watch: {
 		"$route.params.type": function() {

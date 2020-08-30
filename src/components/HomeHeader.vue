@@ -57,7 +57,7 @@
 				</div>
 			</div>
 
-			<div v-if="page == 'bids'" class="mt-5">
+			<div v-if="page == 'client'" class="mt-5">
 				<div v-for="(link, index) in links" :key="index">
 					<router-link
 						@click.native="mobileMenuOpened = false"
@@ -195,7 +195,7 @@
 
 						<div
 							class="row d-flex align-items-center h-100"
-							v-if="page == 'bids'"
+							v-if="page == 'client'"
 						>
 							<div class="col-auto">
 								<a
