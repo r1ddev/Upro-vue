@@ -6,10 +6,10 @@
 			<div class="row">
 				<div class="col">
 					<div class="row">
-						<div class="col-auto date">{{ review.date }}</div>
-						<div class="col name">{{ review.name }}</div>
+						<div class="col-auto date">{{ review.date_created }}</div>
+						<div class="col name">{{ review.nickname }}</div>
 					</div>
-					<div class="text">{{ review.text }}</div>
+					<div class="text">{{ review.comment }}</div>
 				</div>
 				<div class="col-auto rating">
 					<el-rate v-model="review.rating" disabled />
@@ -33,6 +33,7 @@
 
 <script>
 import VueScrollTo from "vue-scrollto";
+import moment from "moment"
 
 import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions } = createNamespacedHelpers("master");
@@ -63,15 +64,21 @@ export default {
 			reviews: (state) => state.reviews.data,
 		}),
 		getCurrentPageReviews() {
-			return this.reviews.slice(
+			let r = this.reviews
+			let rr =  this.reviews.slice(
 				this.pagination.itemsOnPage * (this.pagination.currentPage - 1),
 				this.pagination.itemsOnPage * this.pagination.currentPage
-			);
+			).map(v => {
+				v.rating = parseInt(v.rating)
+				v.date_created = moment(v.date_created).format("DD.MM.YY")
+				return v
+			});
+
+			return rr
 		},
 	},
 	created() {
 		this.$store.dispatch("master/getReviews", { masterId: this.masterId });
-		console.log("created", this.masterId);
 	},
 };
 </script>

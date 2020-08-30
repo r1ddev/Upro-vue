@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
         <div class="shadow mt-4">
-            <Reviews :masterId="1"/>
+            <Reviews :masterId="$store.state.masterData.userData.data.id"/>
         </div>
 		
 	</div>
