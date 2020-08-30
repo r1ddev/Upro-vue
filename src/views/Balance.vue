@@ -39,7 +39,7 @@
                 <div class="col">
                     <div class="number-wrap">
                         <div class="number">
-                            1000
+                            {{ userData.balance }}
                         </div>
                         <a href="#" class="help" @click.prevent="helpVisible = true"></a>
                     </div>
@@ -59,6 +59,10 @@
 
 <script>
 import api from '../classes/api'
+
+import { createNamespacedHelpers } from "vuex";
+const { mapState: mapStateMaster, mapActions: mapActionsMaster } = createNamespacedHelpers("master");
+
 export default {
     data: function () {
         return {
@@ -66,14 +70,19 @@ export default {
         }
     },
     created () {
-        api.account.master.getBalance()
+        this.$store.dispatch("master/getBalance")
+    },
+    computed: {
+        ...mapStateMaster({
+            userData: state => state.userData.data,
+        })
     }
 }
 </script>
 
 <style lang="less" scoped>
 .container {
-    max-width: 621px;
+    max-width: 671px;
 
     h3 {
         color: #6B3752;

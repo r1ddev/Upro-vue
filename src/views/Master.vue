@@ -83,7 +83,7 @@
 		<section class="bids-list">
 			
 			<div class="container" v-loading="isLoading">
-				<div class="balance-error">
+				<div class="balance-error" v-if="userData.balance < 0">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="title">Отрицательный баланс!</div>
@@ -96,154 +96,168 @@
 					</div>
 				</div>
 
-				<div class="bid my-3" v-for="order in getPageOrders" :key="order.id">
-					<div class="row py-3">
-						<div class="col d-flex align-items-center">
-							<span>
-								<u>Заявка №{{ order.id }}</u>
-								— {{ order.status }}
-							</span>
-						</div>
-						<div class="col text-right">
-							<div class="id d-none">123</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-7">
-							<div class="row">
-								<div class="col-lg-7 py-2">
-									<div class="field">
-										{{ order.city }}
-									</div>
-								</div>
-								<div class="col-lg-5 py-2">
-									<div class="field text-center">
-										{{ toDate(order.request_date_from) }}
-									</div>
-								</div>
+				<div v-else>
+					<div class="bid my-3" v-for="order in getPageOrders" :key="order.id" >
+						<div class="row py-3">
+							<div class="col d-flex align-items-center">
+								<span>
+									<u>Заявка №{{ order.id }}</u>
+									— {{ order.status }}
+								</span>
 							</div>
-							<div class="row">
-								<div class="col-lg-7 py-2">
-									<div class="field">
-										{{ order.master_type }}
-									</div>
-								</div>
-								<div class="col-lg-5 py-2">
-									<div class="field field-time">
-										{{ toTime(order.request_date_from) }}
-										-
-										{{ toTime(order.request_date_to) }}
-									</div>
-								</div>
-							</div>
-							<div class="row py-2">
-								<div class="col-12">
-									<div class="field-text">
-										{{ order.description }}
-									</div>
-								</div>
+							<div class="col text-right">
+								<div class="id d-none">123</div>
 							</div>
 						</div>
-
-						<div class="col-md-5 py-2">
-							<div class="row h-100">
-								<div class="col-6" v-for="(image, index) in order.albumImages" :key="index">
-									<img
-										@click="openImageViewer(order.id, index)"
-										:src="$store.state.general.server + image.image_thumb"
-										class="image"
-									/>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class v-if="order.status == 'Подбор мастеров' && ordersType !== 'process'">
-						<div class="row justify-content-center">
-							<div class="col-md flex-center">
-								<a href="#" class="btn yp-btn yp-btn-fill mt-4" @click.prevent="newResponse(order.id)"
-									>Откликнуться</a
-								>
-							</div>
-						</div>
-					</div>
-
-					<div
-						v-if="
-							(order.status == 'Выбран мастер' && order.replies && order.replies.length > 0) ||
-							(order.status == 'Подбор мастеров' &&
-								order.replies &&
-								order.replies.length > 0 &&
-								ordersType == 'process')
-						"
-					>
-						<div class="divider py-3">Ваш отклик:</div>
-						<div class="flex-center response">
-							<div class="content">
+						<div class="row">
+							<div class="col-md-7">
 								<div class="row">
-									<div class="col-md-3">
-										<div class="d-flex flex-column h-100">
-											<div class="flex-grow-1">
-												<div class="field field-time">
-													{{ order.replies[0].cost + "р" }}
-												</div>
-											</div>
-											<div class="flex-grow-1 time-wrap">
-												<div class="field field-time">
-													{{
-														toTime(order.replies[0].suggested_time_from) +
-														" - " +
-														toTime(order.replies[0].suggested_time_to)
-													}}
-												</div>
-											</div>
+									<div class="col-lg-7 py-2">
+										<div class="field">
+											{{ order.city }}
 										</div>
 									</div>
-									<div class="col-md-9">
-										<div class="field-text">
-											{{ order.replies[0].comment }}
+									<div class="col-lg-5 py-2">
+										<div class="field text-center">
+											{{ toDate(order.request_date_from) }}
 										</div>
 									</div>
 								</div>
-								<div
-									class="row justify-content-center"
-									v-if="order.status == 'Выбран мастер' && order.replies.length > 0"
-								>
-									<div class="col-md flex-center">
-										<a
-											href="#"
-											class="btn yp-btn yp-btn-fill mt-4"
-											@click.prevent="finishBid(order.id)"
-											>Завершить</a
-										>
+								<div class="row">
+									<div class="col-lg-7 py-2">
+										<div class="field">
+											{{ order.master_type }}
+										</div>
 									</div>
-									<div class="col-md flex-center">
-										<a
-											href="#"
-											@click.prevent="cancelBid(order.id)"
-											class="btn yp-btn yp-btn-fill mt-4"
-											>Отказаться</a
-										>
+									<div class="col-lg-5 py-2">
+										<div class="field field-time">
+											{{ toTime(order.request_date_from) }}
+											-
+											{{ toTime(order.request_date_to) }}
+										</div>
 									</div>
-									<div class="col-md flex-center">
-										<a
-											href="#"
-											class="btn yp-btn yp-btn-fill mt-4"
-											@click.prevent="noClientBid(order.id)"
-											>Клиент не приехал</a
-										>
+								</div>
+								<div class="row py-2">
+									<div class="col-12">
+										<div class="field-text">
+											{{ order.description }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-5 py-2">
+								<div class="row h-100">
+									<div class="col-6" v-for="(image, index) in order.albumImages" :key="index">
+										<img
+											@click="openImageViewer(order.id, index)"
+											:src="$store.state.general.server + image.image_thumb"
+											class="image"
+										/>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+						<div class v-if="order.status == 'Подбор мастеров' && ordersType !== 'process'">
+							<div class="row justify-content-center">
+								<div class="col-md flex-center">
+									<a href="#" class="btn yp-btn yp-btn-fill mt-4" @click.prevent="newResponse(order.id)"
+										>Откликнуться</a
+									>
+								</div>
+							</div>
+						</div>
 
-					<div class v-if="order.status == 'Отменена клиентом'"></div>
+						<div
+							v-if="
+								(order.status == 'Выбран мастер' && order.replies && order.replies.length > 0) ||
+								(order.status == 'Подбор мастеров' &&
+									order.replies &&
+									order.replies.length > 0 &&
+									ordersType == 'process')
+							"
+						>
+							<div class="divider py-3">Ваш отклик:</div>
+							<div class="flex-center response">
+								<div class="content">
+									<div class="row">
+										<div class="col-md-3">
+											<div class="d-flex flex-column h-100">
+												<div class="flex-grow-1">
+													<div class="field field-time">
+														{{ order.replies[0].cost + "р" }}
+													</div>
+												</div>
+												<div class="flex-grow-1 time-wrap">
+													<div class="field field-time">
+														{{
+															toTime(order.replies[0].suggested_time_from) +
+															" - " +
+															toTime(order.replies[0].suggested_time_to)
+														}}
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-9">
+											<div class="field-text">
+												{{ order.replies[0].comment }}
+											</div>
+										</div>
+									</div>
+									<div
+										class="row justify-content-center"
+										v-if="order.status == 'Выбран мастер' && order.replies.length > 0"
+									>
+										<div class="col-md flex-center">
+											<a
+												href="#"
+												class="btn yp-btn yp-btn-fill mt-4"
+												@click.prevent="finishBid(order.id)"
+												>Завершить</a
+											>
+										</div>
+										<div class="col-md flex-center">
+											<a
+												href="#"
+												@click.prevent="cancelBid(order.id)"
+												class="btn yp-btn yp-btn-fill mt-4"
+												>Отказаться</a
+											>
+										</div>
+										<div class="col-md flex-center">
+											<a
+												href="#"
+												class="btn yp-btn yp-btn-fill mt-4"
+												@click.prevent="noClientBid(order.id)"
+												>Клиент не приехал</a
+											>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class v-if="order.status == 'Отменена клиентом'"></div>
+					</div>
+					
+					<div class="pagination flex-center" v-if="orders.length > pagination.itemsOnPage">
+						<el-pagination
+							background
+							layout="prev, pager, next"
+							:total="orders.length"
+							:page-count="pagination.itemsOnPage"
+							@current-change="currentchange"
+						/>
+					</div>
 				</div>
+
 				<div v-if="!isLoading && !getPageOrders.length" class="text-center">
 					<div class="bids-empty"></div>
 					<div class="bids-empty-text">скоро здесь что-то будет...</div>
-					
 				</div>
+
+				
 			</div>
 		</section>
 
@@ -258,6 +272,10 @@ import AccountTemplate from "../components/AccountTemplate";
 import HomeHeader from "../components/HomeHeader";
 import NewResponseModal from "../components/NewResponseModal";
 import NewReplyPopup from "../components/master/NewReplyPopup";
+import VueScrollTo from "vue-scrollto";
+
+import { createNamespacedHelpers } from "vuex";
+const { mapState: mapStateMaster, mapActions: mapActionsMaster } = createNamespacedHelpers("master");
 
 import moment from "moment";
 
@@ -281,7 +299,7 @@ export default {
 			orders: [],
 			pagination: {
 				currentPage: 1,
-				itemsOnPage: 10,
+				itemsOnPage: 5,
 			},
 			ordersType: "",
 			dialogBidImage: {
@@ -378,6 +396,10 @@ export default {
 		toTime(date) {
 			return moment.utc(date).format("HH:mm");
 		},
+		currentchange(e) {
+			this.pagination.currentPage = e;
+			VueScrollTo.scrollTo("body");
+		},
 		async getOrders() {
 			let status = this.ordersType;
 			var res = {};
@@ -436,33 +458,75 @@ export default {
 					this.pagination.itemsOnPage * this.pagination.currentPage
 				);
 		},
+		...mapStateMaster({
+			userData: (state) => state.userData.data,
+		}),
 	},
 	async created() {
-		api.account
-			.getLoginStatus()
-			.then((response) => {
-				switch (response.user.type_code) {
-					case "c":
-						this.$router.push("/bids");
-						break;
+		// await this.$store.dispatch('general/getLoginStatus')
+		
+		// switch (this.loginData.user.type_code) {
+		// 	case "m":
+		// 		this.$router.push("/master");
+		// 		break;
 
-					case "m":
-						this.parseRoute();
-						break;
+		// 	case "c":
+		// 		switch (this.$route.params.type) {
+		// 			case "sm":
+		// 				this.ordersType = "sm"
+		// 				break;
 
-					default:
-						break;
-				}
-				console.log(response.user.type_code);
-			})
-			.catch((e) => {
-				api.errorHandler(e, this, {
-					401: () => {
-						this.$store.dispatch("general/removeToken");
-						this.$router.push("/");
-					},
-				});
-			});
+		// 			case "ms":
+		// 				this.ordersType = "ms"
+		// 				break;
+		// 			case "cs":
+		// 				this.ordersType = "cs"
+		// 				break;
+		// 			case "cc":
+		// 				this.ordersType = "na,cc,cm"
+		// 				break;
+		// 			default:
+		// 				this.ordersType = ""
+		// 				break;
+		// 		}
+		// 		this.getOrders();
+
+		// 		this.$store.dispatch('client/getNeedReviews')
+		// 		break;
+
+		// 	default:
+		// 		break;
+		// }
+
+		await this.$store.dispatch('master/getUserData', this.$store.state.general.loginData.data.user.master.id)
+		await this.$store.dispatch('master/getBalance')
+		
+		// api.account
+		// 	.getLoginStatus()
+		// 	.then((response) => {
+		// 		switch (response.user.type_code) {
+		// 			case "c":
+		// 				// this.$router.push("/bids");
+		// 				break;
+
+		// 			case "m":
+		// 				this.parseRoute();
+		// 				break;
+
+		// 			default:
+		// 				break;
+		// 		}
+		// 		console.log(response.user.type_code);
+		// 	})
+		// 	.catch((e) => {
+		// 		api.errorHandler(e, this, {
+		// 			401: () => {
+		// 				this.$store.dispatch("general/removeToken");
+		// 				this.$router.push("/");
+		// 			},
+		// 		});
+		// 	});
+		this.parseRoute();
 	},
 	watch: {
 		"$route.params.type": function () {

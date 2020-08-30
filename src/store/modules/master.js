@@ -23,6 +23,7 @@ const master = {
 			isLoading: false,
 			data: {
 				speciality: [],
+				balance: 0
 			},
 		},
 		createResponse: {
@@ -75,6 +76,13 @@ const master = {
 		},
 		getReviewsSetLoading(state, payload) {
 			state.reviews.isLoading = payload;
+		},
+
+		getBalanceSetData(state, payload) {
+			state.userData.data.balance = payload;
+		},
+		getBalanceSetLoading(state, payload) {
+			state.userData.isLoading = payload;
 		},
 	},
 	actions: {
@@ -144,6 +152,7 @@ const master = {
 					.getMasterData(id)
 					.then((res) => {
 						state.commit("userDataSetData", {
+							id: id,
 							username: res.name,
 							speciality: res.types,
 							description: res.about_myself || "",
@@ -221,13 +230,35 @@ const master = {
 				api.account.master
 					.getReviews(masterId)
 					.then((res) => {
-						state.commit("getReviewsSetData", res);
+						state.commit("getReviewsSetData", res.feedbacks);
 						state.commit("getReviewsSetLoading", false);
 						resolve();
 					})
 					.catch((e) => {
 						console.log(e);
 						state.commit("getReviewsSetLoading", false);
+						reject();
+					});
+			});
+		},
+
+		async getBalance(state) {
+			// console.log("state", state);
+			let masterId = state.state.userData.data.id
+
+			return new Promise((resolve, reject) => {
+				state.commit("getBalanceSetLoading", true);
+
+				api.account.master
+					.getBalance(masterId)
+					.then((res) => {
+						state.commit("getBalanceSetData", res.balance);
+						state.commit("getBalanceSetLoading", false);
+						resolve();
+					})
+					.catch((e) => {
+						console.log(e);
+						state.commit("getBalanceSetLoading", false);
 						reject();
 					});
 			});
