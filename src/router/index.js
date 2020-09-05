@@ -58,6 +58,9 @@ const routes = [
 				component: () => import("../views/Settings.vue"),
 			}
 		],
+	}, {
+		path: '*',
+		component: () => import ("../components/PageNotFound.vue")
 	}
 ];
 
