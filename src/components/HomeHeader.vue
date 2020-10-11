@@ -29,7 +29,7 @@
 				>
 			</div>
 
-			<div v-if="page == 'home'" class="mt-5">
+			<div v-if="page == 'home'" class="mt-5" v-loading="!this.loginData.user">
 				<div v-if="!this.$store.getters['general/isLogin']">
 					<router-link
 						to="/masterRegistration"
@@ -51,7 +51,7 @@
 					>
 				</div>
 				<div v-else>
-					<router-link to="/bids" class="header-menu-link"
+					<router-link :to="orderLink" class="header-menu-link"
 						>Личный кабинет</router-link
 					>
 				</div>
@@ -176,7 +176,7 @@
 								class="col-auto"
 								v-if="this.$store.getters['general/isLogin']"
 							>
-								<router-link to="/bids" class="header-menu-link"
+								<router-link :to="orderLink" class="header-menu-link"
 									>Личный кабинет</router-link
 								>
 							</div>
@@ -280,6 +280,10 @@ import LoginModal from "./LoginModal";
 import api from "../classes/api";
 import NewBidModal from '../components/NewBidModal'
 
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState, mapActions } = createNamespacedHelpers("general");
+
 export default {
 	props: {
 		page: {
@@ -334,6 +338,23 @@ export default {
 				});
 		},
 	},
+	computed: {
+		...mapState({
+			loginData: (state) => state.loginData.data,
+		}),
+		orderLink() {
+			if (this.loginData.user) {
+				return this.loginData.user.type_code == "c" ? "/bids" : "/master"
+			}
+			
+			// console.log("this.$store.state.general.loginData.data.user", this.$store.state.general.loginData.data.user.type_code);
+			// return 
+		}
+	},
+	created () {
+		console.log(!!this.loginData);
+		console.log(JSON.stringify(this.loginData));
+	}
 	// beforeDestroy() {
 	// 	console.log("HomeHeader beforeDestroy");
 	// 	console.log("HomeHeader beforeDestroy", document.body.style.overflow);

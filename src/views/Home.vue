@@ -129,6 +129,46 @@
 </template>
 
 
+<script>
+import HomeForm from "../components/HomeForm.vue";
+import HomeHeader from "../components/HomeHeader";
+import HomeFooter from "../components/HomeFooter";
+import VueScrollTo from "vue-scrollto";
+
+export default {
+	name: "home",
+	components: {
+		HomeForm,
+		HomeHeader,
+		HomeFooter
+	},
+	data: function() {
+		return {
+			requestBidAfterRegister: false
+		};
+	},
+	methods: {
+		registerComplete() {
+			if (this.requestBidAfterRegister) {
+				this.$refs.homeform.submit();
+			}
+
+			this.$router.push(this.$refs.homeHeader.orderLink);
+		},
+		openLoginModal() {
+			this.$refs.homeHeader.loginModal = true;
+		},
+		scrollToForm() {
+			VueScrollTo.scrollTo(".form");
+		}
+	},
+	created () {
+		this.$store.dispatch("general/getLoginStatus")
+	}
+};
+</script>
+
+
 <style lang="less" scoped>
 .header-image {
 	flex-direction: column;
@@ -261,42 +301,3 @@
 	}
 }
 </style>
-
-<script>
-import HomeForm from "../components/HomeForm.vue";
-import HomeHeader from "../components/HomeHeader";
-import HomeFooter from "../components/HomeFooter";
-import VueScrollTo from "vue-scrollto";
-
-export default {
-	name: "home",
-	components: {
-		HomeForm,
-		HomeHeader,
-		HomeFooter
-	},
-	data: function() {
-		return {
-			requestBidAfterRegister: false
-		};
-	},
-	methods: {
-		registerComplete() {
-			console.log("call registerComplete from Home");
-
-			if (this.requestBidAfterRegister) {
-				console.log("this.requestBidAfterRegister from Home");
-				this.$refs.homeform.submit();
-			}
-
-			this.$router.push('/bids');
-		},
-		openLoginModal() {
-			this.$refs.homeHeader.loginModal = true;
-		},
-		scrollToForm() {
-			VueScrollTo.scrollTo(".form");
-		}
-	}
-};
-</script>
