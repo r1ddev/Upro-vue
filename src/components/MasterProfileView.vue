@@ -1,17 +1,25 @@
 <template>
 	<div class="bid">
-		<div class="title">Профиль мастера</div>
-		<div class="row">
-			<div class="col-3">
-				<div class="avatar">
-					<div class="label">Аватар профиля:</div>
-					<img :src="$store.state.general.server + master.userAvatar" />
+		<!-- <div class="title">Профиль мастера</div> -->
+		<div class="flex-center">
+			<div class="general">
+				<div class="row ">
+					<div class="col-5">
+						<div class="avatar">
+							<img :src="$store.state.general.server + master.userAvatar" />
+						</div>
+					</div>
+					<div class="col d-flex justify-content-center flex-column">
+						<div class="username">{{master.username}}</div>
+					</div>
+				</div>
+				<div class="pt-3">
+					<div class>{{master.description}}</div>
 				</div>
 			</div>
-			<div class="col d-flex justify-content-center flex-column">
-				<div class>{{master.username}}</div>
-			</div>
+			
 		</div>
+		
 		<div class="mt-4">
 			<div class="label">Виды деятельности:</div>
 			<div class="row">
@@ -52,7 +60,7 @@
 		<div class="mt-4">
 			<div class="label">О себе:</div>
 
-			<div class>{{master.description}}</div>
+			
 		</div>
 
 
