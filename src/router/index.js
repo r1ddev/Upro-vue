@@ -56,6 +56,15 @@ const routes = [
 				name: "settings",
 				path: "/settings",
 				component: () => import("../views/Settings.vue"),
+			}, {
+				name: "accessDenied",
+				path: "/access-denied",
+				component: () => import("../views/AccessDenied.vue"),
+			}
+			, {
+				name: "terms",
+				path: "/terms",
+				component: () => import("../views/Terms.vue"),
 			}
 		],
 	}, {

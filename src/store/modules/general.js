@@ -111,7 +111,7 @@ const general = {
 		},
 	},
 	getters: {
-		isLogin: (state) => !!state.userToken,
+		isLogin: (state) => !!state.userToken && state.loginData.lastUpdate > 0,
 		isLoading: (state) => {
 			return state.isLoading || state.loginData.isLoading;
 		},

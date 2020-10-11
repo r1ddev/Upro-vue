@@ -213,12 +213,21 @@ export default {
 	}
 
 	.bid {
-		box-shadow: 0px 2px4px rgba(100, 100, 100, 0.5);
+		// box-shadow: 0px 2px4px rgba(100, 100, 100, 0.5);
 
 		width: 100%;
 		padding: 7px 45px;
 		border-radius: 18px;
-		background: #fff;
+		// background: #fff;
+
+		.general {
+			max-width: 500px;
+
+			.username {
+				font-size: 21px;
+				font-weight: bold;
+			}
+		}
 
 		.badge {
 			display: flex;
@@ -273,8 +282,8 @@ export default {
 		.avatar {
 			img {
 				width: 100%;
-				border: 1px solid #e9378d;
-				border-radius: 5px;
+				// border: 1px solid #e9378d;
+				border-radius: 9px;
 				cursor: pointer;
 			}
 		}

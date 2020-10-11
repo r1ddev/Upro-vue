@@ -35,10 +35,10 @@ export default {
 			sideLinks: [],
 			accountType: "",
 			allowedPages: {
-				all: ["home", "about"],
+				all: ["home", "about", "terms", "accessDenied"],
 				guest: ["masterRegistration"],
-				client: ["clientOrders", "clientOrderResponses", "clientMasterReviews", "clientMasterProfile", "settings"],
-				master: ["masterProfile", "masterBalance", "masterOrders", "settings"],
+				client: ["clientOrders", "clientOrderResponses", "clientMasterReviews", "clientMasterProfile", "settings", "clientMasterProfile"],
+				master: ["masterProfile", "masterBalance", "masterOrders", "settings", "clientMasterProfile"],
 			}
 		};
 	},
@@ -56,7 +56,8 @@ export default {
 					{ label: "Настройки", href: "/settings", active: this.activeMenu == "/settings" },
 				];
 
-				if (!~this.allowedPages.master.indexOf(this.$route.name)) {
+				if (!~this.allowedPages.master.indexOf(this.$route.name) && !~this.allowedPages.all.indexOf(this.$route.name)) {
+					console.log("not allowed");
 					this.$router.push("/");
 				}
 				break;
