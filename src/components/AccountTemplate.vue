@@ -3,13 +3,16 @@
 		<HomeHeader :page="accountType" :links="sideLinks" />
 		<section class="account row m-0" v-if="loginData.user">
 			<section class="menu col-auto p-0">
-				<router-link
-					v-for="(sideLink, index) in sideLinks"
-					:key="index"
-					:to="sideLink.href"
-					:class="sideLink.active ? 'active' : ''"
-					>{{ sideLink.label }}</router-link
-				>
+				<div class="menu-content">
+					<router-link
+						v-for="(sideLink, index) in sideLinks"
+						:key="index"
+						:to="sideLink.href"
+						:class="sideLink.active ? 'active' : ''"
+						>{{ sideLink.label }}</router-link
+					>
+				</div>
+				
 			</section>
 			<div class="col p-0">
 				<router-view></router-view>
@@ -121,20 +124,30 @@ export default {
 		flex-grow: 1;
 
 		.menu {
-			background: #fff;
+			// background: #fff;
+			margin-top: 20px;
+			margin-left: 15px;
 
-			a {
-				display: block;
-				padding: 15px 30px;
-				color: #4f4f4e;
-				font-size: 18px;
+			.menu-content {
+				background: #fff;
+				border-radius: 10px;
+				box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+				overflow: hidden;
 
-				&:hover {
-					background: #fafafa;
-				}
+				a {
+					display: block;
+					padding: 15px 30px;
+					color: #4f4f4e;
+					font-size: 18px;
 
-				&.active {
-					background: #f9d0e4;
+					&:hover {
+						background: #fafafa;
+					}
+
+					&.active {
+						background: #6B3752;
+						color: #fff;
+					}
 				}
 			}
 		}
