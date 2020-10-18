@@ -255,9 +255,10 @@ export default {
 		}
 
 		.label {
-			font-size: 12px;
-			color: #4f4f4e;
-			margin-bottom: 3px;
+			font-size: 14px;
+			color: #4F4F4E;
+			margin-bottom: 5px;
+			font-weight: bold;
 		}
 
 		.field {

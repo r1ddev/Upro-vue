@@ -11,6 +11,7 @@
 					</div>
 					<div class="col d-flex justify-content-center flex-column">
 						<div class="username">{{master.username}}</div>
+						<div class="py-2">{{specialitiesList}}</div>
 					</div>
 				</div>
 				<div class="pt-3">
@@ -20,14 +21,14 @@
 			
 		</div>
 		
-		<div class="mt-4">
+		<!-- <div class="mt-4">
 			<div class="label">Виды деятельности:</div>
 			<div class="row">
 				<div class="col-auto" v-for="(spec, key) in master.speciality" :key="key">
 					<div class="badge mt-2">{{spec.label}}</div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 
 		<!-- <div class="row">
 			<div class="col-md-6 mt-4">
@@ -81,6 +82,11 @@ export default {
 		master: {
 			default: {},
 			type: Object
+		}
+	},
+	computed: {
+		specialitiesList() {
+			return this.master.speciality.map(s => s.label).join(", ")
 		}
 	}
 };
