@@ -260,8 +260,6 @@
 				
 			</div>
 		</section>
-
-		<HomeFooter style="border-top: 1px solid #b2b2b2;" />
 	</div>
 </template>
 

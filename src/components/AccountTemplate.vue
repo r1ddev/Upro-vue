@@ -18,6 +18,8 @@
 				<router-view></router-view>
 			</div>
 		</section>
+
+		<HomeFooter style="border-top: 1px solid #B2B2B2;" />
 	</div>
 </template>
 
@@ -25,6 +27,7 @@
 import Vue from "vue";
 
 import HomeHeader from "../components/HomeHeader";
+import HomeFooter from "../components/HomeFooter";
 
 import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions } = createNamespacedHelpers("general");
@@ -32,6 +35,7 @@ const { mapState, mapActions } = createNamespacedHelpers("general");
 export default {
 	components: {
 		HomeHeader,
+		HomeFooter
 	},
 	data: () => {
 		return {

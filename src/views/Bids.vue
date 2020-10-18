@@ -1,5 +1,5 @@
 <template>
-	<vue100vh class="bids">
+	<div class="bids">
 		
 
 		<!-- <NewBidModal
@@ -154,8 +154,7 @@
 			</div>
 		</section>
 
-		<HomeFooter style="border-top: 1px solid #B2B2B2;" />
-	</vue100vh>
+	</div>
 </template>
 
 <script>

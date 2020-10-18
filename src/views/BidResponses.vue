@@ -1,5 +1,5 @@
 <template>
-	<vue100vh class="bids">
+	<div class="container">
 
 		<!-- <NewBidModal
 			:visible="newBidModalVisible"
@@ -122,9 +122,7 @@
 		<div v-if="responses.length == 0" class="p-4 text-center">
 			Нет данных для отображения
 		</div>
-
-		<HomeFooter style="border-top: 1px solid #b2b2b2;" />
-	</vue100vh>
+	</div>
 </template>
 
 <script>
