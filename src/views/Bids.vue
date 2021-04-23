@@ -58,11 +58,72 @@
 				>Отмененные</router-link>
 			</div>
 		</div>
-	
+
+
+		<section class="order-list">
+			<div class="container" v-loading="isLoading">
+				<div class="order" v-for="order in getPageOrders" :key="order.id">
+					<div class="row">
+						<div class="col-4">
+							<div class="order-info">
+
+								<div class="title">Подбор мастеров</div>
+								
+								<div class="order-info-item">
+									<div class="label">Город:</div>
+									<div class="value">Воронеж</div>
+								</div>
+
+								<div class="order-info-item">
+									<div class="label">Мастер:</div>
+									<div class="value">Массажист</div>
+								</div>
+
+								
+								<!-- <div class="col d-flex align-items-center">
+									<span>
+										<u>Заявка №{{ order.id }}</u>
+										— {{order.status}}
+									</span>
+								</div>
+								<div class="col-auto text-right">
+									<div class="id">123</div>
+								</div> -->
+							</div>
+						</div>
+						<div class="col">
+							<div class="row">
+								<div class="col-9">
+									<VuePerfectScrollbar class="field-text">{{ order.description }}</VuePerfectScrollbar>
+								</div>
+								<div class="col">
+									<div class="col-md-5 py-2" v-if="order.albumImages.length > 0">
+										<div class="row h-100">
+											<div class="col-6" v-for="(image, index) in order.albumImages" :key="index">
+												<!-- {{image.image_thumb}} -->
+												<!-- <img :src="image.image_thumb" alt class="image" @click="openImageViewer(order.id, index)"/> -->
+												<img
+													@click="openImageViewer(order.id, index)"
+													:src="$store.state.general.server + image.image_thumb"
+													class="image"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 
 	
 		<section class="bids-list">
 			<div class="container" v-loading="isLoading">
+				
+				
+
 				<div class="bid my-3" v-for="order in getPageOrders" :key="order.id">
 					<div class="row py-3">
 						<div class="col d-flex align-items-center">

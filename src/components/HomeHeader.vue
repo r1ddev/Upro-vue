@@ -29,7 +29,7 @@
 				>
 			</div>
 
-			<div v-if="page == 'home'" class="mt-5" v-loading="!this.loginData.user">
+			<div v-if="page == 'home'" class="mt-5">
 				<div v-if="!this.$store.getters['general/isLogin']">
 					<router-link
 						to="/masterRegistration"

@@ -33,7 +33,6 @@ Vue.config.errorHandler = function(err, vm, info) {
 	console.log(err);
 	console.log(vm);
 	console.log(info);
-	console.log(`Error: ${err.toString()}\nInfo: ${info}`);
 }
 
 new Vue({

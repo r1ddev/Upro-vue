@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "deploy": "npm run build && node ./deploy.js"
   },
   "dependencies": {
     "@8bu/vue-otp-input": "^1.2.2",
@@ -19,6 +20,7 @@
     "moment": "^2.27.0",
     "moment-timezone": "^0.5.28",
     "promise-file-reader": "^1.0.2",
+    "ssh-deploy-release": "^3.0.4",
     "swiper": "^5.4.5",
     "vue": "^2.6.10",
     "vue-100vh": "^0.1.1",
@@ -39,6 +41,7 @@
     "@vue/cli-plugin-router": "^4.4.6",
     "@vue/cli-plugin-vuex": "^4.4.6",
     "@vue/cli-service": "^4.4.6",
+    "ftp-deploy": "^2.3.8",
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
     "node-sass": "^4.13.1",

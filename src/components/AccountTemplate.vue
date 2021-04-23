@@ -76,7 +76,8 @@ export default {
 					{ label: "Настройки", href: "/settings", active: this.activeMenu == "/settings" },
 				];
 
-				if (!~this.allowedPages.client.indexOf(this.$route.name)) {
+				if (!~this.allowedPages.client.indexOf(this.$route.name) && !~this.allowedPages.all.indexOf(this.$route.name)) {
+					console.log("not allowed");
 					this.$router.push("/");
 				}
 				break;
@@ -155,6 +156,53 @@ export default {
 				}
 			}
 		}
+
+		::v-deep .order-list {
+			padding-top: 20px;
+
+			.container {
+				max-width: 700px;
+
+				.order {
+					overflow: hidden;
+					box-shadow: 0px 2px 2px 0px #00000041;
+					background: #fff;
+					margin-bottom: 10px;
+					border-radius: 5px;
+					
+
+					.order-info {
+						background: #F4E6EE;
+						border-right: 2px solid #4F4F4E;
+						color: #4F4F4E;
+						height: 100%;
+						padding: 10px;
+
+						.title {
+							padding-bottom: 10px;
+							text-align: center;
+							color: #6B3752;
+							font-size: 15px;
+							font-weight: 600;
+						}
+
+						.order-info-item {
+							display: flex;
+
+							.label, .value {
+								flex-basis: 50%;
+							}
+
+							.value {
+								text-align-last: center;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		
 	}
 
 	.account-menu {

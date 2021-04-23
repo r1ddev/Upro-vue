@@ -1,5 +1,5 @@
 <template>
-    <vue100vh class="flex-center flex-column">
+    <div class="container">
         <div class="title">Oopss... (Упс)</div>
         <div class="desc">Маг не приходит поздно, и рано тоже не приходит, он приходит когда надо</div>
         <div class="image-wrap">
@@ -9,7 +9,8 @@
         <div class="btn-wrap">
             <router-link to="/" class="btn">На главную</router-link>
         </div>
-    </vue100vh>
+    </div>
+
 </template>
 
 <script>

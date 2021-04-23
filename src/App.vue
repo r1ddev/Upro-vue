@@ -1,5 +1,5 @@
 <template>
-	<div id="app" v-loading="$store.getters.isLoading">
+	<div id="app"> <!--v-loading="$store.getters.isLoading" -->
 		<vue-page-transition name="fade-in-right">
 		<!-- <transition name="fade"> -->
 			<router-view/>
