@@ -1,4 +1,5 @@
 # youpro
+![Resources](screenshots/index.png)
 
 ## Project setup
 ```
