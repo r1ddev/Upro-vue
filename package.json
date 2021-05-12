@@ -21,7 +21,7 @@
     "moment-timezone": "^0.5.28",
     "promise-file-reader": "^1.0.2",
     "ssh-deploy-release": "^3.0.4",
-    "swiper": "^5.4.5",
+    "swiper": "^6.5.1",
     "vue": "^2.6.10",
     "vue-100vh": "^0.1.1",
     "vue-awesome-swiper": "^4.1.0",
