@@ -17,7 +17,7 @@
     "element-ui": "^2.13.2",
     "hooper": "^0.3.4",
     "mobile-device-detect": "^0.3.3",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.28",
     "promise-file-reader": "^1.0.2",
     "ssh-deploy-release": "^3.0.4",
